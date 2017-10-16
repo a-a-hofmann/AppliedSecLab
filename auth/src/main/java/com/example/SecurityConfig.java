@@ -15,18 +15,20 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        // @formatter:off
         http
                 .formLogin().loginPage("/login").permitAll()
                 .and()
                 .requestMatchers().antMatchers("/login", "/oauth/authorize", "/oauth/confirm_access")
                 .and()
                 .authorizeRequests().anyRequest().authenticated();
-        // @formatter:on
     }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.parentAuthenticationManager(authenticationManager);
+        auth.parentAuthenticationManager(authenticationManager)
+                .inMemoryAuthentication()
+        .withUser("test").password("test").roles("USER")
+        .and()
+        .withUser("admin").password("admin").roles("ADMIN");
     }
 }
