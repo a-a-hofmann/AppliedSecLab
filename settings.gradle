@@ -1,3 +1,5 @@
 rootProject.name = 'oauth2'
 include 'auth'
+include 'gateway'
+include 'resource'
 

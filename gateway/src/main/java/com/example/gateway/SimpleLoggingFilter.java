@@ -1,4 +1,4 @@
-package com.example;
+package com.example.gateway;
 
 import org.apache.log4j.Logger;
 import org.springframework.core.Ordered;
@@ -22,14 +22,13 @@ public class SimpleLoggingFilter extends AbstractRequestLoggingFilter {
     protected void beforeRequest(HttpServletRequest request, String message) {
         String method = request.getMethod();
         StringBuffer requestURL = request.getRequestURL();
-        String remoteHost = request.getRemoteHost();
-
+        
         logger.info("-------");
         logger.info("Logging cookies:");
         logCookies(request);
         logger.info("Logging headers:");
         logHeaders(request);
-        logger.info(String.format("%s request from [%s:%d] to [%s]", method, request.getRemoteHost(), request.getRemotePort(), requestURL.toString()));
+        logger.info(String.format("%s request to %s", method, requestURL.toString()));
         logger.info("-------");
     }
 
