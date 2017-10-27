@@ -186,7 +186,11 @@ public interface UserRepository extends JpaRepository<User, String> {
 
     UserSafeProjection findByUsername(String username);
 }
-``` 
+```
+
+## Current State of Affairs
+
+![Status qup](https://github.com/a-a-hofmann/AppliedSecLab/blob/master/ca/src/main/resources/ca-diag.png) 
  
 ## JSON Web Tokens (JWT)
 The Authorization Server (AS) produces signed JWT containing the users claims.
