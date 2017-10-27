@@ -1,0 +1,1 @@
+INSERT INTO `users` VALUES ('fu','Fuerst','Andreas','fu@imovies.ch','6e58f76f5be5ef06a56d4eeb2c4dc58be3dbe8c7'),('db','Basin','David','db@imovies.ch','8d0547d4b27b689c3a3299635d859f7d50a2b805'),('ms','Schlaepfer','Michael','ms@imovies.ch','4d7de8512bd584c3137bb80f453e61306b148875'),('a3','Anderson','Andres Alan','and@imovies.ch','6b97f534c330b5cc78d4cc23e01e48be3377105b');

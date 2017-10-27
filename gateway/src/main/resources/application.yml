@@ -30,8 +30,8 @@ security:
 zuul:
   routes:
     resource:
-      path: /resource/**
-      url: http://localhost:8081/resource
+      path: /ca/**
+      url: http://localhost:8081/ca
     user:
       path: /user/**
       url: http://localhost:9999/uaa/user
