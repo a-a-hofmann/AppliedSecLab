@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement />
+  <nodes>
+    <node x="0.0" y="402.0">ch.ethz.asl.ca.service.event.UserEventListener</node>
+    <node x="19.5" y="592.0">ch.ethz.asl.ca.service.UserService</node>
+    <node x="19.5" y="760.0">ch.ethz.asl.ca.endpoint.UserController</node>
+    <node x="392.08928571428567" y="33.5">ch.ethz.asl.ca.service.ShellExecutionWrapper</node>
+    <node x="28.089285714285722" y="0.0">ch.ethz.asl.ca.service.event.CertificateEventListener</node>
+    <node x="344.0" y="402.0">ch.ethz.asl.ca.endpoint.CertificateController</node>
+    <node x="173.875" y="168.0">ch.ethz.asl.ca.service.CertificateService</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="ch.ethz.asl.ca.service.UserService" target="ch.ethz.asl.ca.service.event.UserEventListener">
+      <point x="-71.25" y="-59.0" />
+      <point x="90.75" y="567.0" />
+      <point x="81.0" y="567.0" />
+      <point x="-81.0" y="70.0" />
+    </edge>
+    <edge source="ch.ethz.asl.ca.endpoint.CertificateController" target="ch.ethz.asl.ca.service.CertificateService">
+      <point x="-73.75" y="-70.0" />
+      <point x="417.75" y="377.0" />
+      <point x="369.5" y="377.0" />
+      <point x="39.125" y="92.0" />
+    </edge>
+    <edge source="ch.ethz.asl.ca.endpoint.UserController" target="ch.ethz.asl.ca.service.UserService">
+      <point x="-71.25" y="-48.0" />
+      <point x="-71.25" y="59.0" />
+    </edge>
+    <edge source="ch.ethz.asl.ca.service.CertificateService" target="ch.ethz.asl.ca.service.ShellExecutionWrapper">
+      <point x="39.125" y="-92.0" />
+      <point x="369.5" y="143.0" />
+      <point x="434.33928571428567" y="143.0" />
+      <point x="-42.25" y="25.5" />
+    </edge>
+    <edge source="ch.ethz.asl.ca.service.event.UserEventListener" target="ch.ethz.asl.ca.service.CertificateService">
+      <point x="-81.0" y="-70.0" />
+      <point x="81.0" y="377.0" />
+      <point x="213.0" y="377.0" />
+      <point x="-117.375" y="92.0" />
+    </edge>
+    <edge source="ch.ethz.asl.ca.service.CertificateService" target="ch.ethz.asl.ca.service.event.CertificateEventListener">
+      <point x="-117.375" y="-92.0" />
+      <point x="213.0" y="143.0" />
+      <point x="114.08928571428572" y="143.0" />
+      <point x="-86.0" y="59.0" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Group" zoom="0.9415525114155251" x="319.72211445198843" y="587.443258971872" />
+  <SelectedNodes />
+  <Categories>
+    <Category>Fields</Category>
+    <Category>Methods</Category>
+  </Categories>
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+
