@@ -3,6 +3,20 @@
 ## General info
 Basic auth: `user:password`
 
+### Useful links
+#### Tools
+- [IntelliJ](https://www.jetbrains.com/student/)
+- [Postman](https://www.getpostman.com/)
+- [Burp Suite](https://portswigger.net/burp)
+- [Nessus Home Edition](https://www.tenable.com/products/nessus/nessus-plugins/obtain-an-activation-code)
+
+#### Spring
+Basic How-Tos:
+
+- [Spring guide: How To Server Web Content](https://spring.io/guides/gs/serving-web-content/)
+- [Spring guide: Building a RESTful Web Service](https://spring.io/guides/gs/rest-service/)
+- [Spring guide: Consuming a RESTful Web Service](https://spring.io/guides/gs/consuming-rest/)
+
 ## Getting Started
 
 ### Setup
