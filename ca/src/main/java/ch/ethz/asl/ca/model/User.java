@@ -24,43 +24,43 @@ public class User implements Serializable {
     @Column(nullable = false, name = "pwd")
     private String password;
 
-    String getUsername() {
+    public String getUsername() {
         return username;
     }
 
-    void setUsername(String username) {
+    public void setUsername(String username) {
         this.username = username;
     }
 
-    void setPassword(String password) {
+    public void setPassword(String password) {
         this.password = password;
     }
 
-    String getLastname() {
+    public String getLastname() {
         return lastname;
     }
 
-    void setLastname(String lastname) {
+    public void setLastname(String lastname) {
         this.lastname = lastname;
     }
 
-    String getFirstname() {
+    public String getFirstname() {
         return firstname;
     }
 
-    void setFirstname(String firstname) {
+    public void setFirstname(String firstname) {
         this.firstname = firstname;
     }
 
-    String getEmail() {
+    public String getEmail() {
         return email;
     }
 
-    void setEmail(String email) {
+    public void setEmail(String email) {
         this.email = email;
     }
 
-    String getPassword() {
+    public String getPassword() {
         return password;
     }
 
@@ -95,7 +95,6 @@ public class User implements Serializable {
                 ", lastname='" + lastname + '\'' +
                 ", firstname='" + firstname + '\'' +
                 ", email='" + email + '\'' +
-                ", password='" + password + '\'' +
                 '}';
     }
 }

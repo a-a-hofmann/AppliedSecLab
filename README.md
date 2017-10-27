@@ -144,3 +144,10 @@ openssl x509 -inform pem -pubkey -in junk.txt
 Replace test public key in Resource Servers `application.properties` with the one in `junk.txt`.
 Change `OAuth2Config.java` class to reflect the change.
 Don't forget to delete `junk.txt` afterwards.
+
+## Clean up before handing-in
+
+- Make sure to remove Spring devtools (remove from maven and then clean install).
+- Set a good pwd for all keystores.
+- Switch embedded db with MySQL, remove DB web console.
+- Check any default credentials

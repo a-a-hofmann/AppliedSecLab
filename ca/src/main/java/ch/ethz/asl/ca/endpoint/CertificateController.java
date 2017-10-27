@@ -4,6 +4,8 @@ import ch.ethz.asl.ca.service.CertificateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
+
 /**
  * Controller to answer to requests regarding certificates.
  * TODO: once login is in place remove the need to pass the username in HTTP body and read user info from SecurityContext.
@@ -29,8 +31,8 @@ public class CertificateController {
     }
 
     @DeleteMapping("cert/{serialNr}")
-    public boolean deleteCertificate(@PathVariable("serialNr") final String serialNr) {
-        return false;
+    public boolean revokeCertificate(@PathVariable("serialNr") final String serialNr, Principal principal) {
+        return certificateService.revokeCertificate(serialNr, principal);
     }
 
     @GetMapping("admin")
