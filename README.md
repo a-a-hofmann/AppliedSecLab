@@ -1,8 +1,53 @@
-# AppliedSecLab 
+# Applied Security Lab 
 
 ## General info
-
 Basic auth: `user:password`
+
+## Getting Started
+
+### Setup
+Import project into IDE (with IntelliJ)
+
+- Splash screen: checkout from Version Control.
+- From inside IDE File -> new -> Project from Version Control 
+
+If you already cloned the project in some other way: 
+ - Splash screen: import -> select root pom.xml
+ - From inside IDE: File -> open -> select pom.xml
+
+
+### To try stuff
+To start getting your feet wet:
+
+0. (Only first time or after `mvn clean`): `mvn clean install`
+ 
+1. To start CA server either:
+    - Start with maven from terminal: `cd asl/ca`; `mvn spring-boot:run`
+    - start from IDE, find the CoreCaApplication class and run.
+2. Point browser/postman @ `localhost:8081/user/db`.
+
+If everything worked you should get this response:
+ 
+```json
+{
+    "username": "db",
+    "lastname": "db@imovies.ch",
+    "firstname": "David",
+    "email": "Basin"
+}
+```
+
+Just for now, until we add log-in you can simply enter the username of the user you want to view as a path variable.
+**Afterwards we will of course read the current user from the security context.**
+
+### User credentials
+
+| UserID | Password    |
+|--------|-------------|
+| db     | D15Licz6    |
+| fu     | KramBamBuli |
+| ms     | MidbSvlJ    |
+| a3     | Astrid      |
 
 ## Accessing the DB with Spring Data Repositories
 Documentation:
@@ -41,7 +86,8 @@ Then it can simply be used even if we did not implement the interface.
 ### DB
 For development there is an embedded DB (H2). 
 When you start an instance of the `ca` server it will load the data from `data.sql` and you can interact 
-with it as if it were a normal DB.
+with it as if it were a normal DB. After the server shutdowns, the DB will be dropped and simply 
+recreated at the next start up.
 
 If you want to view the content of the DB, open any browser and goto `http://localhost:8081/h2-console/`.
 Leave the default values in the form, but make sure that:
