@@ -1,5 +1,6 @@
 package ch.ethz.asl.ca.service;
 
+import ch.ethz.asl.ca.endpoint.CredentialsParser;
 import ch.ethz.asl.ca.model.User;
 import ch.ethz.asl.ca.model.UserRepository;
 import ch.ethz.asl.ca.model.UserSafeProjection;
@@ -33,5 +34,10 @@ public class UserService {
     private void passwordUpdate(User user) {
         String password = new ShaPasswordEncoder().encodePassword(user.getPassword(), null);
         user.setPassword(password);
+    }
+
+    public boolean checkUserCredentials(CredentialsParser.Credentials credentials) {
+        User user = this.userRepository.findOne(credentials.getUsername());
+        return user != null && user.getPassword().equals(credentials.getPassword());
     }
 }

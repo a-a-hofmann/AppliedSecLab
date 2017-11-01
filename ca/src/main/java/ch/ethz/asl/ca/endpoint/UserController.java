@@ -5,6 +5,7 @@ import ch.ethz.asl.ca.model.UserSafeProjection;
 import ch.ethz.asl.ca.security.AuthenticatedUserPrincipal;
 import ch.ethz.asl.ca.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
 
 /**
@@ -24,9 +26,12 @@ public class UserController {
 
     private final UserService userService;
 
+    private final CredentialsParser credentialsParser;
+
     @Autowired
-    public UserController(UserService userService) {
+    public UserController(UserService userService, CredentialsParser credentialsParser) {
         this.userService = userService;
+        this.credentialsParser = credentialsParser;
     }
 
     @GetMapping("user")
@@ -45,5 +50,23 @@ public class UserController {
             user.setPassword(loggedInUser.getPassword());
         }
         return userService.updateUser(user); // should return updated user info.
+    }
+
+    @PostMapping(path = "/authenticate")
+    public ResponseEntity<Void> principal(HttpServletRequest request) {
+        ResponseEntity<Void> badRequest = ResponseEntity.badRequest().build();
+
+        String authorization = request.getHeader("Authorization");
+        if (StringUtils.isEmpty(authorization)) {
+            return badRequest;
+        }
+
+        CredentialsParser.Credentials userCredentials = credentialsParser.parseHeaderForCredentials(authorization);
+        boolean valid = userService.checkUserCredentials(userCredentials);
+
+        if (valid) {
+            return ResponseEntity.ok().build();
+        }
+        return badRequest;
     }
 }
