@@ -2,10 +2,10 @@ package ch.ethz.asl.ca;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 
 @SpringBootApplication
-@RestController
+@EnableWebSecurity
 //@EnableResourceServer // TODO: Add back in to use oauth2
 public class CoreCaApplication {
 
