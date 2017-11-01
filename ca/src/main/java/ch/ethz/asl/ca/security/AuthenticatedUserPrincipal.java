@@ -7,7 +7,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.ArrayList;
 import java.util.Collection;
 
-class AuthenticatedUserPrincipal implements UserDetails {
+public class AuthenticatedUserPrincipal implements UserDetails {
 
     private User user;
 
@@ -48,5 +48,9 @@ class AuthenticatedUserPrincipal implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    public User getUser() {
+        return user;
     }
 }
