@@ -1,5 +1,3 @@
-HOME                    = .
-RANDFILE                = $ENV::HOME/.rnd
 
 ####################################################################
 # CA Definition
@@ -10,14 +8,13 @@ default_ca      = CA_default            # The default ca section
 # Per the above, this is where we define CA values
 [ CA_default ]
 
-dir             = etc/ssl/CA/           # Where everything is kept
+dir             = etc/ssl/CA           # Where everything is kept
 certs           = $dir/certs          	# Where the issued certs are kept
 new_certs_dir   = $dir/newcerts         # default place for new certs.
 database        = $dir/index.txt        # database index file.
 certificate     = $dir/private/cacert.pem       # The CA certificate
 private_key     = $dir/private/cakey.pem        # The private key
 serial          = $dir/serial           # The current serial number
-RANDFILE        = $dir/private/.rand    # private random number file
 
 crldir          = $dir/crl
 crlnumber       = $dir/crlnumber        # the current crl number
@@ -57,8 +54,7 @@ countryName             = match         # Must be the same as the CA
 stateOrProvinceName     = match         # Must be the same as the CA
 organizationName        = match         # Must be the same as the CA
 organizationalUnitName  = optional      # not required
-lastName      	        = supplied      # require the last name
-firstName 		= supplied 	# require the name 
+commonName      	= supplied      # require the name
 emailAddress            = supplied      # require the email
 
 ####################################################################
@@ -102,11 +98,8 @@ localityName_default            = Zürich
 organizationalUnitName          = Organizational Unit Name (eg, section)
 organizationalUnitName_default  = AppliedSecLab
 
-lastname                        = Last Name 
-lastname_max                    = 64
-
-firstname                       = First Name 
-firstname_max                   = 64
+commonName                      = Common Name
+commonName_max                  = 128
 
 emailAddress                    = Email Address
 emailAddress_max                = 64
@@ -138,7 +131,7 @@ basicConstraints=CA:false
 # and for everything including object signing:
 #nsCertType = client, email, objsign
 # This is typical in keyUsage for a client certificate.
-keyUsage = secure E-mail communication
+#keyUsage = secure E-mail communication
 
 # PKIX recommendations harmless if included in all certificates.
 subjectKeyIdentifier=hash
@@ -149,7 +142,7 @@ authorityKeyIdentifier=keyid,issuer
 #subjectAltName=email:copy
 # An alternative to produce certificates that aren't
 # deprecated according to PKIX.
-#subjectAltName=email:move
+subjectAltName=email:move
 
 
 ####################################################################
