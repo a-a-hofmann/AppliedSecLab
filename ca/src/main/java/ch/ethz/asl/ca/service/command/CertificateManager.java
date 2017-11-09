@@ -1,6 +1,7 @@
 
 package ch.ethz.asl.ca.service.command;
 
+import ch.ethz.asl.ca.model.Certificate;
 import ch.ethz.asl.ca.model.UserSafeProjection;
 
 import java.security.Principal;
@@ -16,20 +17,19 @@ import java.security.cert.X509Certificate;
 public interface CertificateManager {
     
     /**
-     * This method issues a new certificate in the CA repository.
-     * @return string representation of the command.
+     * This method issues a new certificate in the CA repository. Returns the serial number.
      */ 
-    public X509Certificate issueNewCertificate(final UserSafeProjection user) throws CertificateManagerException;
+    public String issueNewCertificate(final UserSafeProjection user) throws CertificateManagerException;
     
     /**
      * This method returns a certificate if a certificate with the serialNr exists, otherwise it returns null.
      * @return X509Certificate
      */
-    public X509Certificate getCertificate(final String serialNr);
+    public X509Certificate getCertificate(final String serialNr, final Principal principal) throws CertificateManagerException;
     
     /**
      * This method revokes a certificate with the serial number serialNr.
      */
-    public boolean revokeCertificate(final String serialNr, final Principal principal) throws CertificateManagerException;
+    public void revokeCertificate(final String serialNr, final Principal principal) throws CertificateManagerException;
     
 }

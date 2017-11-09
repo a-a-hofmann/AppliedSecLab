@@ -1,18 +1,22 @@
 package ch.ethz.asl.ca.service;
 
+import ch.ethz.asl.ca.model.Certificate;
 import ch.ethz.asl.ca.model.UserRepository;
 import ch.ethz.asl.ca.model.UserSafeProjection;
 import ch.ethz.asl.ca.service.command.CertificateManager;
 import ch.ethz.asl.ca.service.command.CertificateManagerException;
 import ch.ethz.asl.ca.service.event.CertificateEventListener;
 import ch.ethz.asl.ca.service.event.CertificateIssuedEvent;
+import ch.ethz.asl.ca.service.event.CertificateRequestedEvent;
 import ch.ethz.asl.ca.service.event.CertificateRevokedEvent;
+import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+
+import javax.servlet.ServletOutputStream;
+import java.io.IOException;
 import java.security.Principal;
-import java.security.cert.Certificate;
-import java.security.cert.X509Certificate;
 
 @Service
 public class CertificateService {
@@ -32,27 +36,53 @@ public class CertificateService {
         this.eventListener = eventListener;
     }
 
-    public void getCertificate(final String serialNr) {
-        certificateManager.getCertificate(serialNr);
+    public boolean getCertificate(final String serialNr, ServletOutputStream outputStream) {
+        Certificate certificate = null;
+        /*try {
+            //certificate = certificateManager.getCertificate(serialNr);
+
+        } catch (CertificateManagerException e) {
+            //TODO:
+            //how to log, define new EventListener?
+            return false;
+        }*/
+
+        try {
+            IOUtils.copy(certificate, outputStream);
+            outputStream.flush();
+            outputStream.close();
+        } catch (IOException e) {
+            //TODO:
+            //how to log, define new EventListener?
+            return false;
+        }
+
+       // eventListener.onCertificateRequested(new CertificateRequestedEvent(serialNr, ));
+        return true;
     }
 
 
 
-    public void issueNewCertificate(final String username) {
+    public boolean issueNewCertificate(final String username) {
         // create cert with user info.
         // Get user info from repo.
 
         UserSafeProjection user = userRepository.findByUsername(username);
         if (user == null) {
-            throw new UsernameNotFoundException(username);
+            //how to log, define new EventListener?
+            return false;
+            //throw new UsernameNotFoundException(username);
         }
-        X509Certificate cert = null;
+
         try {
-            cert = certificateManager.issueNewCertificate(user);
-            eventListener.onCertificateIssued(new CertificateIssuedEvent(username, cert.getSerialNumber().toString()));
+            //serial number
+            certificateManager.issueNewCertificate(user);
+           // eventListener.onCertificateIssued(new CertificateIssuedEvent(username, cert.getSerialNumber().toString()));
         } catch(CertificateManagerException e) {
-            // what do I have to do now in Spring?
+            //how to log, define new EventListener?
+            return false;
         }
+        return true;
     }
 
 

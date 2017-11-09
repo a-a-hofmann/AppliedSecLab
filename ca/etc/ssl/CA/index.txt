@@ -1,1 +1,1 @@
-R	181106214219Z	171106214936Z	01	unknown	/C=CH/ST=Z\xC3\x83\xC2\xBCrich/O=ETH/OU=AppliedSecLab/CN=Ard
+R	181109220139Z	171109220334Z	01	unknown	/C=CH/ST=Zurich/O=ETH/OU=AppliedSecLab/CN=David Basin

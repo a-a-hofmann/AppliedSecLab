@@ -1,87 +1,107 @@
 package ch.ethz.asl.ca.service.command;
 
 import ch.ethz.asl.ca.model.UserSafeProjection;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.springframework.stereotype.Component;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.security.Principal;
+import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 
 @Component
 public class OpenSSL implements CertificateManager {
 
-    //Only for developing. Must be changed to -> /etc/ssl/
+    //TODO: Only for developing. Must be changed to -> /etc/ssl/
     private final String dir = "etc/ssl/";
+    //TODO: Only for developing
+    private final String GENERATE_KEY_PATH = "etc/ssl/CA/newkeys/%s/";
 
     private final String UNABLE_TO_SIGN_CERTIFICATE_EXCEPTION = "Unable to sign the certificate by using openssl. Error: ";
     private final String UNABLE_TO_GENERATE_RSA_KEY = "Unable to generate a RSA key by using openssl. Error: ";
-    private final String UNABLE_TO_GENERATE_SINGNING_REQUEST = "Unable to generate a signing request by using openssl. Error: ";
+    private final String UNABLE_TO_GENERATE_SIGNING_REQUEST = "Unable to generate a signing request by using openssl. Error: ";
     private final String UNABLE_TO_REVOKE_CERTIFICATE = "Unable to revoke the given certificate by using openssl. Error: ";
+    private final String UNABLE_TO_CREATE_CRL = "Unable to create the revokation list. Error: ";
+    private final String UNABLE_TO_FIND_CERTIFICATE = "The certificate with the given serial number does not exist. Error: ";
 
 
-
+    //TODO: %s mitigate injection for all
     private final String GENERATE_KEY = "openssl genrsa -out %s.key 1024";
-    //Find a better way, where to store the generated keys and add -subj.
+    //add subj
     private final String GENERATE_SIGNING_REQUEST = "openssl req -new -key %s.key -out %s.csr";
-
-    private final String GET_CERTIFICATE = "";
+    private final String CERTIFICATE_PATH = "etc/ssl/CA/newcerts/%s/%s.pem";
     private final String SIGN_CERTIFICATE = "sudo openssl ca -in %s.csr -config " + dir + "openssl.cnf";
     private final String REVOKE_CERTIFICATE = "sudo openssl ca -revoke %s -config " + dir + "openssl.cnf";
     private final String CREATE_CRL = "sudo openssl ca -gencrl -out " + dir + "CA/crl/crl.pem";
 
-    private void generateKey(final String username) throws CertificateManagerException {
+    private String generateKey(final String username) throws CertificateManagerException {
+        String fileName = new SimpleDateFormat("yyyyMMddHHmmssSS'.key'").format(new Date());
+        String file = GENERATE_KEY_PATH + fileName;
         try {
             Runtime.getRuntime().exec(String.format(GENERATE_KEY, username));
+            return file;
         } catch (IOException e) {
             throw new CertificateManagerException(UNABLE_TO_GENERATE_RSA_KEY + e.getMessage());
         }
     }
 
-    private void generateSigningRequest(final String username) throws CertificateManagerException{
+    private void generateSigningRequest(final String keyPath) throws CertificateManagerException{
         try {
-            Runtime.getRuntime().exec(String.format(GENERATE_SIGNING_REQUEST, username));
+            Runtime.getRuntime().exec(String.format(GENERATE_SIGNING_REQUEST, keyPath, keyPath));
+
         } catch (IOException e) {
-            throw new CertificateManagerException(UNABLE_TO_GENERATE_SINGNING_REQUEST + e.getMessage());
+            throw new CertificateManagerException(UNABLE_TO_GENERATE_SIGNING_REQUEST + e.getMessage());
         }
     }
-
-    // return object???
-    public X509Certificate issueNewCertificate(UserSafeProjection user) throws CertificateManagerException{
-        generateKey(user.getUsername());
-        generateSigningRequest(user.getUsername());
+    //TODO:
+    public String issueNewCertificate(UserSafeProjection user) throws CertificateManagerException{
+        String currentPath = generateKey(user.getUsername());
+        generateSigningRequest(currentPath);
 
         try {
-            Runtime.getRuntime().exec(String.format(SIGN_CERTIFICATE, user.getUsername()));
+            Runtime.getRuntime().exec(String.format(SIGN_CERTIFICATE, currentPath));
         } catch (IOException e) {
             throw new CertificateManagerException(UNABLE_TO_SIGN_CERTIFICATE_EXCEPTION + e.getMessage());
         }
+        //how to get the serial number
         return null;
     }
-
-    public X509Certificate getCertificate(final String serialNr) {
+    //TODO:
+    public X509Certificate getCertificate(final String serialNr, final Principal principal) throws CertificateManagerException {
 
         try {
-            Runtime.getRuntime().exec(SIGN_CERTIFICATE);
-        } catch (IOException e) {
-            e.printStackTrace();
+            FileInputStream fis = new FileInputStream(String.format(CERTIFICATE_PATH, principal.getName(), serialNr));
+            BouncyCastleProvider provider = new BouncyCastleProvider();
+            CertificateFactory certificateFactory = CertificateFactory.getInstance("X509", provider);
+            X509Certificate certificate = (X509Certificate) certificateFactory.generateCertificate(fis);
+            return certificate;
+        } catch (FileNotFoundException|CertificateException e) {
+            throw new CertificateManagerException(UNABLE_TO_FIND_CERTIFICATE + e.getMessage());
         }
-        return null;
     }
 
 
-    public boolean revokeCertificate(final String serialNr, final Principal principal) throws CertificateManagerException {
-        boolean success = true;
-        String certificate = null;
-
-        // locate the certificate based on the serialNr.
+    public void revokeCertificate(final String serialNr, final Principal principal) throws CertificateManagerException {
+        String certificatePath = String.format(CERTIFICATE_PATH, principal.getName(), serialNr);
 
         try {
-            Runtime.getRuntime().exec(String.format(REVOKE_CERTIFICATE, certificate));
+            Runtime.getRuntime().exec(String.format(REVOKE_CERTIFICATE, certificatePath));
+
         } catch (IOException e) {
             throw new CertificateManagerException(UNABLE_TO_REVOKE_CERTIFICATE + e.getMessage());
         }
-        return false;
+        try {
+            Runtime.getRuntime().exec(CREATE_CRL);
+        } catch (IOException e) {
+            throw new CertificateManagerException(UNABLE_TO_CREATE_CRL + e.getMessage());
+        }
+
     }
 
 }

@@ -8,7 +8,7 @@ default_ca      = CA_default            # The default ca section
 # Per the above, this is where we define CA values
 [ CA_default ]
 
-dir             = etc/ssl/CA           # Where everything is kept
+dir             = etc/ssl/CA            # Where everything is kept
 certs           = $dir/certs          	# Where the issued certs are kept
 new_certs_dir   = $dir/newcerts         # default place for new certs.
 database        = $dir/index.txt        # database index file.
@@ -19,6 +19,175 @@ serial          = $dir/serial           # The current serial number
 crldir          = $dir/crl
 crlnumber       = $dir/crlnumber        # the current crl number
 crl             = $crldir/crl.pem       # The current CRL
+
+# By default we use "user certificate" extensions when signing
+x509_extensions = usr_cert              # The extentions to add to the cert
+
+# Honor extensions requested of us
+copy_extensions	= copy
+
+# Comment out the following two lines for the "traditional"
+# (and highly broken) format.
+name_opt        = ca_default            # Subject Name options
+cert_opt        = ca_default            # Certificate field options
+
+# Extensions to add to a CRL. Note: Netscape communicator chokes on V2 CRLs
+# so this is commented out by default to leave a V1 CRL.
+# crlnumber must also be commented out to leave a V1 CRL.
+#crl_extensions        = crl_ext
+default_days    = 365                   # how long to certify for
+default_crl_days= 30                    # how long before next CRL
+default_md      = sha1                  # which md to use.
+preserve        = no                    # keep passed DN ordering
+
+# A few difference way of specifying how similar the request should look
+# For type CA, the listed attributes must be the same, and the optional
+# and supplied fields are just that :-)
+policy          = policy_match
+
+####################################################################
+# Per the above, this is where we define CA values
+[ CA_db ]
+
+dir             = etc/ssl/CA            # Where everything is kept
+certs           = $dir/certs          	# Where the issued certs are kept
+new_certs_dir   = $dir/newcerts/db      # default place for new certs.
+database        = $dir/index.txt        # database index file.
+certificate     = $dir/private/cacert.pem       # The CA certificate
+private_key     = $dir/private/cakey.pem        # The private key
+serial          = $dir/serial           # The current serial number
+
+crldir          = $dir/crl
+crlnumber       = $dir/crlnumber        # the current crl number
+crl             = $crldir/crl.pem       # The current CRL
+
+
+# By default we use "user certificate" extensions when signing
+x509_extensions = usr_cert              # The extentions to add to the cert
+
+# Honor extensions requested of us
+copy_extensions	= copy
+
+# Comment out the following two lines for the "traditional"
+# (and highly broken) format.
+name_opt        = ca_default            # Subject Name options
+cert_opt        = ca_default            # Certificate field options
+
+# Extensions to add to a CRL. Note: Netscape communicator chokes on V2 CRLs
+# so this is commented out by default to leave a V1 CRL.
+# crlnumber must also be commented out to leave a V1 CRL.
+#crl_extensions        = crl_ext
+default_days    = 365                   # how long to certify for
+default_crl_days= 30                    # how long before next CRL
+default_md      = sha1                  # which md to use.
+preserve        = no                    # keep passed DN ordering
+
+# A few difference way of specifying how similar the request should look
+# For type CA, the listed attributes must be the same, and the optional
+# and supplied fields are just that :-)
+policy          = policy_match
+
+####################################################################
+# Per the above, this is where we define CA values
+[ CA_a3 ]
+
+dir             = etc/ssl/CA            # Where everything is kept
+certs           = $dir/certs          	# Where the issued certs are kept
+new_certs_dir   = $dir/newcerts/a3      # default place for new certs.
+database        = $dir/index.txt        # database index file.
+certificate     = $dir/private/cacert.pem       # The CA certificate
+private_key     = $dir/private/cakey.pem        # The private key
+serial          = $dir/serial           # The current serial number
+
+crldir          = $dir/crl
+crlnumber       = $dir/crlnumber        # the current crl number
+crl             = $crldir/crl.pem       # The current CRL
+
+
+# By default we use "user certificate" extensions when signing
+x509_extensions = usr_cert              # The extentions to add to the cert
+
+# Honor extensions requested of us
+copy_extensions	= copy
+
+# Comment out the following two lines for the "traditional"
+# (and highly broken) format.
+name_opt        = ca_default            # Subject Name options
+cert_opt        = ca_default            # Certificate field options
+
+# Extensions to add to a CRL. Note: Netscape communicator chokes on V2 CRLs
+# so this is commented out by default to leave a V1 CRL.
+# crlnumber must also be commented out to leave a V1 CRL.
+#crl_extensions        = crl_ext
+default_days    = 365                   # how long to certify for
+default_crl_days= 30                    # how long before next CRL
+default_md      = sha1                  # which md to use.
+preserve        = no                    # keep passed DN ordering
+
+# A few difference way of specifying how similar the request should look
+# For type CA, the listed attributes must be the same, and the optional
+# and supplied fields are just that :-)
+policy          = policy_match
+
+####################################################################
+# Per the above, this is where we define CA values
+[ CA_fu ]
+
+dir             = etc/ssl/CA            # Where everything is kept
+certs           = $dir/certs          	# Where the issued certs are kept
+new_certs_dir   = $dir/newcerts/fu      # default place for new certs.
+database        = $dir/index.txt        # database index file.
+certificate     = $dir/private/cacert.pem       # The CA certificate
+private_key     = $dir/private/cakey.pem        # The private key
+serial          = $dir/serial           # The current serial number
+
+crldir          = $dir/crl
+crlnumber       = $dir/crlnumber        # the current crl number
+crl             = $crldir/crl.pem       # The current CRL
+
+
+# By default we use "user certificate" extensions when signing
+x509_extensions = usr_cert              # The extentions to add to the cert
+
+# Honor extensions requested of us
+copy_extensions	= copy
+
+# Comment out the following two lines for the "traditional"
+# (and highly broken) format.
+name_opt        = ca_default            # Subject Name options
+cert_opt        = ca_default            # Certificate field options
+
+# Extensions to add to a CRL. Note: Netscape communicator chokes on V2 CRLs
+# so this is commented out by default to leave a V1 CRL.
+# crlnumber must also be commented out to leave a V1 CRL.
+#crl_extensions        = crl_ext
+default_days    = 365                   # how long to certify for
+default_crl_days= 30                    # how long before next CRL
+default_md      = sha1                  # which md to use.
+preserve        = no                    # keep passed DN ordering
+
+# A few difference way of specifying how similar the request should look
+# For type CA, the listed attributes must be the same, and the optional
+# and supplied fields are just that :-)
+policy          = policy_match
+
+
+####################################################################
+# Per the above, this is where we define CA values
+[ CA_ms ]
+
+dir             = etc/ssl/CA            # Where everything is kept
+certs           = $dir/certs          	# Where the issued certs are kept
+new_certs_dir   = $dir/newcerts/ms      # default place for new certs.
+database        = $dir/index.txt        # database index file.
+certificate     = $dir/private/cacert.pem       # The CA certificate
+private_key     = $dir/private/cakey.pem        # The private key
+serial          = $dir/serial           # The current serial number
+
+crldir          = $dir/crl
+crlnumber       = $dir/crlnumber        # the current crl number
+crl             = $crldir/crl.pem       # The current CRL
+
 
 # By default we use "user certificate" extensions when signing
 x509_extensions = usr_cert              # The extentions to add to the cert
