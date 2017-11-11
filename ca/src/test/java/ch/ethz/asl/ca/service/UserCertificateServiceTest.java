@@ -160,6 +160,60 @@ public class UserCertificateServiceTest {
         Assert.assertThat(cert.get(), is(cert3));
     }
 
+    @Test
+    public void addCertificateToUser() throws Exception {
+        UserCertificate cert = createCertificate(0);
+
+        UserCertificate certificate = userCertificateService.addCertificateToUser(test1, cert);
+
+        Assert.assertThat(certificate.getSerialNr(), is(cert.getSerialNr()));
+        Assert.assertThat(cert.getIssuedTo(), is(test1));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void addCertificateToUserCertNull() throws Exception {
+        userCertificateService.addCertificateToUser(test1, null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void addCertificateToUserUserNull() throws Exception {
+        userCertificateService.addCertificateToUser(null, createCertificate(0));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void addCertificateToUserDoesntExist() throws Exception {
+        UserCertificate cert = createCertificate(0);
+        userCertificateService.addCertificateToUser(new User("test3", "test3"), cert);
+    }
+
+    @Test
+    public void revokeCertificate() throws Exception {
+        UserCertificate cert = createCertificate(0);
+        cert.setIssuedTo(test1);
+
+        cert = userCertificateRepository.save(cert);
+        Assert.assertFalse(cert.isRevoked());
+        Assert.assertNull(cert.getRevokedOn());
+
+        UserCertificate revokedCertificate = userCertificateService.revokeCertificate(test1, cert.getSerialNr());
+
+        Assert.assertThat(cert.getSerialNr(), is(revokedCertificate.getSerialNr()));
+        Assert.assertTrue(revokedCertificate.isRevoked());
+        Assert.assertNotNull(revokedCertificate.getRevokedOn());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void cannotRevokeCertificateForOtherUser() throws Exception {
+        UserCertificate cert = createCertificate(0);
+        cert.setIssuedTo(test1);
+
+        cert = userCertificateRepository.save(cert);
+        Assert.assertFalse(cert.isRevoked());
+        Assert.assertNull(cert.getRevokedOn());
+
+        userCertificateService.revokeCertificate(test2, cert.getSerialNr());
+    }
+
     private UserCertificate createCertificate(long id) {
         UserCertificate cert = UserCertificate.issuedNow();
         cert.setSerialNr(id);

@@ -4,6 +4,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.util.Date;
 
 @Entity(name = "certs")
@@ -12,15 +13,15 @@ public class UserCertificate implements Serializable {
     @Id
     private long serialNr;
 
-    private Date issuedOn;
+    private Timestamp issuedOn;
 
-    private Date revokedOn;
+    private Timestamp revokedOn;
 
     private boolean isRevoked;
 
     private String path;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     private User issuedTo;
 
     public UserCertificate() {
@@ -39,7 +40,7 @@ public class UserCertificate implements Serializable {
     }
 
     public void setIssuedOn(Date issuedOn) {
-        this.issuedOn = issuedOn;
+        this.issuedOn = new Timestamp(issuedOn.getTime());
     }
 
     public Date getRevokedOn() {
@@ -47,11 +48,11 @@ public class UserCertificate implements Serializable {
     }
 
     public void setRevokedOn(Date revokedOn) {
-        this.revokedOn = revokedOn;
+        this.revokedOn = new Timestamp(revokedOn.getTime());
     }
 
     public void revoke() {
-        this.revokedOn = new Date();
+        setRevokedOn(new Date());
         this.isRevoked = true;
     }
 
@@ -87,16 +88,14 @@ public class UserCertificate implements Serializable {
         UserCertificate that = (UserCertificate) o;
 
         if (serialNr != that.serialNr) return false;
-        if (isRevoked != that.isRevoked) return false;
-        if (path != null ? !path.equals(that.path) : that.path != null) return false;
+        if (issuedOn != null ? !issuedOn.equals(that.issuedOn) : that.issuedOn != null) return false;
         return issuedTo != null ? issuedTo.equals(that.issuedTo) : that.issuedTo == null;
     }
 
     @Override
     public int hashCode() {
         int result = (int) (serialNr ^ (serialNr >>> 32));
-        result = 31 * result + (isRevoked ? 1 : 0);
-        result = 31 * result + (path != null ? path.hashCode() : 0);
+        result = 31 * result + (issuedOn != null ? issuedOn.hashCode() : 0);
         result = 31 * result + (issuedTo != null ? issuedTo.hashCode() : 0);
         return result;
     }
@@ -115,7 +114,7 @@ public class UserCertificate implements Serializable {
 
     public static UserCertificate issuedNow() {
         UserCertificate certificate = new UserCertificate();
-        certificate.issuedOn = new Date();
+        certificate.setIssuedOn(new Date());
         return certificate;
     }
 }
