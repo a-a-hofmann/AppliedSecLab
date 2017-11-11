@@ -1,5 +1,8 @@
 <!doctype html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+>
 <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
@@ -37,6 +40,11 @@
 </nav>
 
 <main role="main">
+
+    <div class="alert alert-primary" role="alert">
+        Logged in with roles:
+        <span sec:authentication="authorities"></span>
+    </div>
 
     <div class="container">
         <!-- Example row of columns -->
