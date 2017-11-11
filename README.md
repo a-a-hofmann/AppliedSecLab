@@ -209,6 +209,30 @@ Replace test public key in Resource Servers `application.properties` with the on
 Change `OAuth2Config.java` class to reflect the change.
 Don't forget to delete `junk.txt` afterwards.
 
+## SSL
+
+Web server runs on port 8443.
+You'll get 2 warnings for self-signed certs. 
+One from web server, one from auth server.
+
+### Keystore passwords
+- gatewaykeystore.jks
+```java
+r1lI0vFPeprf2MCYyErDOAq1KrZmoQMTwFGHII6Z
+```
+- authsslkeystore.jks
+```java
+UnerWv30XsR6nQMRdifScKrrB0lqe3KaOF7TkeOB
+```
+
+Important: keys must be imported into java cacerts, otherwise it will not work.
+Certs probably also have to be imported into browser/os (need to check).
+
+`cacerts` is under `%JAVA_HOME%\jre\lib\security`. Default `cacerts` password is `changeit`
+```bash
+keytool -importkeystore -srckeystore "path\to\keystore.jks" -keystore cacerts
+```
+
 ## Clean up before handing-in
 
 - Make sure to remove Spring devtools (remove from maven and then clean install).

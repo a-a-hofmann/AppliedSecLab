@@ -4,14 +4,24 @@ spring:
   aop:
     proxy-target-class: true
 
+server:
+  port: 8443
+  session:
+    cookie:
+      name: websessionid
+  ssl:
+      key-alias: gateway
+      key-store: classpath:gatewaykeystore.jks
+      key-store-password: r1lI0vFPeprf2MCYyErDOAq1KrZmoQMTwFGHII6Z
+      key-password: r1lI0vFPeprf2MCYyErDOAq1KrZmoQMTwFGHII6Z
 
 security:
   user:
     password: none
   oauth2:
     client:
-      accessTokenUri: http://localhost:9999/uaa/oauth/token
-      userAuthorizationUri: http://localhost:9999/uaa/oauth/authorize
+      accessTokenUri: https://localhost:8444/uaa/oauth/token
+      userAuthorizationUri: https://localhost:8444/uaa/oauth/authorize
       clientId: acme
       clientSecret: acmesecret
     resource:
@@ -34,7 +44,7 @@ zuul:
       url: http://localhost:8081/
     user:
       path: /auth/**
-      url: http://localhost:9999/uaa/user
+      url: https://localhost:8444/uaa/user
 
 #logging:
 #  level:
