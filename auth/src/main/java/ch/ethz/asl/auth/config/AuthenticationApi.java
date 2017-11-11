@@ -16,7 +16,7 @@ public class AuthenticationApi {
 
     private final RestTemplate restTemplate;
 
-    private String uri = "http://localhost:8081/authenticate";
+    private String uri = "https://localhost:8445/authenticate";
 
     @Value("${client-secret}")
     private String apiKey;

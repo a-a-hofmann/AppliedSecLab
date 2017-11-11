@@ -41,7 +41,7 @@ zuul:
   routes:
     resource:
       path: /ca/**
-      url: http://localhost:8081/
+      url: https://localhost:8445/
     user:
       path: /auth/**
       url: https://localhost:8444/uaa/user
