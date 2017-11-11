@@ -4,9 +4,9 @@ import ch.ethz.asl.ca.endpoint.CredentialsParser;
 import ch.ethz.asl.ca.model.User;
 import ch.ethz.asl.ca.model.UserRepository;
 import ch.ethz.asl.ca.model.UserSafeProjection;
+import ch.ethz.asl.ca.service.event.UserDetailsUpdateEvent;
 import ch.ethz.asl.ca.service.event.UserEventListener;
 import ch.ethz.asl.ca.service.event.UserInfoRequestEvent;
-import org.springframework.security.authentication.encoding.ShaPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -27,13 +27,16 @@ public class UserService {
         return userInfo;
     }
 
-    public UserSafeProjection updateUser(User user) {
-        return UserSafeProjection.of(user);
-    }
+    public void updateUser(User updatedInfo, final String username) {
+        User userRequestingUpdate = userRepository.findOne(username);
 
-    private void passwordUpdate(User user) {
-        String password = new ShaPasswordEncoder().encodePassword(user.getPassword(), null);
-        user.setPassword(password);
+        boolean requiresCertRevocation = userRequestingUpdate.updateRequiresCertRevocation(updatedInfo);
+        UserDetailsUpdateEvent updateEvent =
+                new UserDetailsUpdateEvent(username, userRequestingUpdate, updatedInfo, requiresCertRevocation);
+        eventListener.onUserInfoUpdate(updateEvent);
+
+        userRequestingUpdate.update(updatedInfo);
+        userRepository.save(userRequestingUpdate);
     }
 
     public boolean checkUserCredentials(CredentialsParser.Credentials credentials) {

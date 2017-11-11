@@ -12,13 +12,7 @@ public class TemplateController {
 
     @GetMapping("/")
     public String index() {
-        return "index";
-    }
-
-    @GetMapping("/secure")
-    public String secure(Principal principal, Model model) {
-        model.addAttribute("user", principal.getName());
-        return "secure";
+        return "redirect:/user";
     }
 
     @GetMapping("/admin")

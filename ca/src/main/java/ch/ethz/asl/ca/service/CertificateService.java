@@ -9,6 +9,7 @@ import ch.ethz.asl.ca.service.event.CertificateEventListener;
 import ch.ethz.asl.ca.service.event.CertificateIssuedEvent;
 import ch.ethz.asl.ca.service.event.CertificateRequestedEvent;
 import ch.ethz.asl.ca.service.event.CertificateRevokedEvent;
+import com.google.common.collect.Lists;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 
@@ -34,10 +35,40 @@ public class CertificateService {
 
     //TODO: Here UserCertificateService
     public CertificateService(UserRepository userRepository, CertificateManager certificateManager, CertificateEventListener eventListener, UserCertificateService userCertificateService) {
+
         this.userRepository = userRepository;
         this.certificateManager = certificateManager;
         this.eventListener = eventListener;
         this.userCertificateService = userCertificateService;
+    }
+
+    /**
+     * Mock implementation. Use db.
+     *
+     * @param username
+     * @return
+     */
+    public List<UserCertificate> getUserCertificates(final String username) {
+        String serialNr = "0";
+        String serialNr2 = "1";
+        String serialNr3 = "2";
+        String serialNr4 = "3";
+        User user = userRepository.findOne(username);
+        UserCertificate c1 = UserCertificate.issuedNowToUser(serialNr, user);
+        UserCertificate c2 = UserCertificate.issuedNowToUser(serialNr2, user);
+        UserCertificate c3 = UserCertificate.issuedNowToUser(serialNr3, user);
+        UserCertificate c4 = UserCertificate.issuedNowToUser(serialNr4, user);
+        c3.revoke();
+
+        // TODO Use db once ca is done
+        // getUserCertificates(user);
+
+        // Use mock instead.
+        return Lists.newArrayList(c1, c2, c3, c4);
+    }
+
+    private List<UserCertificate> getUserCertificates(final User user) {
+        return userCertificateService.findAllByUser(user);
     }
 
     public boolean getCertificate(final String serialNr, final String username, ServletOutputStream outputStream) {

@@ -33,7 +33,7 @@ zuul:
       path: /ca/**
       url: http://localhost:8081/
     user:
-      path: /user/**
+      path: /auth/**
       url: http://localhost:9999/uaa/user
 
 #logging:
