@@ -28,7 +28,7 @@ public class GatewayApplication extends WebSecurityConfigurerAdapter {
         http
                 .logout().and()
                 .authorizeRequests()
-                .antMatchers("/index.html", "/", "/login").permitAll()
+                .antMatchers("/login").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .csrf()
