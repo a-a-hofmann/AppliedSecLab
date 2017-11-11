@@ -1,0 +1,168 @@
+package ch.ethz.asl.ca.service;
+
+import ch.ethz.asl.ca.model.User;
+import ch.ethz.asl.ca.model.UserCertificate;
+import ch.ethz.asl.ca.model.UserCertificateRepository;
+import ch.ethz.asl.ca.model.UserRepository;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
+
+import java.util.List;
+import java.util.Optional;
+
+import static org.hamcrest.core.Is.is;
+
+@SpringBootTest
+@RunWith(SpringRunner.class)
+public class UserCertificateServiceTest {
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private UserCertificateRepository userCertificateRepository;
+
+    @Autowired
+    private UserCertificateService userCertificateService;
+
+    private User test1;
+    private User test2;
+
+    @Before
+    public void setUp() throws Exception {
+        test1 = new User("test1", "test1");
+        test2 = new User("test2", "test2");
+        test1 = userRepository.save(test1);
+        test2 = userRepository.save(test2);
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        userCertificateRepository.deleteAll();
+        userRepository.deleteAll();
+    }
+
+    @Test
+    public void findBySerialNrAndUser() throws Exception {
+        long serialNrCounter = 0;
+        UserCertificate cert1 = createCertificate(serialNrCounter++);
+        UserCertificate cert2 = createCertificate(serialNrCounter);
+        cert1.setIssuedTo(test1);
+        cert2.setIssuedTo(test2);
+
+        cert1 = userCertificateRepository.save(cert1);
+        cert2 = userCertificateRepository.save(cert2);
+
+        Optional<UserCertificate> certificate = userCertificateService.findBySerialNrAndUser(cert1.getSerialNr(), test1);
+        Assert.assertTrue(certificate.isPresent());
+        Assert.assertThat(certificate.get(), is(cert1));
+
+        // other cert doesn't exist for user test1
+        certificate = userCertificateService.findBySerialNrAndUser(cert2.getSerialNr(), test1);
+        Assert.assertFalse(certificate.isPresent());
+    }
+
+    @Test
+    public void findAllByUser() throws Exception {
+        List<UserCertificate> certs = userCertificateService.findAllByUser(test1);
+        Assert.assertTrue(certs.isEmpty());
+
+        long serialNrCounter = 0;
+        UserCertificate cert1 = createCertificate(serialNrCounter++);
+        UserCertificate cert2 = createCertificate(serialNrCounter);
+        cert1.revoke();
+
+        cert1.setIssuedTo(test1);
+        cert2.setIssuedTo(test1);
+
+        cert1 = userCertificateRepository.save(cert1);
+        cert2 = userCertificateRepository.save(cert2);
+
+        certs = userCertificateService.findAllByUser(test1);
+        Assert.assertThat(certs.size(), is(2));
+        Assert.assertTrue(certs.contains(cert1));
+        Assert.assertTrue(certs.contains(cert2));
+    }
+
+    @Test
+    public void findAllByUserNotRevoked() throws Exception {
+        List<UserCertificate> certs = userCertificateService.findAllByUser(test1);
+        Assert.assertTrue(certs.isEmpty());
+
+        long serialNrCounter = 0;
+        UserCertificate cert1 = createCertificate(serialNrCounter++);
+        UserCertificate cert2 = createCertificate(serialNrCounter);
+        cert1.revoke();
+
+        cert1.setIssuedTo(test1);
+        cert2.setIssuedTo(test1);
+
+        cert1 = userCertificateRepository.save(cert1);
+        cert2 = userCertificateRepository.save(cert2);
+
+        certs = userCertificateService.findAllByUserNotRevoked(test1);
+        Assert.assertThat(certs.size(), is(1));
+        Assert.assertTrue(!certs.contains(cert1));
+        Assert.assertTrue(certs.contains(cert2));
+    }
+
+    @Test
+    public void findLastForUser() throws Exception {
+        Optional<UserCertificate> cert = userCertificateService.findLastUserCertificate(test1);
+        Assert.assertTrue(Optional.empty().equals(cert));
+
+        long serialNrCounter = 0;
+        UserCertificate cert1 = createCertificate(serialNrCounter++);
+        Thread.sleep(500); // wait otherwise both certificates will have the same timestamp.
+        UserCertificate cert2 = createCertificate(serialNrCounter);
+        cert1.revoke();
+
+        cert1.setIssuedTo(test1);
+        cert2.setIssuedTo(test1);
+
+        cert1 = userCertificateRepository.save(cert1);
+        cert2 = userCertificateRepository.save(cert2);
+
+        cert = userCertificateService.findLastUserCertificate(test1);
+        Assert.assertTrue(cert.isPresent());
+        Assert.assertThat(cert.get(), is(cert2));
+    }
+
+    @Test
+    public void findLastCertificate() throws Exception {
+        Optional<UserCertificate> cert = userCertificateService.findLastCertificate();
+        Assert.assertTrue(Optional.empty().equals(cert));
+
+        long serialNrCounter = 0;
+        UserCertificate cert1 = createCertificate(serialNrCounter++);
+        Thread.sleep(500); // wait otherwise both certificates will have the same timestamp.
+        UserCertificate cert2 = createCertificate(serialNrCounter);
+        cert1.revoke();
+        Thread.sleep(500);
+        UserCertificate cert3 = createCertificate(serialNrCounter);
+
+        cert1.setIssuedTo(test1);
+        cert2.setIssuedTo(test2);
+        cert3.setIssuedTo(test1);
+
+        cert1 = userCertificateRepository.save(cert1);
+        cert2 = userCertificateRepository.save(cert2);
+        cert3 = userCertificateRepository.save(cert3);
+
+        cert = userCertificateService.findLastCertificate();
+        Assert.assertTrue(cert.isPresent());
+        Assert.assertThat(cert.get(), is(cert3));
+    }
+
+    private UserCertificate createCertificate(long id) {
+        UserCertificate cert = UserCertificate.issuedNow();
+        cert.setSerialNr(id);
+        return cert;
+    }
+}

@@ -24,6 +24,14 @@ public class User implements Serializable {
     @Column(nullable = false, name = "pwd")
     private String password;
 
+    public User() {
+    }
+
+    public User(String username, String password) {
+        this.username = username;
+        this.password = password;
+    }
+
     public String getUsername() {
         return username;
     }
