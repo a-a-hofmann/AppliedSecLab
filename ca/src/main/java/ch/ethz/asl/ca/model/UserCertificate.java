@@ -11,7 +11,7 @@ import java.util.Date;
 public class UserCertificate implements Serializable {
 
     @Id
-    private Long serialNr;
+    private String serialNr;
 
     private Timestamp issuedOn;
 
@@ -19,7 +19,8 @@ public class UserCertificate implements Serializable {
 
     private boolean isRevoked;
 
-    private String path;
+    //we don't need path, is openssl specific thing
+    //private String path;
 
     @ManyToOne(optional = false)
     private User issuedTo;
@@ -27,11 +28,11 @@ public class UserCertificate implements Serializable {
     public UserCertificate() {
     }
 
-    public long getSerialNr() {
+    public String getSerialNr() {
         return serialNr;
     }
 
-    public void setSerialNr(long serialNr) {
+    public void setSerialNr(String serialNr) {
         this.serialNr = serialNr;
     }
 
@@ -72,13 +73,13 @@ public class UserCertificate implements Serializable {
         isRevoked = revoked;
     }
 
-    public String getPath() {
-        return path;
-    }
+    //public String getPath() {
+    //    return path;
+    //}
 
-    public void setPath(String path) {
-        this.path = path;
-    }
+    //public void setPath(String path) {
+    //    this.path = path;
+    //}
 
     @Override
     public boolean equals(Object o) {
@@ -107,7 +108,7 @@ public class UserCertificate implements Serializable {
                 ", issuedOn=" + issuedOn +
                 ", revokedOn=" + revokedOn +
                 ", isRevoked=" + isRevoked +
-                ", path='" + path + '\'' +
+                //", path='" + path + '\'' +
                 ", issuedTo=" + issuedTo +
                 '}';
     }
@@ -118,12 +119,12 @@ public class UserCertificate implements Serializable {
         return certificate;
     }
 
-    public static UserCertificate issuedNowToUser(final long serialNr, final String path, User user) {
+    public static UserCertificate issuedNowToUser(final String serialNr, User user) {
         UserCertificate certificate = new UserCertificate();
         certificate.setSerialNr(serialNr);
         certificate.setIssuedOn(new Date());
         certificate.setIssuedTo(user);
-        certificate.setPath(path);
+       // certificate.setPath(path);
         return certificate;
     }
 }

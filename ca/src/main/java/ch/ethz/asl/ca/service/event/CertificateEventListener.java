@@ -25,7 +25,7 @@ public class CertificateEventListener {
         eventRepository.addEvent(event);
     }
 
-    public void onCertificateRequested(CertificateRevokedEvent event) {
+    public void onCertificateRequested(CertificateRequestedEvent event) {
         eventRepository.addEvent(event);
     }
 }
