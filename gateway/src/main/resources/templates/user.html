@@ -10,6 +10,8 @@
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css"
           integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous"/>
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"
+          integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous"/>
 
     <!-- Custom styles for this template -->
     <link href="css/gateway.css" rel="stylesheet"/>
@@ -111,12 +113,17 @@
                             <tr>
                                 <th scope="col">Serial #</th>
                                 <th scope="col">Issued On</th>
+                                <th scope="col"></th>
                             </tr>
                             </thead>
                             <tbody>
                             <tr th:each="cert : ${certificates}">
                                 <td th:text="${cert.serialNr}"></td>
                                 <td th:text="${#dates.format(cert.issuedOn, 'HH:mm, dd-MMM-yyyy')}"></td>
+                                <td><a th:href="@{'/ca/cert/' + ${cert.serialNr}}" target="_blank"><i
+                                        class="fa fa-download"
+                                        aria-hidden="true"></i></a>
+                                </td>
                             </tr>
                             </tbody>
                         </table>
@@ -138,6 +145,16 @@
                             </tr>
                             </tbody>
                         </table>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Request new certificate</h4>
+
+                        <form>
+                            <button type="submit" class="btn btn-primary">New Certificate</button>
+                        </form>
                     </div>
                 </div>
 
