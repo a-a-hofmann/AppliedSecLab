@@ -2,11 +2,13 @@ package ch.ethz.asl.ca.service;
 
 import ch.ethz.asl.ca.model.Certificate;
 import ch.ethz.asl.ca.model.User;
+import ch.ethz.asl.ca.model.UserCertificate;
 import ch.ethz.asl.ca.model.UserRepository;
 import ch.ethz.asl.ca.service.command.CertificateManager;
 import ch.ethz.asl.ca.service.command.CertificateManagerException;
 import ch.ethz.asl.ca.service.event.CertificateEventListener;
 import ch.ethz.asl.ca.service.event.CertificateRevokedEvent;
+import com.google.common.collect.Lists;
 import org.apache.log4j.Logger;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.stereotype.Service;
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Service;
 import javax.servlet.ServletOutputStream;
 import java.io.IOException;
 import java.security.Principal;
+import java.util.List;
 
 @Service
 public class CertificateService {
@@ -25,14 +28,44 @@ public class CertificateService {
      */
     private final UserRepository userRepository;
 
+    private final UserCertificateService userCertificateService;
+
     private final CertificateManager certificateManager;
 
     private final CertificateEventListener eventListener;
 
-    public CertificateService(UserRepository userRepository, CertificateManager certificateManager, CertificateEventListener eventListener) {
+    public CertificateService(UserRepository userRepository, UserCertificateService userCertificateService,
+                              CertificateManager certificateManager, CertificateEventListener eventListener) {
         this.userRepository = userRepository;
+        this.userCertificateService = userCertificateService;
         this.certificateManager = certificateManager;
         this.eventListener = eventListener;
+    }
+
+    /**
+     * Mock implementation. Use db.
+     *
+     * @param username
+     * @return
+     */
+    public List<UserCertificate> getUserCertificates(final String username) {
+        long serialNr = 0;
+        User user = userRepository.findOne(username);
+        UserCertificate c1 = UserCertificate.issuedNowToUser(serialNr++, "/", user);
+        UserCertificate c2 = UserCertificate.issuedNowToUser(serialNr++, "/", user);
+        UserCertificate c3 = UserCertificate.issuedNowToUser(serialNr++, "/", user);
+        UserCertificate c4 = UserCertificate.issuedNowToUser(serialNr, "/", user);
+        c3.revoke();
+
+        // TODO Use db once ca is done
+        // getUserCertificates(user);
+
+        // Use mock instead.
+        return Lists.newArrayList(c1, c2, c3, c4);
+    }
+
+    private List<UserCertificate> getUserCertificates(final User user) {
+        return userCertificateService.findAllByUser(user);
     }
 
     public boolean getCertificate(final String serialNr, ServletOutputStream outputStream) {

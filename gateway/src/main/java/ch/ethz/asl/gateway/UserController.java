@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.validation.Valid;
 import java.security.Principal;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 public class UserController {
@@ -19,15 +21,24 @@ public class UserController {
 
     private final UserClient userClient;
 
+    private final CertificateClient certificateClient;
+
     @Autowired
-    public UserController(UserClient userClient) {
+    public UserController(UserClient userClient, CertificateClient certificateClient) {
         this.userClient = userClient;
+        this.certificateClient = certificateClient;
     }
 
     @GetMapping("user")
     public String getUser(Model model) {
         User userInfo = userClient.getUserInfo();
+        List<UserCertificate> certificates = certificateClient.getUserCertificates();
+        List<UserCertificate> revokedCerts = certificates.stream().filter(UserCertificate::isRevoked).collect(Collectors.toList());
+        certificates = certificates.stream().filter(c -> !c.isRevoked()).collect(Collectors.toList());
+
         model.addAttribute("user", userInfo);
+        model.addAttribute("certificates", certificates);
+        model.addAttribute("revokedCerts", revokedCerts);
         return "user";
     }
 

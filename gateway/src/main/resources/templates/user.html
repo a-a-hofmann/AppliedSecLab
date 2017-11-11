@@ -1,52 +1,166 @@
-<!DOCTYPE html>
+<!doctype html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8"/>
-    <title>Secure</title>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+    <meta name="description" content=""/>
+    <meta name="author" content=""/>
+
+    <title>Jumbotron Template for Bootstrap</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css"
+          integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous"/>
+
+    <!-- Custom styles for this template -->
+    <link href="css/gateway.css" rel="stylesheet"/>
 </head>
+
 <body>
-<h1>It works - Secure</h1>
 
-<p th:text="${user.username}"></p>
-<a href="/ca/user">Test</a>
+<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+    <a class="navbar-brand" href="#">Navbar</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault"
+            aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
 
-<!--/*@thymesVar id="user" type="ch.ethz.asl.gateway.User"*/-->
-<div th:if="${formError}">
-    There seems to be an error in the form...
-    <p th:each="error : ${errors}" th:text="${error.field} + ': ' + ${error.defaultMessage}"></p>
-</div>
-<form th:action="@{/user}" th:object="${user}" method="post">
+    <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Link</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link disabled" href="#">Disabled</a>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="http://example.com" id="dropdown01" data-toggle="dropdown"
+                   aria-haspopup="true" aria-expanded="false">Dropdown</a>
+                <div class="dropdown-menu" aria-labelledby="dropdown01">
+                    <a class="dropdown-item" href="#">Action</a>
+                    <a class="dropdown-item" href="#">Another action</a>
+                    <a class="dropdown-item" href="#">Something else here</a>
+                </div>
+            </li>
+        </ul>
+        <form class="form-inline my-2 my-lg-0" th:action="@{/logout}" method="post">
+            <input class="btn btn-outline-success my-2 my-sm-0" type="submit" value="Sign Out"/>
+        </form>
+        -->
+    </div>
+</nav>
 
-    <div class="form-group">
-        <label>First name:</label>
-        <input th:field="*{firstname}"/>
+<main role="main">
+
+    <div class="container">
+        <!-- Example row of columns -->
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card" style="width: 20rem;">
+                    <div class="card-body">
+                        <h4 class="card-title">User info</h4>
+
+                        <!--/*@thymesVar id="user" type="ch.ethz.asl.gateway.User"*/-->
+                        <div th:if="${formError}">
+                            There seems to be an error in the form...
+                            <p th:each="error : ${errors}"
+                               th:text="${error.field} + ': ' + ${error.defaultMessage}"></p>
+                        </div>
+                        <form th:action="@{/user}" th:object="${user}" method="post">
+
+                            <div class="form-group">
+                                <label for="firstname">First name:</label>
+                                <input class="form-control" id="firstname" th:field="*{firstname}"/>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="lastname">Last name:</label>
+                                <input id="lastname" class="form-control" th:field="*{lastname}"/>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="email">Email:</label>
+                                <input id="email" class="form-control" th:field="*{email}"/>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="password">Password:</label>
+                                <input id="password" class="form-control" type="password" th:autocomplete="${false}"
+                                       th:field="*{password}"/>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="password-confirmation">Confirm password:</label>
+                                <input id="password-confirmation" class="form-control" type="password"
+                                       th:autocomplete="${false}" th:field="*{passwordConfirmation}"/>
+                            </div>
+
+                            <button type="submit" class="btn btn-success">Save</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Your certificates</h4>
+                        <table class="table">
+                            <thead class="thead-light">
+                            <tr>
+                                <th scope="col">Serial #</th>
+                                <th scope="col">Issued On</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="cert : ${certificates}">
+                                <td th:text="${cert.serialNr}"></td>
+                                <td th:text="${#dates.format(cert.issuedOn, 'HH:mm, dd-MMM-yyyy')}"></td>
+                            </tr>
+                            </tbody>
+                        </table>
+
+                        <h4 class="card-title">Your revoked certificates</h4>
+                        <table class="table">
+                            <thead class="thead-dark">
+                            <tr>
+                                <th scope="col">Serial #</th>
+                                <th scope="col">Issued On</th>
+                                <th scope="col">Revoked On</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="cert : ${revokedCerts}">
+                                <td th:text="${cert.serialNr}"></td>
+                                <td th:text="${#dates.format(cert.issuedOn, 'HH:mm, dd-MMM-yyyy')}"></td>
+                                <td th:text="${#dates.format(cert.revokedOn, 'HH:mm, dd-MMM-yyyy')}"></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
     </div>
 
-    <div class="form-group">
-        <label>Last name:</label>
-        <input th:field="*{lastname}"/>
-    </div>
+</main>
 
-    <div class="form-group">
-        <label>Email:</label>
-        <input th:field="*{email}"/>
-    </div>
+<footer class="container">
+    <p>&copy; ASL 2017</p>
+</footer>
 
-    <div class="form-group">
-        <label>Password:</label>
-        <input type="password" th:autocomplete="${false}" th:field="*{password}"/>
-    </div>
-
-    <div class="form-group">
-        <label>Confirm password:</label>
-        <input type="password" th:autocomplete="${false}" th:field="*{passwordConfirmation}"/>
-    </div>
-
-    <button type="submit">Save</button>
-</form>
-
-<form th:action="@{/logout}" method="post">
-    <input type="submit" value="Sign Out"/>
-</form>
+<!-- Bootstrap core JavaScript
+================================================== -->
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js"
+        integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh"
+        crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js"
+        integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ"
+        crossorigin="anonymous"></script>
 </body>
 </html>

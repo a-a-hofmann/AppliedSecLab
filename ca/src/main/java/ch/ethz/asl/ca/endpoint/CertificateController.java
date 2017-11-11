@@ -1,5 +1,6 @@
 package ch.ethz.asl.ca.endpoint;
 
+import ch.ethz.asl.ca.model.UserCertificate;
 import ch.ethz.asl.ca.service.CertificateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -9,6 +10,7 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.security.Principal;
+import java.util.List;
 
 /**
  * Controller to answer to requests regarding certificates.
@@ -21,6 +23,11 @@ public class CertificateController {
     @Autowired
     public CertificateController(CertificateService certificateService) {
         this.certificateService = certificateService;
+    }
+
+    @GetMapping("cert")
+    public List<UserCertificate> getUserCertificates(Principal principal) {
+        return certificateService.getUserCertificates(principal.getName());
     }
 
     @GetMapping("cert/{serialNr}")

@@ -1,5 +1,7 @@
 package ch.ethz.asl.ca.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
@@ -56,6 +58,7 @@ public class UserCertificate implements Serializable {
         this.isRevoked = true;
     }
 
+    @JsonIgnore
     public User getIssuedTo() {
         return issuedTo;
     }
@@ -72,6 +75,7 @@ public class UserCertificate implements Serializable {
         isRevoked = revoked;
     }
 
+    @JsonIgnore
     public String getPath() {
         return path;
     }
