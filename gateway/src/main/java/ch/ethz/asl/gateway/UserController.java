@@ -33,16 +33,8 @@ public class UserController {
     @GetMapping("user")
     public String getUser(Model model) {
         User userInfo = userClient.getUserInfo();
-        List<UserCertificate> certificates = certificateClient.getUserCertificates();
-        List<UserCertificate> revokedCerts = certificates.stream().filter(UserCertificate::isRevoked).collect(Collectors.toList());
-        certificates = certificates.stream().filter(c -> !c.isRevoked()).collect(Collectors.toList());
-
-        Collections.sort(certificates);
-        Collections.sort(revokedCerts);
-
         model.addAttribute("user", userInfo);
-        model.addAttribute("certificates", certificates);
-        model.addAttribute("revokedCerts", revokedCerts);
+        fillModelWithCertificates(certificateClient.getUserCertificates(), model);
         return "user";
     }
 
@@ -50,8 +42,7 @@ public class UserController {
     public String saveUser(@ModelAttribute("user") @Valid User user, BindingResult bindingResult, Model model, Principal principal) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("user", user);
-            model.addAttribute("formError", true);
-            model.addAttribute("errors", bindingResult.getFieldErrors());
+            fillModelWithCertificates(certificateClient.getUserCertificates(), model);
             return "user";
         }
 
@@ -65,5 +56,17 @@ public class UserController {
         logger.info(String.format("Requesting new certificate for user [%s]", principal.getName()));
         certificateClient.requestCertificate();
         return "redirect:/user";
+    }
+
+
+    private void fillModelWithCertificates(List<UserCertificate> certificates, Model model) {
+        List<UserCertificate> revokedCerts = certificates.stream().filter(UserCertificate::isRevoked).collect(Collectors.toList());
+        certificates = certificates.stream().filter(c -> !c.isRevoked()).collect(Collectors.toList());
+
+        Collections.sort(certificates);
+        Collections.sort(revokedCerts);
+
+        model.addAttribute("certificates", certificates);
+        model.addAttribute("revokedCerts", revokedCerts);
     }
 }

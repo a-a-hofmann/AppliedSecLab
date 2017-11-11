@@ -2,26 +2,29 @@ package ch.ethz.asl.gateway;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.hibernate.validator.constraints.Email;
 
 import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 
+@SuppressWarnings("unused")
 public class User implements Serializable {
 
     private String username;
 
     @NotNull
-    @Size(min = 1)
+    @Size(min = 1, message = "Last name is required..")
     private String lastname;
 
     @NotNull
-    @Size(min = 1)
+    @Size(min = 1, message = "First name is required..")
     private String firstname;
 
     @NotNull
-    @Size(min = 4)
+    @Size(min = 1, message = "Email is required.")
+    @Email(message = "Not a valid email.")
     private String email;
 
     private String password;
@@ -91,7 +94,7 @@ public class User implements Serializable {
     }
 
     @AssertTrue(message = "The password and password confirmation are not the same.")
-    private boolean isPasswordOk() {
+    public boolean isPasswordOk() {
         return password == null || (password.equals(passwordConfirmation));
     }
 
