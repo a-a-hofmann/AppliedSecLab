@@ -11,7 +11,7 @@ import java.util.Date;
 public class UserCertificate implements Serializable {
 
     @Id
-    private long serialNr;
+    private Long serialNr;
 
     private Timestamp issuedOn;
 
@@ -87,14 +87,14 @@ public class UserCertificate implements Serializable {
 
         UserCertificate that = (UserCertificate) o;
 
-        if (serialNr != that.serialNr) return false;
+        if (serialNr != null ? !serialNr.equals(that.serialNr) : that.serialNr != null) return false;
         if (issuedOn != null ? !issuedOn.equals(that.issuedOn) : that.issuedOn != null) return false;
         return issuedTo != null ? issuedTo.equals(that.issuedTo) : that.issuedTo == null;
     }
 
     @Override
     public int hashCode() {
-        int result = (int) (serialNr ^ (serialNr >>> 32));
+        int result = serialNr != null ? serialNr.hashCode() : 0;
         result = 31 * result + (issuedOn != null ? issuedOn.hashCode() : 0);
         result = 31 * result + (issuedTo != null ? issuedTo.hashCode() : 0);
         return result;
@@ -115,6 +115,15 @@ public class UserCertificate implements Serializable {
     public static UserCertificate issuedNow() {
         UserCertificate certificate = new UserCertificate();
         certificate.setIssuedOn(new Date());
+        return certificate;
+    }
+
+    public static UserCertificate issuedNowToUser(final long serialNr, final String path, User user) {
+        UserCertificate certificate = new UserCertificate();
+        certificate.setSerialNr(serialNr);
+        certificate.setIssuedOn(new Date());
+        certificate.setIssuedTo(user);
+        certificate.setPath(path);
         return certificate;
     }
 }

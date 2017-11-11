@@ -1,11 +1,9 @@
 package ch.ethz.asl.ca.service;
 
-import ch.ethz.asl.ca.model.User;
-import ch.ethz.asl.ca.model.UserCertificate;
-import ch.ethz.asl.ca.model.UserCertificateRepository;
-import ch.ethz.asl.ca.model.UserRepository;
+import ch.ethz.asl.ca.model.*;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.Optional;
@@ -59,11 +57,22 @@ public class UserCertificateService {
         return Optional.of(lastCert.get(0));
     }
 
-    public UserCertificate addCertificateToUser(User user, UserCertificate certificate) {
-        Assert.notNull(certificate, "Certificate cannot be null.");
-        Assert.notNull(user, "User cannot be null.");
-        Assert.isTrue(userRepository.exists(user.getUsername()), String.format("User [%s] doesn't exist.", user.getUsername()));
+    public UserCertificate issueCertificateForUser(UserSafeProjection userProjection, final long serialNr, final String path) {
+        Assert.notNull(userProjection, "User cannot be null.");
+        Assert.isTrue(!repository.exists(serialNr), String.format("Certificate already exists in the db for serialNr [%d]", serialNr));
+        Assert.isTrue(!StringUtils.isEmpty(path), "No path to certificate given.");
 
+        User user = userRepository.findOne(userProjection.getUsername());
+        UserCertificate certificate = UserCertificate.issuedNowToUser(serialNr, path, user);
+        return repository.save(certificate);
+    }
+
+    public UserCertificate addCertificateToUser(UserSafeProjection userProjection, UserCertificate certificate) {
+        Assert.notNull(certificate, "Certificate cannot be null.");
+        Assert.notNull(userProjection, "User cannot be null.");
+        Assert.isTrue(userRepository.exists(userProjection.getUsername()), String.format("User [%s] doesn't exist.", userProjection.getUsername()));
+
+        User user = userRepository.findOne(userProjection.getUsername());
         certificate.setIssuedTo(user);
         return certificate;
     }
@@ -73,7 +82,7 @@ public class UserCertificateService {
 
         UserCertificate certificate = repository.findBySerialNrAndIssuedTo(serialNr, user);
         Assert.notNull(certificate, String.format("No certificate found for user [%s] and serialNr [%d]", user.getUsername(), serialNr));
-        
+
         certificate.revoke();
         return certificate;
     }

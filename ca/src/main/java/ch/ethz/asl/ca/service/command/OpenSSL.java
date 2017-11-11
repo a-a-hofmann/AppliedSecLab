@@ -1,7 +1,9 @@
 package ch.ethz.asl.ca.service.command;
 
 import ch.ethz.asl.ca.model.UserSafeProjection;
+import ch.ethz.asl.ca.service.UserCertificateService;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.FileInputStream;
@@ -40,6 +42,13 @@ public class OpenSSL implements CertificateManager {
     private final String REVOKE_CERTIFICATE = "sudo openssl ca -revoke %s -config " + dir + "openssl.cnf";
     private final String CREATE_CRL = "sudo openssl ca -gencrl -out " + dir + "CA/crl/crl.pem";
 
+    private final UserCertificateService userCertificateService;
+
+    @Autowired
+    public OpenSSL(UserCertificateService userCertificateService) {
+        this.userCertificateService = userCertificateService;
+    }
+
     private String generateKey(final String username) throws CertificateManagerException {
         String fileName = new SimpleDateFormat("yyyyMMddHHmmssSS'.key'").format(new Date());
         String file = GENERATE_KEY_PATH + fileName;
@@ -51,7 +60,7 @@ public class OpenSSL implements CertificateManager {
         }
     }
 
-    private void generateSigningRequest(final String keyPath) throws CertificateManagerException{
+    private void generateSigningRequest(final String keyPath) throws CertificateManagerException {
         try {
             Runtime.getRuntime().exec(String.format(GENERATE_SIGNING_REQUEST, keyPath, keyPath));
 
@@ -59,19 +68,26 @@ public class OpenSSL implements CertificateManager {
             throw new CertificateManagerException(UNABLE_TO_GENERATE_SIGNING_REQUEST + e.getMessage());
         }
     }
+
     //TODO:
-    public String issueNewCertificate(UserSafeProjection user) throws CertificateManagerException{
+    public String issueNewCertificate(UserSafeProjection user) throws CertificateManagerException {
         String currentPath = generateKey(user.getUsername());
         generateSigningRequest(currentPath);
 
         try {
             Runtime.getRuntime().exec(String.format(SIGN_CERTIFICATE, currentPath));
+
+            // Store cert in db
+            // TODO get serialNr
+            // TODO set path
+            userCertificateService.issueCertificateForUser(user, 12345, "/");
         } catch (IOException e) {
             throw new CertificateManagerException(UNABLE_TO_SIGN_CERTIFICATE_EXCEPTION + e.getMessage());
         }
         //how to get the serial number
         return null;
     }
+
     //TODO:
     public X509Certificate getCertificate(final String serialNr, final Principal principal) throws CertificateManagerException {
 
@@ -81,7 +97,7 @@ public class OpenSSL implements CertificateManager {
             CertificateFactory certificateFactory = CertificateFactory.getInstance("X509", provider);
             X509Certificate certificate = (X509Certificate) certificateFactory.generateCertificate(fis);
             return certificate;
-        } catch (FileNotFoundException|CertificateException e) {
+        } catch (FileNotFoundException | CertificateException e) {
             throw new CertificateManagerException(UNABLE_TO_FIND_CERTIFICATE + e.getMessage());
         }
     }
