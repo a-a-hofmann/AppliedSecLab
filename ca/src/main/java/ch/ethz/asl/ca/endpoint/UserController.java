@@ -2,11 +2,9 @@ package ch.ethz.asl.ca.endpoint;
 
 import ch.ethz.asl.ca.model.User;
 import ch.ethz.asl.ca.model.UserSafeProjection;
-import ch.ethz.asl.ca.security.AuthenticatedUserPrincipal;
 import ch.ethz.asl.ca.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -40,15 +38,8 @@ public class UserController {
     }
 
     @PostMapping("user")
-    public UserSafeProjection updateUser(@RequestBody User user, Principal principal) {
-        // load user from context for update.
-        UsernamePasswordAuthenticationToken authenticationToken = (UsernamePasswordAuthenticationToken) principal;
-        AuthenticatedUserPrincipal loggedInUser = (AuthenticatedUserPrincipal) authenticationToken.getPrincipal();
-
-        if (StringUtils.isEmpty(user.getPassword())) {
-            user.setPassword(loggedInUser.getPassword());
-        }
-        return userService.updateUser(user); // should return updated user info.
+    public void updateUser(@RequestBody User updatedInfo, Principal principal) {
+        userService.updateUser(updatedInfo, principal.getName());
     }
 
     @PostMapping(path = "/authenticate")

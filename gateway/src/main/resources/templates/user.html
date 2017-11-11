@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Secure</title>
+</head>
+<body>
+<h1>It works - Secure</h1>
+
+<p th:text="${user.username}"></p>
+<a href="/ca/user">Test</a>
+
+<!--/*@thymesVar id="user" type="ch.ethz.asl.gateway.User"*/-->
+<div th:if="${formError}">
+    There seems to be an error in the form...
+    <p th:each="error : ${errors}" th:text="${error.field} + ': ' + ${error.defaultMessage}"></p>
+</div>
+<form th:action="@{/user}" th:object="${user}" method="post">
+
+    <div class="form-group">
+        <label>First name:</label>
+        <input th:field="*{firstname}"/>
+    </div>
+
+    <div class="form-group">
+        <label>Last name:</label>
+        <input th:field="*{lastname}"/>
+    </div>
+
+    <div class="form-group">
+        <label>Email:</label>
+        <input th:field="*{email}"/>
+    </div>
+
+    <div class="form-group">
+        <label>Password:</label>
+        <input type="password" th:autocomplete="${false}" th:field="*{password}"/>
+    </div>
+
+    <div class="form-group">
+        <label>Confirm password:</label>
+        <input type="password" th:autocomplete="${false}" th:field="*{passwordConfirmation}"/>
+    </div>
+
+    <button type="submit">Save</button>
+</form>
+
+<form th:action="@{/logout}" method="post">
+    <input type="submit" value="Sign Out"/>
+</form>
+</body>
+</html>

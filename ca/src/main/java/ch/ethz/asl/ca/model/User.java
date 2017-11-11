@@ -1,5 +1,8 @@
 package ch.ethz.asl.ca.model;
 
+import org.springframework.security.authentication.encoding.ShaPasswordEncoder;
+import org.springframework.util.StringUtils;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -9,16 +12,16 @@ import java.io.Serializable;
 public class User implements Serializable {
 
     @Id
-    @Column(name = "uid")
+    @Column(name = "uid", nullable = false)
     private String username;
 
-    @Column(name = "lastname")
+    @Column(name = "lastname", nullable = false)
     private String lastname;
 
-    @Column(name = "firstname")
+    @Column(name = "firstname", nullable = false)
     private String firstname;
 
-    @Column(name = "email")
+    @Column(name = "email", nullable = false)
     private String email;
 
     @Column(nullable = false, name = "pwd")
@@ -70,6 +73,34 @@ public class User implements Serializable {
 
     public String getPassword() {
         return password;
+    }
+
+    public User update(User update) {
+        if (!StringUtils.isEmpty(update.lastname)) {
+            this.lastname = update.lastname;
+        }
+
+        if (!StringUtils.isEmpty(update.firstname)) {
+            this.firstname = update.firstname;
+        }
+
+        if (!StringUtils.isEmpty(update.email)) {
+            this.email = update.email;
+        }
+
+        if (!StringUtils.isEmpty(update.password)) {
+            passwordUpdate(update.password);
+        }
+        return this;
+    }
+
+    private void passwordUpdate(final String newPassword) {
+        String encoded = new ShaPasswordEncoder().encodePassword(newPassword, null);
+        this.setPassword(encoded);
+    }
+
+    public boolean updateRequiresCertRevocation(User update) {
+        return !lastname.equals(update.lastname) || !firstname.equals(update.firstname) || !email.equals(update.email);
     }
 
     @Override
