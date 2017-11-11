@@ -5,9 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.ServletInputStream;
 import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.security.Principal;
@@ -36,9 +34,9 @@ public class CertificateController {
         }
     }
 
-    @PostMapping("cert/{username}")
-    public ResponseEntity<Void> issueNewCertificate(@PathVariable("username") final String username) {
-        boolean success = certificateService.issueNewCertificate(username);
+    @PostMapping("cert")
+    public ResponseEntity<Void> issueNewCertificate(Principal principal) {
+        boolean success = certificateService.issueNewCertificate(principal.getName());
         if (success) {
             return ResponseEntity.ok().build();
         }
