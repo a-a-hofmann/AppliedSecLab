@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.io.Serializable;
 import java.sql.Timestamp;
 
-public class UserCertificate implements Serializable {
+public class UserCertificate implements Serializable, Comparable<UserCertificate> {
 
     private long serialNr;
 
@@ -55,5 +55,10 @@ public class UserCertificate implements Serializable {
 
     public void setRevoked(boolean revoked) {
         isRevoked = revoked;
+    }
+
+    @Override
+    public int compareTo(UserCertificate o) {
+        return issuedOn.compareTo(o.issuedOn);
     }
 }

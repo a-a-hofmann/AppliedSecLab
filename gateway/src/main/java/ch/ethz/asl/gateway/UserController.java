@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.validation.Valid;
 import java.security.Principal;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,6 +37,9 @@ public class UserController {
         List<UserCertificate> revokedCerts = certificates.stream().filter(UserCertificate::isRevoked).collect(Collectors.toList());
         certificates = certificates.stream().filter(c -> !c.isRevoked()).collect(Collectors.toList());
 
+        Collections.sort(certificates);
+        Collections.sort(revokedCerts);
+
         model.addAttribute("user", userInfo);
         model.addAttribute("certificates", certificates);
         model.addAttribute("revokedCerts", revokedCerts);
@@ -53,6 +57,13 @@ public class UserController {
 
         user.setUsername(principal.getName());
         userClient.save(user);
+        return "redirect:/user";
+    }
+
+    @PostMapping("cert")
+    public String requestCertificate(Principal principal) {
+        logger.info(String.format("Requesting new certificate for user [%s]", principal.getName()));
+        certificateClient.requestCertificate();
         return "redirect:/user";
     }
 }
