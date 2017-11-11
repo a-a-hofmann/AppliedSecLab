@@ -1,6 +1,7 @@
 package ch.ethz.asl.ca.service.command;
 
-import ch.ethz.asl.ca.model.UserSafeProjection;
+import ch.ethz.asl.ca.model.User;
+import ch.ethz.asl.ca.model.UserCertificate;
 import ch.ethz.asl.ca.service.UserCertificateService;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,12 +10,12 @@ import org.springframework.stereotype.Component;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.security.Principal;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Optional;
 
 
 @Component
@@ -70,7 +71,8 @@ public class OpenSSL implements CertificateManager {
     }
 
     //TODO:
-    public String issueNewCertificate(UserSafeProjection user) throws CertificateManagerException {
+    @Override
+    public String issueNewCertificate(User user) throws CertificateManagerException {
         String currentPath = generateKey(user.getUsername());
         generateSigningRequest(currentPath);
 
@@ -78,7 +80,7 @@ public class OpenSSL implements CertificateManager {
             Runtime.getRuntime().exec(String.format(SIGN_CERTIFICATE, currentPath));
 
             // Store cert in db
-            // TODO get serialNr
+            // TODO set serialNr
             // TODO set path
             userCertificateService.issueCertificateForUser(user, 12345, "/");
         } catch (IOException e) {
@@ -89,10 +91,14 @@ public class OpenSSL implements CertificateManager {
     }
 
     //TODO:
-    public X509Certificate getCertificate(final String serialNr, final Principal principal) throws CertificateManagerException {
-
+    @Override
+    public X509Certificate getCertificate(final String serialNr, final User user) throws CertificateManagerException {
         try {
-            FileInputStream fis = new FileInputStream(String.format(CERTIFICATE_PATH, principal.getName(), serialNr));
+            Optional<UserCertificate> certificateOptional = userCertificateService.findBySerialNrAndUser(Long.valueOf(serialNr), user);// TODO is serialNr a string?
+            UserCertificate userCertificate = certificateOptional.orElseThrow(()
+                    -> new IllegalArgumentException(String.format("No certificate found for user [%s] and serialNr [%d]", user.getUsername(), Long.valueOf(serialNr))));
+
+            FileInputStream fis = new FileInputStream(String.format(CERTIFICATE_PATH, user.getUsername(), serialNr));
             BouncyCastleProvider provider = new BouncyCastleProvider();
             CertificateFactory certificateFactory = CertificateFactory.getInstance("X509", provider);
             X509Certificate certificate = (X509Certificate) certificateFactory.generateCertificate(fis);
@@ -102,13 +108,13 @@ public class OpenSSL implements CertificateManager {
         }
     }
 
-
-    public void revokeCertificate(final String serialNr, final Principal principal) throws CertificateManagerException {
-        String certificatePath = String.format(CERTIFICATE_PATH, principal.getName(), serialNr);
+    @Override
+    public void revokeCertificate(final String serialNr, final User user) throws CertificateManagerException {
+        String certificatePath = String.format(CERTIFICATE_PATH, user.getUsername(), serialNr);
 
         try {
             Runtime.getRuntime().exec(String.format(REVOKE_CERTIFICATE, certificatePath));
-
+            userCertificateService.revokeCertificate(user, Long.valueOf(serialNr));
         } catch (IOException e) {
             throw new CertificateManagerException(UNABLE_TO_REVOKE_CERTIFICATE + e.getMessage());
         }

@@ -1,18 +1,15 @@
 package ch.ethz.asl.ca.service;
 
 import ch.ethz.asl.ca.model.Certificate;
+import ch.ethz.asl.ca.model.User;
 import ch.ethz.asl.ca.model.UserRepository;
-import ch.ethz.asl.ca.model.UserSafeProjection;
 import ch.ethz.asl.ca.service.command.CertificateManager;
 import ch.ethz.asl.ca.service.command.CertificateManagerException;
 import ch.ethz.asl.ca.service.event.CertificateEventListener;
-import ch.ethz.asl.ca.service.event.CertificateIssuedEvent;
-import ch.ethz.asl.ca.service.event.CertificateRequestedEvent;
 import ch.ethz.asl.ca.service.event.CertificateRevokedEvent;
+import org.apache.log4j.Logger;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-
 
 import javax.servlet.ServletOutputStream;
 import java.io.IOException;
@@ -20,6 +17,8 @@ import java.security.Principal;
 
 @Service
 public class CertificateService {
+
+    private static final Logger logger = Logger.getLogger(CertificateService.class);
 
     /**
      * To be used to fetch user info for new certs.
@@ -57,17 +56,16 @@ public class CertificateService {
             return false;
         }
 
-       // eventListener.onCertificateRequested(new CertificateRequestedEvent(serialNr, ));
+        // eventListener.onCertificateRequested(new CertificateRequestedEvent(serialNr, ));
         return true;
     }
-
 
 
     public boolean issueNewCertificate(final String username) {
         // create cert with user info.
         // Get user info from repo.
 
-        UserSafeProjection user = userRepository.findByUsername(username);
+        User user = userRepository.findOne(username);
         if (user == null) {
             //how to log, define new EventListener?
             return false;
@@ -77,14 +75,14 @@ public class CertificateService {
         try {
             //serial number
             certificateManager.issueNewCertificate(user);
-           // eventListener.onCertificateIssued(new CertificateIssuedEvent(username, cert.getSerialNumber().toString()));
-        } catch(CertificateManagerException e) {
+            // eventListener.onCertificateIssued(new CertificateIssuedEvent(username, cert.getSerialNumber().toString()));
+        } catch (CertificateManagerException e) {
             //how to log, define new EventListener?
+            logger.error(String.format("Failed to issue certificate to user [%s]", user.getUsername()), e);
             return false;
         }
         return true;
     }
-
 
 
     public boolean revokeAllCertsForUser(final String username) {
@@ -95,10 +93,11 @@ public class CertificateService {
     public boolean revokeCertificate(final String serialNr, final Principal principal) {
         boolean success = true;
         try {
-            certificateManager.revokeCertificate(serialNr, principal);
+            User user = userRepository.findOne(principal.getName());
+            certificateManager.revokeCertificate(serialNr, user);
             eventListener.onCertificateRevoked(new CertificateRevokedEvent(principal.getName(), serialNr));
-        } catch(CertificateManagerException e) {
-            // what do I have to do now in Spring? Log this?
+        } catch (CertificateManagerException e) {
+            logger.error(String.format("Failed to revoke certificate [%s] for user [%s]", serialNr, principal.getName()), e);
             success = false;
         }
         return success;

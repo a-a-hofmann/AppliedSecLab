@@ -1,6 +1,9 @@
 package ch.ethz.asl.ca.service;
 
-import ch.ethz.asl.ca.model.*;
+import ch.ethz.asl.ca.model.User;
+import ch.ethz.asl.ca.model.UserCertificate;
+import ch.ethz.asl.ca.model.UserCertificateRepository;
+import ch.ethz.asl.ca.model.UserRepository;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -161,7 +164,7 @@ public class UserCertificateServiceTest {
     public void issueCertificateForUser() throws Exception {
         final long serialNr = 12345;
         final String path = "/";
-        UserCertificate newCertificate = userCertificateService.issueCertificateForUser(UserSafeProjection.of(test1), serialNr, path);
+        UserCertificate newCertificate = userCertificateService.issueCertificateForUser(test1, serialNr, path);
 
         Assert.assertNotNull(newCertificate);
         Assert.assertThat(newCertificate.getSerialNr(), is(serialNr));
@@ -183,20 +186,20 @@ public class UserCertificateServiceTest {
     @Test(expected = IllegalArgumentException.class)
     public void issueCertificateNoPath() throws Exception {
         final long serialNr = 12345;
-        userCertificateService.issueCertificateForUser(UserSafeProjection.of(test1), serialNr, null);
+        userCertificateService.issueCertificateForUser(test1, serialNr, null);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void issueCertificateEmptyPath() throws Exception {
         final long serialNr = 12345;
-        userCertificateService.issueCertificateForUser(UserSafeProjection.of(test1), serialNr, "");
+        userCertificateService.issueCertificateForUser(test1, serialNr, "");
     }
 
     @Test
     public void addCertificateToUser() throws Exception {
         UserCertificate cert = createCertificate(0);
 
-        UserCertificate certificate = userCertificateService.addCertificateToUser(UserSafeProjection.of(test1), cert);
+        UserCertificate certificate = userCertificateService.addCertificateToUser(test1, cert);
 
         Assert.assertThat(certificate.getSerialNr(), is(cert.getSerialNr()));
         Assert.assertThat(cert.getIssuedTo(), is(test1));
@@ -204,7 +207,7 @@ public class UserCertificateServiceTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void addCertificateToUserCertNull() throws Exception {
-        userCertificateService.addCertificateToUser(UserSafeProjection.of(test1), null);
+        userCertificateService.addCertificateToUser(test1, null);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -215,7 +218,7 @@ public class UserCertificateServiceTest {
     @Test(expected = IllegalArgumentException.class)
     public void addCertificateToUserDoesntExist() throws Exception {
         UserCertificate cert = createCertificate(0);
-        userCertificateService.addCertificateToUser(UserSafeProjection.of(new User("test3", "test3")), cert);
+        userCertificateService.addCertificateToUser(new User("test3", "test3"), cert);
     }
 
     @Test

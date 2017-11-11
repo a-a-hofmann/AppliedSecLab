@@ -1,6 +1,9 @@
 package ch.ethz.asl.ca.service;
 
-import ch.ethz.asl.ca.model.*;
+import ch.ethz.asl.ca.model.User;
+import ch.ethz.asl.ca.model.UserCertificate;
+import ch.ethz.asl.ca.model.UserCertificateRepository;
+import ch.ethz.asl.ca.model.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
@@ -57,22 +60,20 @@ public class UserCertificateService {
         return Optional.of(lastCert.get(0));
     }
 
-    public UserCertificate issueCertificateForUser(UserSafeProjection userProjection, final long serialNr, final String path) {
-        Assert.notNull(userProjection, "User cannot be null.");
+    public UserCertificate issueCertificateForUser(User user, final long serialNr, final String path) {
+        Assert.notNull(user, "User cannot be null.");
         Assert.isTrue(!repository.exists(serialNr), String.format("Certificate already exists in the db for serialNr [%d]", serialNr));
         Assert.isTrue(!StringUtils.isEmpty(path), "No path to certificate given.");
 
-        User user = userRepository.findOne(userProjection.getUsername());
         UserCertificate certificate = UserCertificate.issuedNowToUser(serialNr, path, user);
         return repository.save(certificate);
     }
 
-    public UserCertificate addCertificateToUser(UserSafeProjection userProjection, UserCertificate certificate) {
+    public UserCertificate addCertificateToUser(User user, UserCertificate certificate) {
         Assert.notNull(certificate, "Certificate cannot be null.");
-        Assert.notNull(userProjection, "User cannot be null.");
-        Assert.isTrue(userRepository.exists(userProjection.getUsername()), String.format("User [%s] doesn't exist.", userProjection.getUsername()));
-
-        User user = userRepository.findOne(userProjection.getUsername());
+        Assert.notNull(user, "User cannot be null.");
+        Assert.isTrue(userRepository.exists(user.getUsername()), String.format("User [%s] doesn't exist.", user.getUsername()));
+        
         certificate.setIssuedTo(user);
         return certificate;
     }
