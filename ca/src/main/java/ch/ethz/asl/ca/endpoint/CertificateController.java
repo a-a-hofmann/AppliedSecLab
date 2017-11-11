@@ -12,7 +12,6 @@ import java.security.Principal;
 
 /**
  * Controller to answer to requests regarding certificates.
- * TODO: once login is in place remove the need to pass the username in HTTP body and read user info from SecurityContext.
  */
 @RestController
 public class CertificateController {
