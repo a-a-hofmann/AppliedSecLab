@@ -84,21 +84,22 @@ public class OpenSSL implements CertificateManager {
         String fileName = new SimpleDateFormat("yyyyMMddHHmmssSS'.key'").format(new Date());
         String file = String.format(GENERATE_KEY_PATH + fileName, username);
         try {
-            Runtime.getRuntime().exec(String.format(GENERATE_KEY, file));
+            Process p = Runtime.getRuntime().exec(String.format(GENERATE_KEY, file));
+            p.waitFor();
             return file;
-        } catch (IOException e) {
+        } catch (IOException|InterruptedException e) {
             throw new CertificateManagerException(UNABLE_TO_GENERATE_RSA_KEY + e.getMessage());
         }
     }
 
     private void generateSigningRequest(final String keyPath, User user) throws CertificateManagerException {
         try {
-            Runtime.getRuntime().exec(String.format(GENERATE_SIGNING_REQUEST, keyPath, keyPath,
+            Process p = Runtime.getRuntime().exec(String.format(GENERATE_SIGNING_REQUEST, keyPath, keyPath,
                                                     user.getFirstname(),
                                                     user.getLastname(),
                                                     user.getEmail()));
-
-        } catch (IOException e) {
+            p.waitFor();
+        } catch (IOException|InterruptedException e) {
             throw new CertificateManagerException(UNABLE_TO_GENERATE_SIGNING_REQUEST + e.getMessage());
         }
     }
@@ -122,6 +123,7 @@ public class OpenSSL implements CertificateManager {
                 } catch (IOException e) {
                     throw new CertificateManagerException(UNABLE_TO_READ_LAST_ISSUED_CERTIFICATE + e.getMessage());
                 }
+                p.waitFor();
             }
 
         } catch (IOException|InterruptedException e) {
