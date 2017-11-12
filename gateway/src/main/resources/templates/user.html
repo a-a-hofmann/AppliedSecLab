@@ -32,7 +32,6 @@
         <form class="form-inline my-2 my-lg-0" th:action="@{/logout}" method="post">
             <input class="btn btn-outline-success my-2 my-sm-0" type="submit" value="Sign Out"/>
         </form>
-        -->
     </div>
 </nav>
 
@@ -120,9 +119,14 @@
                             <tr th:each="cert : ${certificates}">
                                 <td th:text="${cert.serialNr}"></td>
                                 <td th:text="${#dates.format(cert.issuedOn, 'HH:mm, dd-MMM-yyyy')}"></td>
-                                <td><a th:href="@{'/ca/cert/' + ${cert.serialNr}}" target="_blank"><i
-                                        class="fa fa-download"
-                                        aria-hidden="true"></i></a>
+                                <td>
+                                    <a class="download-cert" th:href="@{'/ca/cert/' + ${cert.serialNr}}" target="_blank">
+                                        <i
+                                        class="btn btn-primary fa fa-download"
+                                        aria-hidden="true"></i>
+                                    </a>
+
+                                    <i class="btn btn-danger fa fa-times" aria-hidden="true"></i>
                                 </td>
                             </tr>
                             </tbody>
