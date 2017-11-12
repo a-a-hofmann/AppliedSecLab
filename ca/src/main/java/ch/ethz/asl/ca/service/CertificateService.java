@@ -54,10 +54,10 @@ public class CertificateService {
         String serialNr3 = "2";
         String serialNr4 = "3";
         User user = userRepository.findOne(username);
-        UserCertificate c1 = UserCertificate.issuedNowToUser(serialNr, user);
-        UserCertificate c2 = UserCertificate.issuedNowToUser(serialNr2, user);
-        UserCertificate c3 = UserCertificate.issuedNowToUser(serialNr3, user);
-        UserCertificate c4 = UserCertificate.issuedNowToUser(serialNr4, user);
+        UserCertificate c1 = UserCertificate.issuedNowToUser(serialNr, "etc/ssl/CA/newcerts/db/0.pem", user);
+        UserCertificate c2 = UserCertificate.issuedNowToUser(serialNr2,"etc/ssl/CA/newcerts/db/1.pem", user);
+        UserCertificate c3 = UserCertificate.issuedNowToUser(serialNr3, "etc/ssl/CA/newcerts/db/2.pem", user);
+        UserCertificate c4 = UserCertificate.issuedNowToUser(serialNr4,"etc/ssl/CA/newcerts/db/3.pem", user);
         c3.revoke();
 
         // TODO Use db once ca is done
@@ -118,7 +118,7 @@ public class CertificateService {
         String serialNr = null;
         try {
             serialNr = certificateManager.issueNewCertificate(user);
-            UserCertificate userCertificate = userCertificateService.issueCertificateForUser(user, serialNr);
+            UserCertificate userCertificate = userCertificateService.issueCertificateForUser(user, serialNr, certificateManager.getPath(serialNr, user));
             //successfully issued the certificate -> Log it
         } catch (CertificateManagerException e) {
             logger.error(String.format("Failed to issue certificate to user [%s]", user.getUsername()), e);

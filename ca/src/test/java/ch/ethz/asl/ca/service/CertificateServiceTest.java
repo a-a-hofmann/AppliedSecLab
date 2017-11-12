@@ -61,7 +61,7 @@ public class CertificateServiceTest {
         test1.setLastname("Basin");
         test1 = userRepository.save(test1);
 
-        UserCertificate cert = UserCertificate.issuedNowToUser("05", test1);
+        UserCertificate cert = UserCertificate.issuedNowToUser("05", "etc/ssl/CA/newcerts/db/05.pem",test1);
         userCertificateRepository.save(cert);
     }
 

@@ -215,4 +215,15 @@ public class OpenSSL implements CertificateManager {
         return serialNr;
     }
 
+    @Override
+    public String getPath(String serialNr, User user) {
+        String filePath = String.format(CERTIFICATE_PATH, user.getUsername(), serialNr);
+        File f = new File(filePath);
+        if(f.exists()) {
+            return filePath;
+        } else {
+            return null;
+        }
+    }
+
 }

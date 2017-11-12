@@ -170,7 +170,7 @@ public class UserCertificateServiceTest {
     public void issueCertificateForUser() throws Exception {
         String serialNr = "12345";
         final String path = "/";
-        UserCertificate newCertificate = userCertificateService.issueCertificateForUser(test1, serialNr);
+        UserCertificate newCertificate = userCertificateService.issueCertificateForUser(test1, serialNr, path);
 
         Assert.assertNotNull(newCertificate);
         Assert.assertThat(newCertificate.getSerialNr(), is(serialNr));
@@ -186,20 +186,20 @@ public class UserCertificateServiceTest {
     public void issueCertificateNoUser() throws Exception {
         String serialNr = "12345";
         final String path = "/";
-        userCertificateService.issueCertificateForUser(null, serialNr);
+        userCertificateService.issueCertificateForUser(null, serialNr, path);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void issueCertificateNoPath() throws Exception {
         String serialNr = "12345";
-        userCertificateService.issueCertificateForUser(test1, serialNr);
+        userCertificateService.issueCertificateForUser(test1, serialNr, null);
     }
 
-    /*@Test(expected = IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void issueCertificateEmptyPath() throws Exception {
         String serialNr = "12345";
-        userCertificateService.issueCertificateForUser(test1, serialNr);
-    }*/
+        userCertificateService.issueCertificateForUser(test1, serialNr, "");
+    }
 
     @Test
     public void addCertificateToUser() throws Exception {
