@@ -5,6 +5,5 @@ body {
 
 a.download-cert, a.download-cert:link, a.download-cert:visited, a.download-cert:focus {
     text-decoration: none;
-    color: inherit;
 }
 

@@ -24,7 +24,7 @@ public class CredentialsParser {
 
     public static class Credentials {
 
-        private static final PasswordEncoder PASSWORD_ENCODER = new ShaPasswordEncoder();//.encodePassword(user.getPassword(), null);
+        private static final PasswordEncoder PASSWORD_ENCODER = new ShaPasswordEncoder();
 
         private final String username;
 

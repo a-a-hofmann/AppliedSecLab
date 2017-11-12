@@ -120,13 +120,15 @@
                                 <td th:text="${cert.serialNr}"></td>
                                 <td th:text="${#dates.format(cert.issuedOn, 'HH:mm, dd-MMM-yyyy')}"></td>
                                 <td>
-                                    <a class="download-cert" th:href="@{'/ca/cert/' + ${cert.serialNr}}" target="_blank">
-                                        <i
-                                        class="btn btn-primary fa fa-download"
-                                        aria-hidden="true"></i>
+                                    <a class="btn btn-primary download-cert fa fa-download"
+                                       th:href="@{'/ca/cert/' + ${cert.serialNr}}"
+                                       target="_blank">
                                     </a>
 
-                                    <i class="btn btn-danger fa fa-times" aria-hidden="true"></i>
+                                    <button type="button" class="btn btn-primary fa fa-times" data-toggle="modal"
+                                            data-target="#revoke-confirm"
+                                            th:attr="data-serialNr=${cert.serialNr}, data-issuedon=${cert.issuedOn}">
+                                    </button>
                                 </td>
                             </tr>
                             </tbody>
@@ -168,6 +170,44 @@
         </div>
     </div>
 
+    <!-- Modal -->
+    <div class="modal fade" id="revoke-confirm" tabindex="-1" role="dialog" aria-labelledby="modalTitle"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalTitle">Are you ABSOLUTELY sure?</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="alert alert-warning" role="alert">
+                    Unexpected bad things will happen if you don’t read this!
+                </div>
+                <div class="modal-body">
+                    <p>This action <strong>CANNOT</strong> be undone. This will permanently delete the certificate:</p>
+                    <table class="table">
+                        <thead class="thead-light">
+                        <tr>
+                            <th scope="col">Serial #</th>
+                            <th scope="col">Issued On</th>
+                        </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+
+                    <form id="confirmation-form" method="post" th:action="@{/cert/revoke}">
+                        <label for="confirmation">Please enter your password to confirm.</label>
+                        <input id="confirmation" type="password" name="password" class="form-control"/>
+                        <input id="serialNr" type="hidden" name="serialNr"/>
+
+                        <button type="submit" class="btn btn-danger btn-block">I understand the consequences, revoke this certificate</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </main>
 
 <br/>
@@ -187,5 +227,33 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js"
         integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ"
         crossorigin="anonymous"></script>
+
+<script th:inline="javascript">
+
+    const csrfToken = [[${_csrf}]];
+    console.log(csrfToken);
+    const header = csrfToken.headerName;
+
+    $('#revoke-confirm').on('show.bs.modal', function (event) {
+        const button = $(event.relatedTarget);
+        const serialNr = button.data('serialnr');
+        const issuedOn = button.data('issuedon');
+        const modal = $(this);
+
+        const $tbody = modal.find('.modal-body table').find('tbody');
+        $tbody.html('');
+
+        $tbody.append(
+            `
+            <tr>
+                <td>${serialNr}</td>
+                <td>${issuedOn}</td>
+            </tr>
+        `);
+
+        const $serialInput = $('#serialNr');
+        $serialInput.val(serialNr);
+    });
+</script>
 </body>
 </html>

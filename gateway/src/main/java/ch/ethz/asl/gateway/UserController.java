@@ -2,6 +2,7 @@ package ch.ethz.asl.gateway;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -55,6 +56,15 @@ public class UserController {
     public String requestCertificate(Principal principal) {
         logger.info(String.format("Requesting new certificate for user [%s]", principal.getName()));
         certificateClient.requestCertificate();
+        return "redirect:/user";
+    }
+
+    @PostMapping("cert/revoke")
+    public String revokeCertificate(CertificateRevocationCommand revoke, Principal principal) {
+        // TODO send hashed pwd to ca for revocation check.. or not and remove it from UI.
+        logger.info(String.format("Revoking certificate [%s] for user [%s]", revoke.getSerialNr(), principal.getName()));
+        ResponseEntity<Void> responseEntity = certificateClient.revokeCertificate(revoke.getSerialNr());
+        logger.info(responseEntity.getStatusCode());
         return "redirect:/user";
     }
 
