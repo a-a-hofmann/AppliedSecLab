@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 
 import javax.servlet.ServletOutputStream;
 import java.io.*;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -17,16 +18,17 @@ public class OpenSSL implements CertificateManager {
 
     //TODO: Only for developing. Must be changed to -> /etc/ssl/
     private static final String dir = "ca/etc/ssl/";
-    private static final String SERIALNR_OLD_PATH = dir + "CA/serial.old";
-    private static final String CRLNR_OLD_PATH = dir + "CA/crlnumber.old";
+    private static final String ABSOLUTE_DIR = Paths.get("ca/etc/ssl/").toAbsolutePath().toString() + "/";
+    private static final String SERIALNR_OLD_PATH = ABSOLUTE_DIR + "CA/serial.old";
+    private static final String CRLNR_OLD_PATH = ABSOLUTE_DIR + "CA/crlnumber.old";
 
-    private static final String SERIALNR_PATH = dir + "CA/serial";
+    private static final String SERIALNR_PATH = ABSOLUTE_DIR + "CA/serial";
 
-    private static final String CERTIFICATE_PATH = dir + "CA/newcerts/%s/%s.pem";
+    private static final String CERTIFICATE_PATH = ABSOLUTE_DIR + "CA/newcerts/%s/%s.pem";
     //TODO: Only for developing
-    private static final String GENERATE_KEY_PATH = dir + "CA/newkeys/%s/";
+    private static final String GENERATE_KEY_PATH = ABSOLUTE_DIR + "CA/newkeys/%s/";
     //TODO:NAME??
-    private static final String SUBJ = "-subj /C=CH/ST=Zurich/L=Zurich/O=ETH/OU=AppliedSecLab/CN=%s_%s/emailAddress=%s";
+    private static final String SUBJ = "-subj \"/C=CH/ST=Zurich/L=Zurich/O=ETH/OU=AppliedSecLab/CN=%s_%s/emailAddress=%s\"";
 
     private static final String UNABLE_TO_SIGN_CERTIFICATE_EXCEPTION = "Unable to sign the certificate by using openssl. Error: ";
     private static final String UNABLE_TO_GENERATE_RSA_KEY = "Unable to generate a RSA key by using openssl. Error: ";
@@ -43,12 +45,12 @@ public class OpenSSL implements CertificateManager {
     //TODO: %s mitigate injection for all
     private final String GENERATE_KEY = "openssl genrsa -out %s.key 1024";
     //Example:openssl req -new -key etc/ssl/CA/newkeys/db/test.key -out etc/ssl/CA/newkeys/db/test.csr -config etc/ssl/openssl.cnf -subj "/C=CH/ST=Zurich/L=Zurich/O=ETH/OU=AppliedSecLab/CN=Test test/emailAddress=test@imovie.ch"
-    private final String GENERATE_SIGNING_REQUEST = "openssl req -new -key %s.key -out %s.csr -config" + dir + "openssl.cnf " + SUBJ;
+    private final String GENERATE_SIGNING_REQUEST = "openssl req -new -key %s.key -out %s.csr -config " + ABSOLUTE_DIR + "openssl.cnf " + SUBJ;
 
     //Example: openssl ca -name CA_db -batch -in etc/ssl/CA/newkeys/test.csr -config etc/ssl/openssl.cnf
-    private final String SIGN_CERTIFICATE = "openssl ca -name CA_%s -batch -in %s.csr -config " + dir + "openssl.cnf -passin pass:admin";
-    private final String REVOKE_CERTIFICATE = "sudo openssl ca -revoke %s -config " + dir + "openssl.cnf";
-    private final String CREATE_CRL = "sudo openssl ca -gencrl -out " + dir + "CA/crl/crl.pem";
+    private final String SIGN_CERTIFICATE = "openssl ca -name CA_%s -batch -in %s.csr -config " + ABSOLUTE_DIR + "openssl.cnf -passin pass:admin";
+    private final String REVOKE_CERTIFICATE = "sudo openssl ca -revoke %s -config " + ABSOLUTE_DIR + "openssl.cnf";
+    private final String CREATE_CRL = "sudo openssl ca -gencrl -out " + ABSOLUTE_DIR + "CA/crl/crl.pem";
 
     //private final UserCertificateService userCertificateService;
 
@@ -85,10 +87,12 @@ public class OpenSSL implements CertificateManager {
 
     private void generateSigningRequest(final String keyPath, User user) throws CertificateManagerException {
         try {
-            Process p = Runtime.getRuntime().exec(String.format(GENERATE_SIGNING_REQUEST, keyPath, keyPath,
+            final String absoluteKeyPath = Paths.get(keyPath).toAbsolutePath().toString();
+            final String request = String.format(GENERATE_SIGNING_REQUEST, absoluteKeyPath, absoluteKeyPath,
                     user.getFirstname(),
                     user.getLastname(),
-                    user.getEmail()));
+                    user.getEmail());
+            Process p = Runtime.getRuntime().exec(request);
             p.waitFor();
         } catch (IOException | InterruptedException e) {
             throw new CertificateManagerException(UNABLE_TO_GENERATE_SIGNING_REQUEST + e.getMessage());
@@ -105,8 +109,9 @@ public class OpenSSL implements CertificateManager {
 
         try {
             synchronized (CertificateManager.class) {
-                Process p = Runtime.getRuntime().exec(String.format(SIGN_CERTIFICATE, user.getUsername(), currentPath));
-                p.waitFor();
+                final String command = String.format(SIGN_CERTIFICATE, user.getUsername(), Paths.get(currentPath).toAbsolutePath().toString());
+                Process p = Runtime.getRuntime().exec(command);
+                int i = p.waitFor();
                 try {
                     BufferedReader br = new BufferedReader(new FileReader(SERIALNR_OLD_PATH));
                     serialNr = br.readLine();
@@ -114,7 +119,6 @@ public class OpenSSL implements CertificateManager {
                 } catch (IOException e) {
                     throw new CertificateManagerException(UNABLE_TO_READ_LAST_ISSUED_CERTIFICATE + e.getMessage());
                 }
-                p.waitFor();
             }
 
         } catch (IOException | InterruptedException e) {

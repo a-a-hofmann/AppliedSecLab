@@ -6,3 +6,5 @@ V	181111145750Z		05	unknown	/C=CH/ST=Zurich/O=ETH/OU=AppliedSecLab/CN=David Basi
 V	181111151251Z		06	unknown	/C=CH/ST=Zurich/O=ETH/OU=AppliedSecLab/CN=Test/emailAddress=test
 V	181111152018Z		07	unknown	/C=CH/ST=Zurich/O=ETH/OU=AppliedSecLab/CN=David Basin/emailAddress=test@imovie.ch
 V	181111154330Z		08	unknown	/C=CH/ST=Zurich/O=ETH/OU=AppliedSecLab/CN=Test test/emailAddress=test@imovie.ch
+V	181113182916Z		09	unknown	/C=CH/ST=Zurich/O=ETH/OU=AppliedSecLab/CN=Andres Alan_Anderson/emailAddress=and@imovies.ch
+V	181113183110Z		0A	unknown	/C=CH/ST=Zurich/O=ETH/OU=AppliedSecLab/CN=David_Basin/emailAddress=db@imovies.ch
