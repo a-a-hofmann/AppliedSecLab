@@ -115,6 +115,7 @@ public class OpenSSL implements CertificateManager {
                     BufferedReader br = new BufferedReader(new FileReader(SERIALNR_OLD_PATH));
                     serialNr = br.readLine();
                     br.close();
+                    // TODO: after signing we should remove the csr file.
                 } catch (IOException e) {
                     throw new CertificateManagerException(UNABLE_TO_READ_LAST_ISSUED_CERTIFICATE + e.getMessage());
                 }
