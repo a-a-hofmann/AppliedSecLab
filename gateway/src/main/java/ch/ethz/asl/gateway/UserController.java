@@ -74,7 +74,7 @@ public class UserController {
 
         ByteArrayResource resource = new ByteArrayResource(certificate.getBody());
         return ResponseEntity.ok()
-                .header("Content-Disposition", "attachment; filename=" + serialNr + ".pem")
+                .header("Content-Disposition", "attachment; filename=" + serialNr + ".p12")
                 .contentLength(resource.contentLength())
                 .contentType(MediaType.parseMediaType("application/octet-stream"))
                 .body(resource);

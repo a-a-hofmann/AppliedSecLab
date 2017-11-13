@@ -23,6 +23,7 @@ public class OpenSSL implements CertificateManager {
     private static final String SERIALNR_PATH = ABSOLUTE_DIR + "CA/serial";
 
     private static final String CERTIFICATE_PATH = ABSOLUTE_DIR + "CA/newcerts/%s/%s.pem";
+    private static final String CERTIFICATE_P12_PATH = ABSOLUTE_DIR + "CA/newcerts/%s/%s.p12";
     //TODO: Only for developing
     private static final String GENERATE_KEY_PATH = ABSOLUTE_DIR + "CA/newkeys/%s/";
     //TODO:NAME??
@@ -49,6 +50,7 @@ public class OpenSSL implements CertificateManager {
     private final String SIGN_CERTIFICATE = "openssl ca -name CA_%s -batch -in %s.csr -config " + ABSOLUTE_DIR + "openssl.cnf -passin pass:admin";
     private final String REVOKE_CERTIFICATE = "sudo openssl ca -revoke %s -config " + ABSOLUTE_DIR + "openssl.cnf";
     private final String CREATE_CRL = "sudo openssl ca -gencrl -out " + ABSOLUTE_DIR + "CA/crl/crl.pem";
+    private final String CREATE_P12 = "openssl pkcs12 -export -out %s -inkey %s -in %s -passout pass:";
 
     //private final UserCertificateService userCertificateService;
 
@@ -108,7 +110,9 @@ public class OpenSSL implements CertificateManager {
         try {
             synchronized (CertificateManager.class) {
                 final String command = String.format(SIGN_CERTIFICATE, user.getUsername(), Paths.get(currentPath).toAbsolutePath().toString());
-                new ProcessUtils().runBlockingProcess(command);
+
+                ProcessUtils processUtils = new ProcessUtils();
+                processUtils.runBlockingProcess(command);
 
                 try {
                     BufferedReader br = new BufferedReader(new FileReader(SERIALNR_OLD_PATH));
@@ -118,6 +122,8 @@ public class OpenSSL implements CertificateManager {
                 } catch (IOException e) {
                     throw new CertificateManagerException(UNABLE_TO_READ_LAST_ISSUED_CERTIFICATE + e.getMessage());
                 }
+                
+                createPKCS12File(serialNr, currentPath, user);
             }
 
         } catch (IOException | InterruptedException e) {
@@ -127,11 +133,19 @@ public class OpenSSL implements CertificateManager {
         return serialNr;
     }
 
+    private void createPKCS12File(final String serialNr, final String currentPath, final User user) throws IOException, InterruptedException {
+        final String p12Path = Paths.get(String.format(CERTIFICATE_P12_PATH, user.getUsername(), serialNr)).toAbsolutePath().toString();
+        final String pemPath = String.format(CERTIFICATE_PATH, user.getUsername(), serialNr);
+        final String privateKeyPath = Paths.get(currentPath).toAbsolutePath().toString() + ".key";
+        final String p12FormatCommand = String.format(CREATE_P12, p12Path, privateKeyPath, pemPath);
+        new ProcessUtils().runBlockingProcess(p12FormatCommand);
+    }
+
     @Override
     public byte[] getCertificate(final String serialNr, final User user) throws CertificateManagerException {
         // TODO: cert should be exported as .p12
         try {
-            return FileUtils.readFileToByteArray(new File(String.format(CERTIFICATE_PATH, user.getUsername(), serialNr)));
+            return FileUtils.readFileToByteArray(new File(String.format(CERTIFICATE_P12_PATH, user.getUsername(), serialNr)));
         } catch (IOException e) {
             throw new CertificateManagerException(e);
         }
