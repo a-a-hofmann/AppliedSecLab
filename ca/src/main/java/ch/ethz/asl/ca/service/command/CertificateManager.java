@@ -61,4 +61,8 @@ public interface CertificateManager {
      */
     public String getCurrentSerialNumber() throws CertificateManagerException;
 
+    /**
+     *@return the path of the user with the serial number if it exists, otherwise null
+     */
+    public String getPath(final String serialNr, final User user);
 }

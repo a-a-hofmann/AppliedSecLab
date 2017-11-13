@@ -60,12 +60,12 @@ public class UserCertificateService {
         return Optional.of(lastCert.get(0));
     }
 
-    public UserCertificate issueCertificateForUser(User user, final String serialNr) {
+    public UserCertificate issueCertificateForUser(User user, final String serialNr, final String path) {
         Assert.notNull(user, "User cannot be null.");
         Assert.isTrue(!repository.exists(serialNr), String.format("Certificate already exists in the db for serialNr [%d]", serialNr));
-        //Assert.isTrue(!StringUtils.isEmpty(path), "No path to certificate given.");
+        Assert.isTrue(!StringUtils.isEmpty(path), "No path to certificate given.");
 
-        UserCertificate certificate = UserCertificate.issuedNowToUser(serialNr, user);
+        UserCertificate certificate = UserCertificate.issuedNowToUser(serialNr, path, user);
         return repository.save(certificate);
     }
 
