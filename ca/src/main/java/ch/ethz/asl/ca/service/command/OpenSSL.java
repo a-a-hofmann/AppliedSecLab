@@ -129,13 +129,13 @@ public class OpenSSL implements CertificateManager {
 
     @Override
     public boolean getCertificate(final String serialNr, final User user, ServletOutputStream outputStream) throws CertificateManagerException {
-
-
+        // TODO: cert should be exported as .p12
         try {
             FileInputStream fis = new FileInputStream(String.format(CERTIFICATE_PATH, user.getUsername(), serialNr));
             IOUtils.copy(fis, outputStream);
             outputStream.flush();
             outputStream.close();
+            fis.close();
         } catch (IOException e) {
             throw new CertificateManagerException();
         }
