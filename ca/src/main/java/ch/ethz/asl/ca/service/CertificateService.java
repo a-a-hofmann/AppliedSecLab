@@ -9,7 +9,6 @@ import ch.ethz.asl.ca.service.event.CertificateEventListener;
 import ch.ethz.asl.ca.service.event.CertificateIssuedEvent;
 import ch.ethz.asl.ca.service.event.CertificateRequestedEvent;
 import ch.ethz.asl.ca.service.event.CertificateRevokedEvent;
-import com.google.common.collect.Lists;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 
@@ -49,22 +48,18 @@ public class CertificateService {
      * @return
      */
     public List<UserCertificate> getUserCertificates(final String username) {
-        String serialNr = "0";
-        String serialNr2 = "1";
-        String serialNr3 = "2";
-        String serialNr4 = "3";
+//        String serialNr = "0";
+//        String serialNr2 = "1";
+//        String serialNr3 = "2";
+//        String serialNr4 = "3";
         User user = userRepository.findOne(username);
-        UserCertificate c1 = UserCertificate.issuedNowToUser(serialNr, "etc/ssl/CA/newcerts/db/0.pem", user);
-        UserCertificate c2 = UserCertificate.issuedNowToUser(serialNr2,"etc/ssl/CA/newcerts/db/1.pem", user);
-        UserCertificate c3 = UserCertificate.issuedNowToUser(serialNr3, "etc/ssl/CA/newcerts/db/2.pem", user);
-        UserCertificate c4 = UserCertificate.issuedNowToUser(serialNr4,"etc/ssl/CA/newcerts/db/3.pem", user);
-        c3.revoke();
+//        UserCertificate c1 = UserCertificate.issuedNowToUser(serialNr, "etc/ssl/CA/newcerts/db/0.pem", user);
+//        UserCertificate c2 = UserCertificate.issuedNowToUser(serialNr2, "etc/ssl/CA/newcerts/db/1.pem", user);
+//        UserCertificate c3 = UserCertificate.issuedNowToUser(serialNr3, "etc/ssl/CA/newcerts/db/2.pem", user);
+//        UserCertificate c4 = UserCertificate.issuedNowToUser(serialNr4, "etc/ssl/CA/newcerts/db/3.pem", user);
+//        c3.revoke();
 
-        // TODO Use db once ca is done
-        // getUserCertificates(user);
-
-        // Use mock instead.
-        return Lists.newArrayList(c1, c2, c3, c4);
+        return getUserCertificates(user);
     }
 
     private List<UserCertificate> getUserCertificates(final User user) {
@@ -84,8 +79,8 @@ public class CertificateService {
         UserCertificate userCertificate = null;
 
         Optional<UserCertificate> certificateOptional = userCertificateService.findBySerialNrAndUser(serialNr, user);
-        if(certificateOptional.isPresent()) {
-                userCertificate = certificateOptional.get();
+        if (certificateOptional.isPresent()) {
+            userCertificate = certificateOptional.get();
         } else {
             //log not found combination user + serialNr.
             logger.error(String.format("Failed to get certificate [%s] for user [%s]", serialNr, user.getUsername()));
@@ -94,7 +89,7 @@ public class CertificateService {
 
         boolean success;
         try {
-           success = certificateManager.getCertificate(userCertificate.getSerialNr(), user, outputStream);
+            success = certificateManager.getCertificate(userCertificate.getSerialNr(), user, outputStream);
             //successfully got the certificate -> log it.
         } catch (CertificateManagerException e) {
             //log this -> should not happen normally
@@ -137,7 +132,7 @@ public class CertificateService {
 
         List<UserCertificate> certificateList = userCertificateService.findAllByUserNotRevoked(user);
         boolean success = true;
-        for(UserCertificate certificate : certificateList) {
+        for (UserCertificate certificate : certificateList) {
             success &= revokeCertificate(certificate.getSerialNr(), username);
         }
         return success;
@@ -158,7 +153,7 @@ public class CertificateService {
             //successfully revoked the certificate -> Log it
         } catch (CertificateManagerException e) {
             logger.error(String.format("Failed to revoke certificate [%s] for user [%s]", serialNr, user.getUsername()), e);
-           return false;
+            return false;
         }
         return success;
     }
@@ -170,7 +165,7 @@ public class CertificateService {
         } catch (CertificateManagerException e) {
             //log this, should not happen normally.
         }
-        return  numberOfIssuedCertificates;
+        return numberOfIssuedCertificates;
     }
 
     public Long getNumberOfRevokedCertificates() {

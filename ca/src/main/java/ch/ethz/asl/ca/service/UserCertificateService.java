@@ -62,7 +62,7 @@ public class UserCertificateService {
 
     public UserCertificate issueCertificateForUser(User user, final String serialNr, final String path) {
         Assert.notNull(user, "User cannot be null.");
-        Assert.isTrue(!repository.exists(serialNr), String.format("Certificate already exists in the db for serialNr [%d]", serialNr));
+        Assert.isTrue(!repository.exists(serialNr), String.format("Certificate already exists in the db for serialNr [%s]", serialNr));
         Assert.isTrue(!StringUtils.isEmpty(path), "No path to certificate given.");
 
         UserCertificate certificate = UserCertificate.issuedNowToUser(serialNr, path, user);
@@ -82,7 +82,7 @@ public class UserCertificateService {
         Assert.notNull(user, "User cannot be null.");
 
         UserCertificate certificate = repository.findBySerialNrAndIssuedTo(serialNr, user);
-        Assert.notNull(certificate, String.format("No certificate found for user [%s] and serialNr [%d]", user.getUsername(), serialNr));
+        Assert.notNull(certificate, String.format("No certificate found for user [%s] and serialNr [%s]", user.getUsername(), serialNr));
 
         certificate.revoke();
         return certificate;

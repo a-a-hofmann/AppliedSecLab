@@ -1,23 +1,14 @@
 package ch.ethz.asl.ca.service.command;
 
 import ch.ethz.asl.ca.model.User;
-import ch.ethz.asl.ca.model.UserCertificate;
-import ch.ethz.asl.ca.service.UserCertificateService;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.util.io.pem.PemReader;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.ServletOutputStream;
 import java.io.*;
-import java.security.cert.Certificate;
-import java.security.cert.CertificateException;
-import java.security.cert.CertificateFactory;
-import java.security.cert.X509Certificate;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Optional;
 
 
 @Component
@@ -25,7 +16,7 @@ public class OpenSSL implements CertificateManager {
 
 
     //TODO: Only for developing. Must be changed to -> /etc/ssl/
-    private static final String dir = "etc/ssl/";
+    private static final String dir = "ca/etc/ssl/";
     private static final String SERIALNR_OLD_PATH = dir + "CA/serial.old";
     private static final String CRLNR_OLD_PATH = dir + "CA/crlnumber.old";
 
@@ -52,7 +43,7 @@ public class OpenSSL implements CertificateManager {
     //TODO: %s mitigate injection for all
     private final String GENERATE_KEY = "openssl genrsa -out %s.key 1024";
     //Example:openssl req -new -key etc/ssl/CA/newkeys/db/test.key -out etc/ssl/CA/newkeys/db/test.csr -config etc/ssl/openssl.cnf -subj "/C=CH/ST=Zurich/L=Zurich/O=ETH/OU=AppliedSecLab/CN=Test test/emailAddress=test@imovie.ch"
-    private final String GENERATE_SIGNING_REQUEST = "openssl req -new -key %s.key -out %s.csr -config"+ dir + "openssl.cnf " + SUBJ;
+    private final String GENERATE_SIGNING_REQUEST = "openssl req -new -key %s.key -out %s.csr -config" + dir + "openssl.cnf " + SUBJ;
 
     //Example: openssl ca -name CA_db -batch -in etc/ssl/CA/newkeys/test.csr -config etc/ssl/openssl.cnf
     private final String SIGN_CERTIFICATE = "openssl ca -name CA_%s -batch -in %s.csr -config " + dir + "openssl.cnf -passin pass:admin";
@@ -81,13 +72,13 @@ public class OpenSSL implements CertificateManager {
 
 
     private String generateKey(final String username) throws CertificateManagerException {
-        String fileName = new SimpleDateFormat("yyyyMMddHHmmssSS'.key'").format(new Date());
+        String fileName = new SimpleDateFormat("yyyyMMddHHmmssSS").format(new Date());
         String file = String.format(GENERATE_KEY_PATH + fileName, username);
         try {
             Process p = Runtime.getRuntime().exec(String.format(GENERATE_KEY, file));
             p.waitFor();
             return file;
-        } catch (IOException|InterruptedException e) {
+        } catch (IOException | InterruptedException e) {
             throw new CertificateManagerException(UNABLE_TO_GENERATE_RSA_KEY + e.getMessage());
         }
     }
@@ -95,11 +86,11 @@ public class OpenSSL implements CertificateManager {
     private void generateSigningRequest(final String keyPath, User user) throws CertificateManagerException {
         try {
             Process p = Runtime.getRuntime().exec(String.format(GENERATE_SIGNING_REQUEST, keyPath, keyPath,
-                                                    user.getFirstname(),
-                                                    user.getLastname(),
-                                                    user.getEmail()));
+                    user.getFirstname(),
+                    user.getLastname(),
+                    user.getEmail()));
             p.waitFor();
-        } catch (IOException|InterruptedException e) {
+        } catch (IOException | InterruptedException e) {
             throw new CertificateManagerException(UNABLE_TO_GENERATE_SIGNING_REQUEST + e.getMessage());
         }
     }
@@ -126,7 +117,7 @@ public class OpenSSL implements CertificateManager {
                 p.waitFor();
             }
 
-        } catch (IOException|InterruptedException e) {
+        } catch (IOException | InterruptedException e) {
             throw new CertificateManagerException(UNABLE_TO_SIGN_CERTIFICATE_EXCEPTION + e.getMessage());
         }
 
@@ -219,10 +210,10 @@ public class OpenSSL implements CertificateManager {
     public String getPath(String serialNr, User user) {
         String filePath = String.format(CERTIFICATE_PATH, user.getUsername(), serialNr);
         File f = new File(filePath);
-        if(f.exists()) {
+        if (f.exists()) {
             return filePath;
         } else {
-            return null;
+            return "/"; //TODO there is no certificate yet, only private key.
         }
     }
 

@@ -8,7 +8,7 @@ import java.sql.Timestamp;
 
 public class UserCertificate implements Serializable, Comparable<UserCertificate> {
 
-    private long serialNr;
+    private String serialNr;
 
     private Timestamp issuedOn;
 
@@ -17,7 +17,7 @@ public class UserCertificate implements Serializable, Comparable<UserCertificate
     private boolean isRevoked;
 
     @JsonCreator
-    public UserCertificate(@JsonProperty("serialNr") long serialNr, @JsonProperty("issuedOn") Timestamp issuedOn,
+    public UserCertificate(@JsonProperty("serialNr") String serialNr, @JsonProperty("issuedOn") Timestamp issuedOn,
                            @JsonProperty("revokedOn") Timestamp revokedOn, @JsonProperty("isRevoked") boolean isRevoked) {
         this.serialNr = serialNr;
         this.issuedOn = issuedOn;
@@ -25,11 +25,11 @@ public class UserCertificate implements Serializable, Comparable<UserCertificate
         this.isRevoked = isRevoked;
     }
 
-    public long getSerialNr() {
+    public String getSerialNr() {
         return serialNr;
     }
 
-    public void setSerialNr(long serialNr) {
+    public void setSerialNr(String serialNr) {
         this.serialNr = serialNr;
     }
 
