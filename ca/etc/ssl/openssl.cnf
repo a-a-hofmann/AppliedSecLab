@@ -8,7 +8,7 @@ default_ca      = CA_default            # The default ca section
 # Per the above, this is where we define CA values
 [ CA_default ]
 
-dir             = etc/ssl/CA            # Where everything is kept
+dir             = C:/Users/alex/Documents/Java/asl/ca/etc/ssl/CA            # Where everything is kept
 certs           = $dir/certs          	# Where the issued certs are kept
 new_certs_dir   = $dir/newcerts         # default place for new certs.
 database        = $dir/index.txt        # database index file.
@@ -49,7 +49,7 @@ policy          = policy_match
 # Per the above, this is where we define CA values
 [ CA_db ]
 
-dir             = etc/ssl/CA            # Where everything is kept
+dir             = C:/Users/alex/Documents/Java/asl/ca/etc/ssl/CA            # Where everything is kept
 certs           = $dir/certs          	# Where the issued certs are kept
 new_certs_dir   = $dir/newcerts/db      # default place for new certs.
 database        = $dir/index.txt        # database index file.
@@ -91,7 +91,7 @@ policy          = policy_match
 # Per the above, this is where we define CA values
 [ CA_a3 ]
 
-dir             = etc/ssl/CA            # Where everything is kept
+dir             = C:/Users/alex/Documents/Java/asl/ca/etc/ssl/CA            # Where everything is kept
 certs           = $dir/certs          	# Where the issued certs are kept
 new_certs_dir   = $dir/newcerts/a3      # default place for new certs.
 database        = $dir/index.txt        # database index file.
@@ -133,7 +133,7 @@ policy          = policy_match
 # Per the above, this is where we define CA values
 [ CA_fu ]
 
-dir             = etc/ssl/CA            # Where everything is kept
+dir             = C:/Users/alex/Documents/Java/asl/ca/etc/ssl/CA            # Where everything is kept
 certs           = $dir/certs          	# Where the issued certs are kept
 new_certs_dir   = $dir/newcerts/fu      # default place for new certs.
 database        = $dir/index.txt        # database index file.
@@ -176,7 +176,7 @@ policy          = policy_match
 # Per the above, this is where we define CA values
 [ CA_ms ]
 
-dir             = etc/ssl/CA            # Where everything is kept
+dir             = C:/Users/alex/Documents/Java/asl/ca/etc/ssl/CA            # Where everything is kept
 certs           = $dir/certs          	# Where the issued certs are kept
 new_certs_dir   = $dir/newcerts/ms      # default place for new certs.
 database        = $dir/index.txt        # database index file.

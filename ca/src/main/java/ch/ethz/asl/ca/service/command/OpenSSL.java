@@ -15,7 +15,6 @@ import java.util.Date;
 @Component
 public class OpenSSL implements CertificateManager {
 
-
     //TODO: Only for developing. Must be changed to -> /etc/ssl/
     private static final String dir = "ca/etc/ssl/";
     private static final String ABSOLUTE_DIR = Paths.get("ca/etc/ssl/").toAbsolutePath().toString() + "/";
@@ -77,8 +76,8 @@ public class OpenSSL implements CertificateManager {
         String fileName = new SimpleDateFormat("yyyyMMddHHmmssSS").format(new Date());
         String file = String.format(GENERATE_KEY_PATH + fileName, username);
         try {
-            Process p = Runtime.getRuntime().exec(String.format(GENERATE_KEY, file));
-            p.waitFor();
+            final String generateKeyCommand = String.format(GENERATE_KEY, file);
+            new ProcessUtils().runBlockingProcess(generateKeyCommand);
             return file;
         } catch (IOException | InterruptedException e) {
             throw new CertificateManagerException(UNABLE_TO_GENERATE_RSA_KEY + e.getMessage());
@@ -88,12 +87,12 @@ public class OpenSSL implements CertificateManager {
     private void generateSigningRequest(final String keyPath, User user) throws CertificateManagerException {
         try {
             final String absoluteKeyPath = Paths.get(keyPath).toAbsolutePath().toString();
-            final String request = String.format(GENERATE_SIGNING_REQUEST, absoluteKeyPath, absoluteKeyPath,
+            final String signingRequestCommand = String.format(GENERATE_SIGNING_REQUEST, absoluteKeyPath, absoluteKeyPath,
                     user.getFirstname(),
                     user.getLastname(),
                     user.getEmail());
-            Process p = Runtime.getRuntime().exec(request);
-            p.waitFor();
+
+            new ProcessUtils().runBlockingProcess(signingRequestCommand);
         } catch (IOException | InterruptedException e) {
             throw new CertificateManagerException(UNABLE_TO_GENERATE_SIGNING_REQUEST + e.getMessage());
         }
@@ -110,8 +109,8 @@ public class OpenSSL implements CertificateManager {
         try {
             synchronized (CertificateManager.class) {
                 final String command = String.format(SIGN_CERTIFICATE, user.getUsername(), Paths.get(currentPath).toAbsolutePath().toString());
-                Process p = Runtime.getRuntime().exec(command);
-                int i = p.waitFor();
+                new ProcessUtils().runBlockingProcess(command);
+
                 try {
                     BufferedReader br = new BufferedReader(new FileReader(SERIALNR_OLD_PATH));
                     serialNr = br.readLine();
@@ -216,9 +215,7 @@ public class OpenSSL implements CertificateManager {
         File f = new File(filePath);
         if (f.exists()) {
             return filePath;
-        } else {
-            return "/"; //TODO there is no certificate yet, only private key.
         }
+        throw new IllegalArgumentException(String.format("No cert found for user [%s] and cert [%s]", user.getUsername(), serialNr));
     }
-
 }
