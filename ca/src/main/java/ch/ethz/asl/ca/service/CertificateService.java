@@ -39,7 +39,7 @@ public class CertificateService {
         this.eventListener = eventListener;
         this.userCertificateService = userCertificateService;
     }
-    
+
     public List<UserCertificate> getUserCertificates(final String username) {
         User user = userRepository.findOne(username);
         return getUserCertificates(user);
@@ -129,6 +129,10 @@ public class CertificateService {
         boolean success = false;
         try {
             success = certificateManager.revokeCertificate(serialNr, user);
+
+            UserCertificate certificate = userCertificateService.revokeCertificate(user, serialNr);
+            logger.info(String.format("Revoked certificate [%s] on %s", certificate.getSerialNr(), certificate.getRevokedOn()));
+
             //successfully revoked the certificate -> Log it
         } catch (CertificateManagerException e) {
             logger.error(String.format("Failed to revoke certificate [%s] for user [%s]", serialNr, user.getUsername()), e);

@@ -85,6 +85,6 @@ public class UserCertificateService {
         Assert.notNull(certificate, String.format("No certificate found for user [%s] and serialNr [%s]", user.getUsername(), serialNr));
 
         certificate.revoke();
-        return certificate;
+        return repository.save(certificate);
     }
 }

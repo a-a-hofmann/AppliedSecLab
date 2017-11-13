@@ -48,8 +48,8 @@ public class OpenSSL implements CertificateManager {
 
     //Example: openssl ca -name CA_db -batch -in etc/ssl/CA/newkeys/test.csr -config etc/ssl/openssl.cnf
     private final String SIGN_CERTIFICATE = "openssl ca -name CA_%s -batch -in %s.csr -config " + ABSOLUTE_DIR + "openssl.cnf -passin pass:admin";
-    private final String REVOKE_CERTIFICATE = "openssl ca -revoke %s -config " + ABSOLUTE_DIR + "openssl.cnf";
-    private final String CREATE_CRL = "openssl ca -gencrl -out " + ABSOLUTE_DIR + "CA/crl/crl.pem";
+    private final String REVOKE_CERTIFICATE = "openssl ca -revoke %s -config " + ABSOLUTE_DIR + "openssl.cnf -passin pass:admin";
+    private final String CREATE_CRL = "openssl ca -gencrl -out " + ABSOLUTE_DIR + "CA/crl/crl.pem  -config " + ABSOLUTE_DIR + "openssl.cnf -passin pass:admin";
     private final String CREATE_P12 = "openssl pkcs12 -export -out %s -inkey %s -in %s -passout pass:";
 
     //private final UserCertificateService userCertificateService;
