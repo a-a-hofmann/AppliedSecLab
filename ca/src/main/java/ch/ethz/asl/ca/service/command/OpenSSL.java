@@ -106,7 +106,6 @@ public class OpenSSL implements CertificateManager {
         try {
             synchronized (CertificateManager.class) {
                 Process p = Runtime.getRuntime().exec(String.format(SIGN_CERTIFICATE, user.getUsername(), currentPath));
-                p.waitFor();
                 try {
                     BufferedReader br = new BufferedReader(new FileReader(SERIALNR_OLD_PATH));
                     serialNr = br.readLine();
