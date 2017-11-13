@@ -21,7 +21,7 @@ crlnumber       = $dir/crlnumber        # the current crl number
 crl             = $crldir/crl.pem       # The current CRL
 
 # By default we use "user certificate" extensions when signing
-x509_extensions = usr_cert              # The extentions to add to the cert
+x509_extensions = usr_cert              # The extensions to add to the cert
 
 # Honor extensions requested of us
 copy_extensions	= copy
@@ -34,7 +34,7 @@ cert_opt        = ca_default            # Certificate field options
 # Extensions to add to a CRL. Note: Netscape communicator chokes on V2 CRLs
 # so this is commented out by default to leave a V1 CRL.
 # crlnumber must also be commented out to leave a V1 CRL.
-#crl_extensions        = crl_ext
+# crl_extensions        = crl_ext
 default_days    = 365                   # how long to certify for
 default_crl_days= 30                    # how long before next CRL
 default_md      = sha1                  # which md to use.
@@ -222,7 +222,7 @@ policy          = policy_match
 countryName             = match         # Must be the same as the CA
 stateOrProvinceName     = match         # Must be the same as the CA
 organizationName        = match         # Must be the same as the CA
-organizationalUnitName  = optional      # not required
+organizationalUnitName  = match      	# Must be the same as the CA
 commonName      	= supplied      # require the name
 emailAddress            = supplied      # require the email
 
@@ -233,7 +233,7 @@ default_bits            = 2048
 default_keyfile         = privkey.pem
 distinguished_name      = req_distinguished_name # where to get DN for reqs
 attributes              = req_attributes         # req attributes
-x509_extensions		= v3_ca  # The extentions to add to self signed certs
+x509_extensions		= v3_ca  # The extensions to add to self signed certs
 req_extensions		= v3_req # The extensions to add to req's
 
 # This sets a mask for permitted string types. There are several options. 
@@ -244,7 +244,7 @@ req_extensions		= v3_req # The extensions to add to req's
 # MASK:XXXX a literal mask value.
 # WARNING: current versions of Netscape crash on BMPStrings or UTF8Strings
 # so use this option with caution!
-string_mask = nombstr
+string_mask =utf8only
 
 
 ####################################################################
@@ -256,10 +256,10 @@ countryName_min                 = 2
 countryName_max                 = 2
 
 stateOrProvinceName             = State or Province Name (full name)
-stateOrProvinceName_default     = Zürich
+stateOrProvinceName_default     = Zurich
 
 localityName                    = Locality Name (eg, city)
-localityName_default            = Zürich
+localityName_default            = Zurich
 
 0.organizationName              = Organization Name (eg, company)
 0.organizationName_default      = ETH
@@ -296,11 +296,12 @@ basicConstraints=CA:false
 # For an object signing certificate this would be used.
 #nsCertType = objsign
 # For normal client use this is typical
-#nsCertType = client, email
+nsCertType = client, email
 # and for everything including object signing:
 #nsCertType = client, email, objsign
 # This is typical in keyUsage for a client certificate.
-#keyUsage = secure E-mail communication
+extendedKeyUsage = emailProtection
+
 
 # PKIX recommendations harmless if included in all certificates.
 subjectKeyIdentifier=hash
@@ -308,17 +309,17 @@ authorityKeyIdentifier=keyid,issuer
 
 # This stuff is for subjectAltName and issuerAltname.
 # Import the email address.
-#subjectAltName=email:copy
+subjectAltName=critical,email:copy
 # An alternative to produce certificates that aren't
 # deprecated according to PKIX.
-subjectAltName=email:move
+# subjectAltName=email:move
 
 
 ####################################################################
 # Extension for requests
 [ v3_req ]
 # Lets at least make our requests PKIX complaint
-subjectAltName=email:move
+subjectAltName=email:copy
 
 
 ####################################################################
@@ -334,9 +335,9 @@ authorityKeyIdentifier=keyid:always,issuer:always
 
 # This is what PKIX recommends but some broken software chokes on critical
 # extensions.
-# basicConstraints = critical,CA:true
+ basicConstraints = critical,CA:true
 # So we do this instead.
-basicConstraints = CA:true
+#basicConstraints = CA:true
 
 # Key usage: this is typical for a CA certificate. However since it will
 # prevent it being used as an test self-signed certificate it is best
@@ -347,6 +348,6 @@ basicConstraints = CA:true
  nsCertType = sslCA, emailCA
 
 # Include email address in subject alt name: another PKIX recommendation
-#subjectAltName=email:move
+subjectAltName=email:copy
 # Copy issuer details
-#issuerAltName=issuer:copy
+issuerAltName=issuer:copy

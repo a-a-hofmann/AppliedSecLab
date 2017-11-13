@@ -6,9 +6,9 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface UserCertificateRepository extends JpaRepository<UserCertificate, Long> {
+public interface UserCertificateRepository extends JpaRepository<UserCertificate, String> {
 
-    UserCertificate findBySerialNrAndIssuedTo(long serialNr, User user);
+    UserCertificate findBySerialNrAndIssuedTo(String serialNr, User user);
 
     List<UserCertificate> findAllByIssuedTo(User user);
 

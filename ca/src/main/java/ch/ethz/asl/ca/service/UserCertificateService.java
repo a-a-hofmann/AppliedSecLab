@@ -23,7 +23,7 @@ public class UserCertificateService {
         this.userRepository = userRepository;
     }
 
-    public Optional<UserCertificate> findBySerialNrAndUser(long serialNr, User user) {
+    public Optional<UserCertificate> findBySerialNrAndUser(String serialNr, User user) {
         Assert.notNull(user, "User cannot be null.");
 
         UserCertificate certificate = repository.findBySerialNrAndIssuedTo(serialNr, user);
@@ -60,7 +60,7 @@ public class UserCertificateService {
         return Optional.of(lastCert.get(0));
     }
 
-    public UserCertificate issueCertificateForUser(User user, final long serialNr, final String path) {
+    public UserCertificate issueCertificateForUser(User user, final String serialNr, final String path) {
         Assert.notNull(user, "User cannot be null.");
         Assert.isTrue(!repository.exists(serialNr), String.format("Certificate already exists in the db for serialNr [%d]", serialNr));
         Assert.isTrue(!StringUtils.isEmpty(path), "No path to certificate given.");
@@ -78,7 +78,7 @@ public class UserCertificateService {
         return certificate;
     }
 
-    public UserCertificate revokeCertificate(User user, long serialNr) {
+    public UserCertificate revokeCertificate(User user, String serialNr) {
         Assert.notNull(user, "User cannot be null.");
 
         UserCertificate certificate = repository.findBySerialNrAndIssuedTo(serialNr, user);

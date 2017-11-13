@@ -13,7 +13,7 @@ import java.util.Date;
 public class UserCertificate implements Serializable {
 
     @Id
-    private Long serialNr;
+    private String serialNr;
 
     private Timestamp issuedOn;
 
@@ -29,11 +29,11 @@ public class UserCertificate implements Serializable {
     public UserCertificate() {
     }
 
-    public long getSerialNr() {
+    public String getSerialNr() {
         return serialNr;
     }
 
-    public void setSerialNr(long serialNr) {
+    public void setSerialNr(String serialNr) {
         this.serialNr = serialNr;
     }
 
@@ -122,7 +122,7 @@ public class UserCertificate implements Serializable {
         return certificate;
     }
 
-    public static UserCertificate issuedNowToUser(final long serialNr, final String path, User user) {
+    public static UserCertificate issuedNowToUser(final String serialNr, final String path, User user) {
         UserCertificate certificate = new UserCertificate();
         certificate.setSerialNr(serialNr);
         certificate.setIssuedOn(new Date());
