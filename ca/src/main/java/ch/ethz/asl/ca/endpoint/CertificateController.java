@@ -2,13 +2,11 @@ package ch.ethz.asl.ca.endpoint;
 
 import ch.ethz.asl.ca.model.UserCertificate;
 import ch.ethz.asl.ca.service.CertificateService;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.security.Principal;
 import java.util.List;
 
@@ -17,6 +15,8 @@ import java.util.List;
  */
 @RestController
 public class CertificateController {
+
+    private static final Logger logger = Logger.getLogger(CertificateController.class);
 
     private final CertificateService certificateService;
 
@@ -31,20 +31,12 @@ public class CertificateController {
     }
 
     @GetMapping("cert/{serialNr}")
-    public ResponseEntity<Void> getCertificate(@PathVariable("serialNr") final String serialNr, Principal principal, HttpServletResponse response) {
-        boolean success = false;
-        try (ServletOutputStream outputStream = response.getOutputStream()) {
-            success =  certificateService.getCertificate(serialNr, principal.getName(), outputStream);
-        } catch (IOException e) {
-            //TODO:
-            e.printStackTrace();
+    public ResponseEntity<byte[]> getCertificate(@PathVariable("serialNr") final String serialNr, Principal principal) {
+        byte[] certificate = certificateService.getCertificate(serialNr, principal.getName());
+        if (certificate == null) {
+            return ResponseEntity.badRequest().build();
         }
-
-        if (success) {
-            return ResponseEntity.ok().build();
-        }
-        return ResponseEntity.badRequest().build();
-
+        return ResponseEntity.ok(certificate);
     }
 
     @PostMapping("cert")

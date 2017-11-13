@@ -7,25 +7,15 @@ import ch.ethz.asl.ca.model.UserRepository;
 import ch.ethz.asl.ca.service.command.CertificateManager;
 import org.apache.catalina.ssi.ByteArrayServletOutputStream;
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.List;
-import java.util.Optional;
 
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -71,23 +61,23 @@ public class CertificateServiceTest {
         userRepository.deleteAll();
     }
 
-    @Test
-    public void getCertificate1() throws Exception {
-        boolean success = true;
-        ServletOutputStream testOutputStream = mockResponse.getOutputStream();
-        assertTrue(success == certificateService.getCertificate("05", "db", testOutputStream));
-        System.out.println(new String(((ByteArrayServletOutputStream) testOutputStream).toByteArray(), "UTF-8"));
-
-    }
-
-    @Test
-    public void getCertificate2() throws Exception {
-        boolean success = false;
-        ServletOutputStream testOutputStream = mockResponse.getOutputStream();
-        assertTrue(success == certificateService.getCertificate("02", "db", testOutputStream));
-        //System.out.println(new String(((ByteArrayServletOutputStream) testOutputStream).toByteArray(), "UTF-8"));
-
-    }
+//    @Test
+//    public void getCertificate1() throws Exception {
+//        boolean success = true;
+//        ServletOutputStream testOutputStream = mockResponse.getOutputStream();
+//        assertTrue(success == certificateService.getCertificate("05", "db", testOutputStream));
+//        System.out.println(new String(((ByteArrayServletOutputStream) testOutputStream).toByteArray(), "UTF-8"));
+//
+//    }
+//
+//    @Test
+//    public void getCertificate2() throws Exception {
+//        boolean success = false;
+//        ServletOutputStream testOutputStream = mockResponse.getOutputStream();
+//        assertTrue(success == certificateService.getCertificate("02", "db", testOutputStream));
+//        //System.out.println(new String(((ByteArrayServletOutputStream) testOutputStream).toByteArray(), "UTF-8"));
+//
+//    }
 
     @Test
     public void issueNewCertificate() throws Exception {

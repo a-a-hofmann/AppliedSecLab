@@ -2,10 +2,6 @@
 package ch.ethz.asl.ca.service.command;
 
 import ch.ethz.asl.ca.model.User;
-import ch.ethz.asl.ca.model.UserCertificate;
-
-import javax.servlet.ServletOutputStream;
-import java.security.cert.X509Certificate;
 
 /**
  * Defines an interface <tt>CertificateManager</tt> which is used to manage the certificate authority.
@@ -32,7 +28,7 @@ public interface CertificateManager {
      * @return true, if the certificate of the user with the serial number exists
      * @throws CertificateManagerException
      */
-    public boolean getCertificate(final String serialNr, final User user, ServletOutputStream outputStream) throws CertificateManagerException;
+    public byte[] getCertificate(final String serialNr, final User user) throws CertificateManagerException;
 
     /**
      * This method revokes a certificate with the serial number serialNr of the user.

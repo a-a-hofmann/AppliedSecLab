@@ -1,11 +1,10 @@
 package ch.ethz.asl.ca.service.command;
 
 import ch.ethz.asl.ca.model.User;
-import org.apache.tomcat.util.http.fileupload.IOUtils;
+import org.apache.commons.io.FileUtils;
 import org.bouncycastle.util.io.pem.PemReader;
 import org.springframework.stereotype.Component;
 
-import javax.servlet.ServletOutputStream;
 import java.io.*;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
@@ -129,18 +128,13 @@ public class OpenSSL implements CertificateManager {
     }
 
     @Override
-    public boolean getCertificate(final String serialNr, final User user, ServletOutputStream outputStream) throws CertificateManagerException {
+    public byte[] getCertificate(final String serialNr, final User user) throws CertificateManagerException {
         // TODO: cert should be exported as .p12
         try {
-            FileInputStream fis = new FileInputStream(String.format(CERTIFICATE_PATH, user.getUsername(), serialNr));
-            IOUtils.copy(fis, outputStream);
-            outputStream.flush();
-            outputStream.close();
-            fis.close();
+            return FileUtils.readFileToByteArray(new File(String.format(CERTIFICATE_PATH, user.getUsername(), serialNr)));
         } catch (IOException e) {
-            throw new CertificateManagerException();
+            throw new CertificateManagerException(e);
         }
-        return true;
     }
 
     @Override

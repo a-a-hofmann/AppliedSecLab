@@ -129,8 +129,8 @@
                                 <td th:text="${#dates.format(cert.issuedOn, 'HH:mm, dd-MMM-yyyy')}"></td>
                                 <td>
                                     <a class="btn btn-primary download-cert fa fa-download"
-                                       th:href="@{'/ca/cert/' + ${cert.serialNr}}"
-                                       target="_blank">
+                                       th:href="@{'/cert/' + ${cert.serialNr}}"
+                                       target="_self">
                                     </a>
 
                                     <button type="button" class="btn btn-primary fa fa-times" data-toggle="modal"

@@ -18,6 +18,10 @@ public interface CertificateClient {
     @PostMapping("cert")
     Void requestCertificate();
 
+    @GetMapping("cert/{serialNr}")
+    ResponseEntity<byte[]> downloadCertificate(@PathVariable("serialNr") String serialNr);
+
+
     @DeleteMapping("cert/{serialNr}")
     ResponseEntity<Void> revokeCertificate(@PathVariable("serialNr") String serialNr);
 }

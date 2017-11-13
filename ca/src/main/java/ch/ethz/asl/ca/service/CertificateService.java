@@ -12,7 +12,6 @@ import ch.ethz.asl.ca.service.event.CertificateRevokedEvent;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.ServletOutputStream;
 import java.util.List;
 import java.util.Optional;
 
@@ -40,25 +39,9 @@ public class CertificateService {
         this.eventListener = eventListener;
         this.userCertificateService = userCertificateService;
     }
-
-    /**
-     * Mock implementation. Use db.
-     *
-     * @param username
-     * @return
-     */
+    
     public List<UserCertificate> getUserCertificates(final String username) {
-//        String serialNr = "0";
-//        String serialNr2 = "1";
-//        String serialNr3 = "2";
-//        String serialNr4 = "3";
         User user = userRepository.findOne(username);
-//        UserCertificate c1 = UserCertificate.issuedNowToUser(serialNr, "etc/ssl/CA/newcerts/db/0.pem", user);
-//        UserCertificate c2 = UserCertificate.issuedNowToUser(serialNr2, "etc/ssl/CA/newcerts/db/1.pem", user);
-//        UserCertificate c3 = UserCertificate.issuedNowToUser(serialNr3, "etc/ssl/CA/newcerts/db/2.pem", user);
-//        UserCertificate c4 = UserCertificate.issuedNowToUser(serialNr4, "etc/ssl/CA/newcerts/db/3.pem", user);
-//        c3.revoke();
-
         return getUserCertificates(user);
     }
 
@@ -66,34 +49,30 @@ public class CertificateService {
         return userCertificateService.findAllByUser(user);
     }
 
-    public boolean getCertificate(final String serialNr, final String username, ServletOutputStream outputStream) {
+    public byte[] getCertificate(final String serialNr, final String username) {
 
         User user = userRepository.findOne(username);
         if (user == null) {
-            //log this -> should not happen normally
-            return false;
+            throw new IllegalArgumentException(String.format("No user found in security context. Searched for username [%s]", username));
         }
 
         eventListener.onCertificateRequested(new CertificateRequestedEvent(user.getUsername(), serialNr));
 
-        UserCertificate userCertificate = null;
+        UserCertificate userCertificate;
 
         Optional<UserCertificate> certificateOptional = userCertificateService.findBySerialNrAndUser(serialNr, user);
         if (certificateOptional.isPresent()) {
             userCertificate = certificateOptional.get();
         } else {
-            //log not found combination user + serialNr.
-            logger.error(String.format("Failed to get certificate [%s] for user [%s]", serialNr, user.getUsername()));
-            return false;
+            throw new IllegalArgumentException(String.format("Failed to get certificate [%s] for user [%s]", serialNr, user.getUsername()));
         }
 
-        boolean success;
+        byte[] success;
         try {
-            success = certificateManager.getCertificate(userCertificate.getSerialNr(), user, outputStream);
+            success = certificateManager.getCertificate(userCertificate.getSerialNr(), user);
             //successfully got the certificate -> log it.
         } catch (CertificateManagerException e) {
-            //log this -> should not happen normally
-            return false;
+            throw new IllegalArgumentException("Something went wrong while fetching your cert.", e);
         }
 
         return success;

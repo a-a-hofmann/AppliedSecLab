@@ -2,15 +2,21 @@ package ch.ethz.asl.gateway;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.validation.Valid;
+import java.io.IOException;
 import java.security.Principal;
 import java.util.Collections;
 import java.util.List;
@@ -57,6 +63,21 @@ public class UserController {
         logger.info(String.format("Requesting new certificate for user [%s]", principal.getName()));
         certificateClient.requestCertificate();
         return "redirect:/user";
+    }
+
+    @GetMapping("cert/{serialNr}")
+    public ResponseEntity<Resource> downloadCertificate(@PathVariable("serialNr") String serialNr) throws IOException {
+        ResponseEntity<byte[]> certificate = certificateClient.downloadCertificate(serialNr);
+        if (!certificate.getStatusCode().equals(HttpStatus.OK) || certificate.getBody() == null) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        ByteArrayResource resource = new ByteArrayResource(certificate.getBody());
+        return ResponseEntity.ok()
+                .header("Content-Disposition", "attachment; filename=" + serialNr + ".pem")
+                .contentLength(resource.contentLength())
+                .contentType(MediaType.parseMediaType("application/octet-stream"))
+                .body(resource);
     }
 
     @PostMapping("cert/revoke")
