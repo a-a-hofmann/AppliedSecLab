@@ -48,8 +48,8 @@ public class OpenSSL implements CertificateManager {
 
     //Example: openssl ca -name CA_db -batch -in etc/ssl/CA/newkeys/test.csr -config etc/ssl/openssl.cnf
     private final String SIGN_CERTIFICATE = "openssl ca -name CA_%s -batch -in %s.csr -config " + ABSOLUTE_DIR + "openssl.cnf -passin pass:admin";
-    private final String REVOKE_CERTIFICATE = "sudo openssl ca -revoke %s -config " + ABSOLUTE_DIR + "openssl.cnf";
-    private final String CREATE_CRL = "sudo openssl ca -gencrl -out " + ABSOLUTE_DIR + "CA/crl/crl.pem";
+    private final String REVOKE_CERTIFICATE = "openssl ca -revoke %s -config " + ABSOLUTE_DIR + "openssl.cnf";
+    private final String CREATE_CRL = "openssl ca -gencrl -out " + ABSOLUTE_DIR + "CA/crl/crl.pem";
     private final String CREATE_P12 = "openssl pkcs12 -export -out %s -inkey %s -in %s -passout pass:";
 
     //private final UserCertificateService userCertificateService;
@@ -122,7 +122,7 @@ public class OpenSSL implements CertificateManager {
                 } catch (IOException e) {
                     throw new CertificateManagerException(UNABLE_TO_READ_LAST_ISSUED_CERTIFICATE + e.getMessage());
                 }
-                
+
                 createPKCS12File(serialNr, currentPath, user);
             }
 
@@ -155,17 +155,18 @@ public class OpenSSL implements CertificateManager {
     public boolean revokeCertificate(final String serialNr, final User user) throws CertificateManagerException {
 
         String certificatePath = String.format(CERTIFICATE_PATH, user.getUsername(), serialNr);
+        ProcessUtils processUtils = new ProcessUtils();
         try {
-            Runtime.getRuntime().exec(String.format(REVOKE_CERTIFICATE, certificatePath));
-        } catch (IOException e) {
+            processUtils.runBlockingProcess(String.format(REVOKE_CERTIFICATE, certificatePath));
+        } catch (IOException | InterruptedException e) {
             throw new CertificateManagerException(UNABLE_TO_REVOKE_CERTIFICATE + e.getMessage());
         }
 
         try {
             synchronized (CertificateManager.class) {
-                Runtime.getRuntime().exec(CREATE_CRL);
+                processUtils.runBlockingProcess(CREATE_CRL);
             }
-        } catch (IOException e) {
+        } catch (IOException | InterruptedException e) {
             throw new CertificateManagerException(UNABLE_TO_CREATE_CRL + e.getMessage());
         }
         return true;
