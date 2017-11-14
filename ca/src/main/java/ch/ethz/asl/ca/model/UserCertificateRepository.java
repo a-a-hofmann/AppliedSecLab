@@ -17,4 +17,6 @@ public interface UserCertificateRepository extends JpaRepository<UserCertificate
     List<UserCertificate> findFirstByOrderByIssuedOnDesc();
 
     List<UserCertificate> findAllByIssuedToAndIsRevokedFalse(User user);
+
+    List<UserCertificate> findAllByIsRevokedTrue();
 }

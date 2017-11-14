@@ -49,6 +49,10 @@ public class CertificateService {
         return userCertificateService.findAllByUser(user);
     }
 
+    public List<UserCertificate> getAllRevokedCertificates() {
+        return userCertificateService.findAllRevoked();
+    }
+
     public byte[] getCertificate(final String serialNr, final String username) {
 
         User user = userRepository.findOne(username);

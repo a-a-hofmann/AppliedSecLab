@@ -42,6 +42,10 @@ public class UserCertificateService {
         return repository.findAllByIssuedToAndIsRevokedFalse(user);
     }
 
+    public List<UserCertificate> findAllRevoked() {
+        return repository.findAllByIsRevokedTrue();
+    }
+
     public Optional<UserCertificate> findLastUserCertificate(User user) {
         Assert.notNull(user, "User cannot be null.");
 
@@ -73,7 +77,7 @@ public class UserCertificateService {
         Assert.notNull(certificate, "Certificate cannot be null.");
         Assert.notNull(user, "User cannot be null.");
         Assert.isTrue(userRepository.exists(user.getUsername()), String.format("User [%s] doesn't exist.", user.getUsername()));
-        
+
         certificate.setIssuedTo(user);
         return certificate;
     }

@@ -69,6 +69,11 @@ public class CertificateController {
         return ResponseEntity.badRequest().build();
     }
 
+    @GetMapping("revoked")
+    public List<UserCertificate> getAllRevokedCerts() {
+        return certificateService.getAllRevokedCertificates();
+    }
+
     @GetMapping("admin")
     public void getAdminReport() {
         // how do you implement this as endpoint?
