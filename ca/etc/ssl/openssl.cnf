@@ -300,7 +300,7 @@ nsCertType = client, email
 # and for everything including object signing:
 #nsCertType = client, email, objsign
 # This is typical in keyUsage for a client certificate.
-extendedKeyUsage = emailProtection
+extendedKeyUsage = clientAuth,emailProtection
 
 
 # PKIX recommendations harmless if included in all certificates.
