@@ -7,4 +7,6 @@ import org.springframework.stereotype.Repository;
 public interface UserRepository extends JpaRepository<User, String> {
 
     UserSafeProjection findByUsername(String username);
+
+    UserSafeProjection findByEmail(String email);
 }

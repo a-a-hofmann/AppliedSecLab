@@ -59,4 +59,21 @@ public class UserController {
         }
         return badRequest;
     }
+
+    @PostMapping(path = "/authenticate/email")
+    public ResponseEntity<String> emailQuery(HttpServletRequest request) {
+        ResponseEntity<String> badRequest = ResponseEntity.badRequest().build();
+
+        String email = request.getHeader("Authorization");
+        if (StringUtils.isEmpty(email)) {
+            return badRequest;
+        }
+
+        UserSafeProjection user = userService.findUsernameByEmail(email);
+
+        if (user != null) {
+            return ResponseEntity.ok(user.getUsername());
+        }
+        return badRequest;
+    }
 }

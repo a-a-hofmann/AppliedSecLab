@@ -43,4 +43,8 @@ public class UserService {
         User user = this.userRepository.findOne(credentials.getUsername());
         return user != null && user.getPassword().equals(credentials.getPassword());
     }
+
+    public UserSafeProjection findUsernameByEmail(final String email) {
+        return this.userRepository.findByEmail(email);
+    }
 }
