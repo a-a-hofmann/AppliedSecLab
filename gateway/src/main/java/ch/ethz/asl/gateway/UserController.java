@@ -89,6 +89,19 @@ public class UserController {
         return "redirect:/user";
     }
 
+    @PostMapping("crl")
+    public ResponseEntity<Resource> downloadCrl() {
+        ResponseEntity<ByteArrayResource> response = certificateClient.downloadCrl();
+        if (!response.getStatusCode().equals(HttpStatus.OK) || response.getBody() == null) {
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok()
+                .header("Content-Disposition", "attachment; filename=crl.pem")
+                .contentLength(response.getBody().contentLength())
+                .contentType(MediaType.parseMediaType("application/octet-stream"))
+                .body(response.getBody());
+    }
+
 
     private void fillModelWithCertificates(List<UserCertificate> certificates, Model model) {
         List<UserCertificate> revokedCerts = certificates.stream().filter(UserCertificate::isRevoked).collect(Collectors.toList());

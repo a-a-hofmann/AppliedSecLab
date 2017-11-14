@@ -24,6 +24,7 @@ public class OpenSSL implements CertificateManager {
 
     private static final String CERTIFICATE_PATH = ABSOLUTE_DIR + "CA/newcerts/%s/%s.pem";
     private static final String CERTIFICATE_P12_PATH = ABSOLUTE_DIR + "CA/newcerts/%s/%s.p12";
+    private static final String CRL_PATH = ABSOLUTE_DIR + "CA/crl/crl.pem";
     //TODO: Only for developing
     private static final String GENERATE_KEY_PATH = ABSOLUTE_DIR + "CA/newkeys/%s/";
     //TODO:NAME??
@@ -143,7 +144,6 @@ public class OpenSSL implements CertificateManager {
 
     @Override
     public byte[] getCertificate(final String serialNr, final User user) throws CertificateManagerException {
-        // TODO: cert should be exported as .p12
         try {
             return FileUtils.readFileToByteArray(new File(String.format(CERTIFICATE_P12_PATH, user.getUsername(), serialNr)));
         } catch (IOException e) {
@@ -227,5 +227,14 @@ public class OpenSSL implements CertificateManager {
             return filePath;
         }
         throw new IllegalArgumentException(String.format("No cert found for user [%s] and cert [%s]", user.getUsername(), serialNr));
+    }
+
+    @Override
+    public byte[] getCrl() throws CertificateManagerException {
+        try {
+            return FileUtils.readFileToByteArray(new File(CRL_PATH));
+        } catch (IOException e) {
+            throw new CertificateManagerException(String.format("Failed to find CRL file @%s", CRL_PATH), e);
+        }
     }
 }

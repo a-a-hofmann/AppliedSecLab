@@ -4,6 +4,7 @@ import ch.ethz.asl.ca.model.UserCertificate;
 import ch.ethz.asl.ca.service.CertificateService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -54,6 +55,16 @@ public class CertificateController {
         boolean success = certificateService.revokeCertificate(serialNr, principal.getName());
         if (success) {
             return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.badRequest().build();
+    }
+
+    @GetMapping("crl")
+    public ResponseEntity<ByteArrayResource> downloadCrl(Principal principal) {
+        logger.info(String.format("User [%s] request CRL file.", principal.getName()));
+        byte[] crl = certificateService.getCrl();
+        if (crl != null) {
+            return ResponseEntity.ok(new ByteArrayResource(crl));
         }
         return ResponseEntity.badRequest().build();
     }

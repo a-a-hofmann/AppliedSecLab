@@ -170,4 +170,13 @@ public class CertificateService {
         }
         return currentSerialNr;
     }
+
+    public byte[] getCrl() {
+        try {
+            return certificateManager.getCrl();
+        } catch (CertificateManagerException e) {
+            logger.error("Failed to fetch CRL file.", e);
+        }
+        return null;
+    }
 }

@@ -1,6 +1,7 @@
 package ch.ethz.asl.gateway;
 
 import org.springframework.cloud.netflix.feign.FeignClient;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,6 +22,8 @@ public interface CertificateClient {
     @GetMapping("cert/{serialNr}")
     ResponseEntity<byte[]> downloadCertificate(@PathVariable("serialNr") String serialNr);
 
+    @GetMapping("crl")
+    ResponseEntity<ByteArrayResource> downloadCrl();
 
     @DeleteMapping("cert/{serialNr}")
     ResponseEntity<Void> revokeCertificate(@PathVariable("serialNr") String serialNr);
