@@ -69,7 +69,7 @@ public class UserController {
     public ResponseEntity<Resource> downloadCertificate(@PathVariable("serialNr") String serialNr) throws IOException {
         ResponseEntity<byte[]> certificate = certificateClient.downloadCertificate(serialNr);
         if (!certificate.getStatusCode().equals(HttpStatus.OK) || certificate.getBody() == null) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.status(certificate.getStatusCode()).build();
         }
 
         ByteArrayResource resource = new ByteArrayResource(certificate.getBody());

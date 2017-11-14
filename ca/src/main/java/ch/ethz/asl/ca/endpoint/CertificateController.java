@@ -34,7 +34,7 @@ public class CertificateController {
     @GetMapping("cert/{serialNr}")
     public ResponseEntity<byte[]> getCertificate(@PathVariable("serialNr") final String serialNr, Principal principal) {
         byte[] certificate = certificateService.getCertificate(serialNr, principal.getName());
-        if (certificate == null) {
+        if (certificate == null || certificate.length == 0) {
             return ResponseEntity.badRequest().build();
         }
         return ResponseEntity.ok(certificate);

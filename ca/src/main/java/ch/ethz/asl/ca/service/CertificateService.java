@@ -71,6 +71,11 @@ public class CertificateService {
             throw new IllegalArgumentException(String.format("Failed to get certificate [%s] for user [%s]", serialNr, user.getUsername()));
         }
 
+        if (userCertificate.isRevoked()) {
+            logger.info(String.format("User [%s] requested certificate [%s] that was revoked.", user.getUsername(), serialNr));
+            return new byte[0];
+        }
+
         byte[] success;
         try {
             success = certificateManager.getCertificate(userCertificate.getSerialNr(), user);

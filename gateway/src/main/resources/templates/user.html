@@ -53,6 +53,11 @@
                     <div class="card-body">
                         <h4 class="card-title">User info</h4>
 
+                        <div class="alert alert-warning" role="alert">
+                            Modifying any field will revoke all previously issued certificates. Exception made for
+                            <strong>Password</strong>.
+                        </div>
+
                         <!--/*@thymesVar id="user" type="ch.ethz.asl.gateway.User"*/-->
                         <form th:action="@{/user}" th:object="${user}" method="post">
 
@@ -200,7 +205,9 @@
                                 <h4 class="card-title">Certificate Revocation List</h4>
 
                                 <form th:action="@{crl}" method="post">
-                                    <button type="submit" class="btn btn-primary">Download CRL</button>
+                                    <button type="submit" class="btn btn-primary"><i class=" fa fa-download"></i>
+                                        Download CRL
+                                    </button>
                                 </form>
                             </div>
                         </div>
