@@ -10,6 +10,8 @@ public class UserCertificate implements Serializable, Comparable<UserCertificate
 
     private String serialNr;
 
+    private String issuedTo;
+
     private Timestamp issuedOn;
 
     private Timestamp revokedOn;
@@ -17,9 +19,11 @@ public class UserCertificate implements Serializable, Comparable<UserCertificate
     private boolean isRevoked;
 
     @JsonCreator
-    public UserCertificate(@JsonProperty("serialNr") String serialNr, @JsonProperty("issuedOn") Timestamp issuedOn,
-                           @JsonProperty("revokedOn") Timestamp revokedOn, @JsonProperty("isRevoked") boolean isRevoked) {
+    public UserCertificate(@JsonProperty("serialNr") String serialNr, @JsonProperty("issuedTo") String issuedTo,
+                           @JsonProperty("issuedOn") Timestamp issuedOn, @JsonProperty("revokedOn") Timestamp revokedOn,
+                           @JsonProperty("isRevoked") boolean isRevoked) {
         this.serialNr = serialNr;
+        this.issuedTo = issuedTo;
         this.issuedOn = issuedOn;
         this.revokedOn = revokedOn;
         this.isRevoked = isRevoked;
@@ -31,6 +35,14 @@ public class UserCertificate implements Serializable, Comparable<UserCertificate
 
     public void setSerialNr(String serialNr) {
         this.serialNr = serialNr;
+    }
+
+    public String getIssuedTo() {
+        return issuedTo;
+    }
+
+    public void setIssuedTo(String issuedTo) {
+        this.issuedTo = issuedTo;
     }
 
     public Timestamp getIssuedOn() {

@@ -1,5 +1,6 @@
 package ch.ethz.asl.ca.model;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.Entity;
@@ -61,6 +62,11 @@ public class UserCertificate implements Serializable {
     @JsonIgnore
     public User getIssuedTo() {
         return issuedTo;
+    }
+
+    @JsonGetter("issuedTo")
+    public String getUsername() {
+        return issuedTo.getUsername();
     }
 
     public void setIssuedTo(User issuedTo) {

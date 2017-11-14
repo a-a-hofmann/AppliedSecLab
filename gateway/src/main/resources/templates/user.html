@@ -159,6 +159,27 @@
                             </tr>
                             </tbody>
                         </table>
+
+                        <h4 class="card-title">All revoked certificates</h4>
+                        <table class="table">
+                            <thead class="thead-dark">
+                            <tr>
+                                <th scope="col">Serial #</th>
+                                <th scope="col">Issued To</th>
+                                <th scope="col">Issued On</th>
+                                <th scope="col">Revoked On</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <!--/*@thymesVar id="cert" type="ch.ethz.asl.gateway.UserCertificate"*/-->
+                            <tr th:each="cert : ${revokedCerts}">
+                                <td th:text="${cert.serialNr}"></td>
+                                <td th:text="${cert.issuedTo}"></td>
+                                <td th:text="${#dates.format(cert.issuedOn, 'HH:mm, dd-MMM-yyyy')}"></td>
+                                <td th:text="${#dates.format(cert.revokedOn, 'HH:mm, dd-MMM-yyyy')}"></td>
+                            </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
 
