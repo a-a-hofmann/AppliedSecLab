@@ -2,14 +2,21 @@ package ch.ethz.asl.gateway;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.validation.Valid;
+import java.io.IOException;
 import java.security.Principal;
 import java.util.Collections;
 import java.util.List;
@@ -34,7 +41,7 @@ public class UserController {
     public String getUser(Model model) {
         User userInfo = userClient.getUserInfo();
         model.addAttribute("user", userInfo);
-        fillModelWithCertificates(certificateClient.getUserCertificates(), model);
+        fillModelWithCertificates(certificateClient.getUserCertificates(), certificateClient.getAllRevoked(), model);
         return "user";
     }
 
@@ -42,7 +49,7 @@ public class UserController {
     public String saveUser(@ModelAttribute("user") @Valid User user, BindingResult bindingResult, Model model, Principal principal) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("user", user);
-            fillModelWithCertificates(certificateClient.getUserCertificates(), model);
+            fillModelWithCertificates(certificateClient.getUserCertificates(), certificateClient.getAllRevoked(), model);
             return "user";
         }
 
@@ -58,8 +65,45 @@ public class UserController {
         return "redirect:/user";
     }
 
+    @GetMapping("cert/{serialNr}")
+    public ResponseEntity<Resource> downloadCertificate(@PathVariable("serialNr") String serialNr) throws IOException {
+        ResponseEntity<byte[]> certificate = certificateClient.downloadCertificate(serialNr);
+        if (!certificate.getStatusCode().equals(HttpStatus.OK) || certificate.getBody() == null) {
+            return ResponseEntity.status(certificate.getStatusCode()).build();
+        }
 
-    private void fillModelWithCertificates(List<UserCertificate> certificates, Model model) {
+        ByteArrayResource resource = new ByteArrayResource(certificate.getBody());
+        return ResponseEntity.ok()
+                .header("Content-Disposition", "attachment; filename=" + serialNr + ".p12")
+                .contentLength(resource.contentLength())
+                .contentType(MediaType.parseMediaType("application/octet-stream"))
+                .body(resource);
+    }
+
+    @PostMapping("cert/revoke")
+    public String revokeCertificate(CertificateRevocationCommand revoke, Principal principal) {
+        // TODO send hashed pwd to ca for revocation check.. or not and remove it from UI.
+        logger.info(String.format("Revoking certificate [%s] for user [%s]", revoke.getSerialNr(), principal.getName()));
+        ResponseEntity<Void> responseEntity = certificateClient.revokeCertificate(revoke.getSerialNr());
+        logger.info(responseEntity.getStatusCode());
+        return "redirect:/user";
+    }
+
+    @PostMapping("crl")
+    public ResponseEntity<Resource> downloadCrl() {
+        ResponseEntity<ByteArrayResource> response = certificateClient.downloadCrl();
+        if (!response.getStatusCode().equals(HttpStatus.OK) || response.getBody() == null) {
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok()
+                .header("Content-Disposition", "attachment; filename=crl.pem")
+                .contentLength(response.getBody().contentLength())
+                .contentType(MediaType.parseMediaType("application/octet-stream"))
+                .body(response.getBody());
+    }
+
+
+    private void fillModelWithCertificates(List<UserCertificate> certificates, List<UserCertificate> allRevokedCerts, Model model) {
         List<UserCertificate> revokedCerts = certificates.stream().filter(UserCertificate::isRevoked).collect(Collectors.toList());
         certificates = certificates.stream().filter(c -> !c.isRevoked()).collect(Collectors.toList());
 
@@ -68,5 +112,6 @@ public class UserController {
 
         model.addAttribute("certificates", certificates);
         model.addAttribute("revokedCerts", revokedCerts);
+        model.addAttribute("allRevokedCerts", allRevokedCerts);
     }
 }

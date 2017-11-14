@@ -2,3 +2,8 @@
 body {
     padding-top: 3.5rem;
 }
+
+a.download-cert, a.download-cert:link, a.download-cert:visited, a.download-cert:focus {
+    text-decoration: none;
+}
+

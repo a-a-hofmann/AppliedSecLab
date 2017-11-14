@@ -23,7 +23,7 @@ public class UserCertificateService {
         this.userRepository = userRepository;
     }
 
-    public Optional<UserCertificate> findBySerialNrAndUser(long serialNr, User user) {
+    public Optional<UserCertificate> findBySerialNrAndUser(String serialNr, User user) {
         Assert.notNull(user, "User cannot be null.");
 
         UserCertificate certificate = repository.findBySerialNrAndIssuedTo(serialNr, user);
@@ -40,6 +40,10 @@ public class UserCertificateService {
         Assert.notNull(user, "User cannot be null.");
 
         return repository.findAllByIssuedToAndIsRevokedFalse(user);
+    }
+
+    public List<UserCertificate> findAllRevoked() {
+        return repository.findAllByIsRevokedTrue();
     }
 
     public Optional<UserCertificate> findLastUserCertificate(User user) {
@@ -60,9 +64,9 @@ public class UserCertificateService {
         return Optional.of(lastCert.get(0));
     }
 
-    public UserCertificate issueCertificateForUser(User user, final long serialNr, final String path) {
+    public UserCertificate issueCertificateForUser(User user, final String serialNr, final String path) {
         Assert.notNull(user, "User cannot be null.");
-        Assert.isTrue(!repository.exists(serialNr), String.format("Certificate already exists in the db for serialNr [%d]", serialNr));
+        Assert.isTrue(!repository.exists(serialNr), String.format("Certificate already exists in the db for serialNr [%s]", serialNr));
         Assert.isTrue(!StringUtils.isEmpty(path), "No path to certificate given.");
 
         UserCertificate certificate = UserCertificate.issuedNowToUser(serialNr, path, user);
@@ -73,18 +77,18 @@ public class UserCertificateService {
         Assert.notNull(certificate, "Certificate cannot be null.");
         Assert.notNull(user, "User cannot be null.");
         Assert.isTrue(userRepository.exists(user.getUsername()), String.format("User [%s] doesn't exist.", user.getUsername()));
-        
+
         certificate.setIssuedTo(user);
         return certificate;
     }
 
-    public UserCertificate revokeCertificate(User user, long serialNr) {
+    public UserCertificate revokeCertificate(User user, String serialNr) {
         Assert.notNull(user, "User cannot be null.");
 
         UserCertificate certificate = repository.findBySerialNrAndIssuedTo(serialNr, user);
-        Assert.notNull(certificate, String.format("No certificate found for user [%s] and serialNr [%d]", user.getUsername(), serialNr));
+        Assert.notNull(certificate, String.format("No certificate found for user [%s] and serialNr [%s]", user.getUsername(), serialNr));
 
         certificate.revoke();
-        return certificate;
+        return repository.save(certificate);
     }
 }
