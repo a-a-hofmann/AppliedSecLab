@@ -172,7 +172,7 @@
                             </thead>
                             <tbody>
                             <!--/*@thymesVar id="cert" type="ch.ethz.asl.gateway.UserCertificate"*/-->
-                            <tr th:each="cert : ${revokedCerts}">
+                            <tr th:each="cert : ${allRevokedCerts}">
                                 <td th:text="${cert.serialNr}"></td>
                                 <td th:text="${cert.issuedTo}"></td>
                                 <td th:text="${#dates.format(cert.issuedOn, 'HH:mm, dd-MMM-yyyy')}"></td>

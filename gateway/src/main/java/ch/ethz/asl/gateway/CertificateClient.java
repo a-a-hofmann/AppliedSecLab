@@ -25,6 +25,9 @@ public interface CertificateClient {
     @GetMapping("crl")
     ResponseEntity<ByteArrayResource> downloadCrl();
 
+    @GetMapping("revoked")
+    List<UserCertificate> getAllRevoked();
+
     @DeleteMapping("cert/{serialNr}")
     ResponseEntity<Void> revokeCertificate(@PathVariable("serialNr") String serialNr);
 }

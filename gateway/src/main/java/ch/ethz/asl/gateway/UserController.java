@@ -41,7 +41,7 @@ public class UserController {
     public String getUser(Model model) {
         User userInfo = userClient.getUserInfo();
         model.addAttribute("user", userInfo);
-        fillModelWithCertificates(certificateClient.getUserCertificates(), model);
+        fillModelWithCertificates(certificateClient.getUserCertificates(), certificateClient.getAllRevoked(), model);
         return "user";
     }
 
@@ -49,7 +49,7 @@ public class UserController {
     public String saveUser(@ModelAttribute("user") @Valid User user, BindingResult bindingResult, Model model, Principal principal) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("user", user);
-            fillModelWithCertificates(certificateClient.getUserCertificates(), model);
+            fillModelWithCertificates(certificateClient.getUserCertificates(), certificateClient.getAllRevoked(), model);
             return "user";
         }
 
@@ -103,7 +103,7 @@ public class UserController {
     }
 
 
-    private void fillModelWithCertificates(List<UserCertificate> certificates, Model model) {
+    private void fillModelWithCertificates(List<UserCertificate> certificates, List<UserCertificate> allRevokedCerts, Model model) {
         List<UserCertificate> revokedCerts = certificates.stream().filter(UserCertificate::isRevoked).collect(Collectors.toList());
         certificates = certificates.stream().filter(c -> !c.isRevoked()).collect(Collectors.toList());
 
@@ -112,5 +112,6 @@ public class UserController {
 
         model.addAttribute("certificates", certificates);
         model.addAttribute("revokedCerts", revokedCerts);
+        model.addAttribute("allRevokedCerts", allRevokedCerts);
     }
 }
