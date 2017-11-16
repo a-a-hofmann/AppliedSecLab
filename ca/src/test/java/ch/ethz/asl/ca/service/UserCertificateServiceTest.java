@@ -37,7 +37,13 @@ public class UserCertificateServiceTest {
     @Before
     public void setUp() throws Exception {
         test1 = new User("test1", "test1");
+        test1.setEmail("test1@test.com");
+        test1.setFirstname("test1");
+        test1.setLastname("test1");
         test2 = new User("test2", "test2");
+        test2.setEmail("test2@test.com");
+        test2.setFirstname("test1");
+        test2.setLastname("test1");
         test1 = userRepository.save(test1);
         test2 = userRepository.save(test2);
     }
