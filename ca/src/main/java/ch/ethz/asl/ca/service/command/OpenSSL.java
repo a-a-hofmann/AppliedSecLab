@@ -94,7 +94,7 @@ public class OpenSSL implements CertificateManager {
     }
 
     private String clean(String subj) {
-        Pattern pt = Pattern.compile("[^a-zA-Z0-9 ]");
+        Pattern pt = Pattern.compile("[^a-zA-Z0-9 @.]");
         Matcher match = pt.matcher(subj);
         while (match.find()) {
             subj = subj.replace(match.group(), "");
