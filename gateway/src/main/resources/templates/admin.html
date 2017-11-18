@@ -53,8 +53,10 @@
                     <div class="card-body">
                         <h4 class="card-title">CA Stats</h4>
 
-                        <p>Number of issued certificates: <strong
-                                th:text="${adminReport.numberOfIssuedCertificates}"></strong></p>
+                        <!--/*@thymesVar id="adminReport" type="ch.ethz.asl.gateway.dto.AdminReport"*/-->
+                        <p>Number of issued certificates:
+                            <strong
+                                    th:text="${adminReport.numberOfIssuedCertificates}"></strong></p>
                         <p>Number of revoked certificates: <strong
                                 th:text="${adminReport.numberOfRevokedCertificates}"></strong></p>
                         <p>Current serial Nr: <strong th:text="${adminReport.currentSerialNumber}"></strong></p>
@@ -208,11 +210,6 @@
         crossorigin="anonymous"></script>
 
 <script th:inline="javascript">
-
-    const csrfToken = [[${_csrf}]];
-    console.log(csrfToken);
-    const header = csrfToken.headerName;
-
     $('#revoke-confirm').on('show.bs.modal', function (event) {
         const button = $(event.relatedTarget);
         const serialNr = button.data('serialnr');
