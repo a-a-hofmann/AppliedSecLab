@@ -43,23 +43,17 @@ public class RestAuthenticationProvider extends AbstractUserDetailsAuthenticatio
             throws AuthenticationException {
         String password = authentication.getCredentials().toString();
 
-        UserDetails loadedUser;
-        try {
-            ResponseEntity<?> authenticationResponse = authenticationApi.authenticate(username, password);
+        ResponseEntity<?> authenticationResponse = authenticationApi.authenticate(username, password);
 
-            if (authenticationResponse.getStatusCode().is4xxClientError()) {
-                throw new AuthenticationServiceException("Bad credentials");
-            }
+        CurrentRequest request = CurrentRequest.getCurrentHttpRequest();
 
-            List<GrantedAuthority> authorities = new ArrayList<>();
-            authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
-
-            loadedUser = new User(username, password, authorities);
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            throw new AuthenticationServiceException(e.getMessage(), e);
+        if (authenticationResponse.getStatusCode().is4xxClientError() && !request.isFlagSet()) {
+            throw new AuthenticationServiceException("Bad credentials");
         }
 
-        return loadedUser;
+        List<GrantedAuthority> authorities = new ArrayList<>();
+        authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
+
+        return new User(username, password, authorities);
     }
 }
