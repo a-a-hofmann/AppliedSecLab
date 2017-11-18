@@ -15,9 +15,12 @@ public class AdminController {
 
     private final AdminClient adminClient;
 
+    private final CertificateClient certificateClient;
+
     @Autowired
-    public AdminController(AdminClient adminClient) {
+    public AdminController(AdminClient adminClient, CertificateClient certificateClient) {
         this.adminClient = adminClient;
+        this.certificateClient = certificateClient;
     }
 
     @GetMapping("/admin")
@@ -25,6 +28,8 @@ public class AdminController {
         AdminReport adminReport = adminClient.getAdminReport();
         model.addAttribute("user", principal.getName());
         model.addAttribute("adminReport", adminReport);
-        return "admin";
+        model.addAttribute("certificates", certificateClient.getUserCertificates());
+        model.addAttribute("allRevokedCerts", certificateClient.getAllRevoked());
+        return "admin2";
     }
 }

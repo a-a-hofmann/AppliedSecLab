@@ -4,6 +4,7 @@ import ch.ethz.asl.ca.model.User;
 import ch.ethz.asl.ca.model.UserCertificate;
 import ch.ethz.asl.ca.model.UserCertificateRepository;
 import ch.ethz.asl.ca.model.UserRepository;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
@@ -33,6 +34,11 @@ public class UserCertificateService {
 
         UserCertificate certificate = repository.findBySerialNrAndIssuedTo(serialNr, user);
         return Optional.ofNullable(certificate);
+    }
+
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public List<UserCertificate> findAll() {
+        return repository.findAll();
     }
 
     public List<UserCertificate> findAllByUser(User user) {

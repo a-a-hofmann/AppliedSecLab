@@ -48,119 +48,46 @@
     <div class="container">
         <!-- Example row of columns -->
         <div class="row">
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <div class="card">
                     <div class="card-body">
-                        <h4 class="card-title">User info</h4>
+                        <h4 class="card-title">CA Stats</h4>
 
-                        <div class="alert alert-warning" role="alert">
-                            Modifying any field will revoke all previously issued certificates. Exception made for
-                            <strong>Password</strong>.
-                        </div>
+                        <p>Number of issued certificates: <strong
+                                th:text="${adminReport.numberOfIssuedCertificates}"></strong></p>
+                        <p>Number of revoked certificates: <strong
+                                th:text="${adminReport.numberOfRevokedCertificates}"></strong></p>
+                        <p>Current serial Nr: <strong th:text="${adminReport.currentSerialNumber}"></strong></p>
 
-                        <!--/*@thymesVar id="user" type="ch.ethz.asl.gateway.dto.User"*/-->
-                        <form th:action="@{/user}" th:object="${user}" method="post">
-
-                            <div class="form-group">
-                                <label for="firstname">First name:</label>
-                                <input class="form-control" id="firstname"
-                                       th:classappend="${#fields.hasErrors('firstname')} ? 'is-invalid' : ''"
-                                       th:field="*{firstname}"/>
-                                <div class="invalid-feedback">
-                                    First name is required.
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="lastname">Last name:</label>
-                                <input id="lastname" class="form-control"
-                                       th:classappend="${#fields.hasErrors('lastname')} ? 'is-invalid' : ''"
-                                       th:field="*{lastname}"/>
-                                <div class="invalid-feedback">
-                                    Last name is required.
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="email">Email:</label>
-                                <input id="email" class="form-control"
-                                       th:classappend="${#fields.hasErrors('email')} ? 'is-invalid' : ''"
-                                       th:field="*{email}"/>
-                                <div class="invalid-feedback">
-                                    Please provide a valid email.
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="password">Password:</label>
-                                <input id="password" class="form-control" type="password" th:autocomplete="${false}"
-                                       th:classappend="${#fields.hasErrors('passwordOk')} ? 'is-invalid' : ''"
-                                       th:field="*{password}"/>
-                                <div class="invalid-feedback">
-                                    Passwords do not match
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="password-confirmation">Confirm password:</label>
-                                <input id="password-confirmation" class="form-control" type="password"
-                                       th:classappend="${#fields.hasErrors('passwordOk')} ? 'is-invalid' : ''"
-                                       th:autocomplete="${false}" th:field="*{passwordConfirmation}"/>
-                                <div class="invalid-feedback">
-                                    Passwords do not match
-                                </div>
-                            </div>
-
-                            <button type="submit" class="btn btn-success">Save</button>
-                        </form>
                     </div>
                 </div>
             </div>
-            <div class="col-md-8">
+            <div class="col-md-9">
                 <div class="card">
                     <div class="card-body">
-                        <h4 class="card-title">Your certificates</h4>
+                        <h4 class="card-title">All certificates</h4>
                         <table class="table">
                             <thead class="thead-light">
                             <tr>
                                 <th scope="col">Serial #</th>
+                                <th scope="col">Issued To</th>
                                 <th scope="col">Issued On</th>
+                                <th scope="col">Revoked On</th>
                                 <th scope="col"></th>
                             </tr>
                             </thead>
                             <tbody>
                             <tr th:each="cert : ${certificates}">
                                 <td th:text="${cert.serialNr}"></td>
+                                <td th:text="${cert.issuedTo}"></td>
                                 <td th:text="${#dates.format(cert.issuedOn, 'HH:mm, dd-MMM-yyyy')}"></td>
-                                <td>
-                                    <a class="btn btn-primary download-cert fa fa-download"
-                                       th:href="@{'/cert/' + ${cert.serialNr}}"
-                                       target="_self">
-                                    </a>
-
+                                <td th:text="${cert.revokedOn != null ? #dates.format(cert.revokedOn, 'HH:mm, dd-MMM-yyyy') : ''}"></td>
+                                <td th:if="${!cert.isRevoked()}">
                                     <button type="button" class="btn btn-primary fa fa-times" data-toggle="modal"
                                             data-target="#revoke-confirm"
                                             th:attr="data-serialNr=${cert.serialNr}, data-issuedon=${cert.issuedOn}">
                                     </button>
                                 </td>
-                            </tr>
-                            </tbody>
-                        </table>
-
-                        <h4 class="card-title">Your revoked certificates</h4>
-                        <table class="table">
-                            <thead class="thead-dark">
-                            <tr>
-                                <th scope="col">Serial #</th>
-                                <th scope="col">Issued On</th>
-                                <th scope="col">Revoked On</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr th:each="cert : ${revokedCerts}">
-                                <td th:text="${cert.serialNr}"></td>
-                                <td th:text="${#dates.format(cert.issuedOn, 'HH:mm, dd-MMM-yyyy')}"></td>
-                                <td th:text="${#dates.format(cert.revokedOn, 'HH:mm, dd-MMM-yyyy')}"></td>
                             </tr>
                             </tbody>
                         </table>
@@ -196,8 +123,10 @@
                             <div class="col-md-6">
                                 <h4 class="card-title">Request new certificate</h4>
 
-                                <form th:action="@{cert}" method="post">
-                                    <button type="submit" class="btn btn-primary">New Certificate</button>
+                                <form th:action="@{admin}" method="post">
+                                    <button type="submit" class="btn btn-danger"
+                                            onclick="return confirm('Are you sure?')">Revoke All Certificates
+                                    </button>
                                 </form>
                             </div>
 
@@ -245,8 +174,8 @@
                     </table>
 
                     <form id="confirmation-form" method="post" th:action="@{/cert/revoke}">
-                        <!--<label for="confirmation">Please enter your password to confirm.</label>-->
-                        <!--<input id="confirmation" type="password" name="password" class="form-control"/>-->
+                        <label for="confirmation">Please enter your password to confirm.</label>
+                        <input id="confirmation" type="password" name="password" class="form-control"/>
                         <input id="serialNr" type="hidden" name="serialNr"/>
 
                         <button type="submit" class="btn btn-danger btn-block">I understand the consequences, revoke

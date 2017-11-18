@@ -10,6 +10,7 @@ import ch.ethz.asl.ca.service.event.CertificateIssuedEvent;
 import ch.ethz.asl.ca.service.event.CertificateRequestedEvent;
 import ch.ethz.asl.ca.service.event.CertificateRevokedEvent;
 import org.apache.log4j.Logger;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.stereotype.Service;
 
@@ -36,6 +37,11 @@ public class CertificateService {
         this.certificateManager = certificateManager;
         this.eventListener = eventListener;
         this.userCertificateService = userCertificateService;
+    }
+
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public List<UserCertificate> getAllCertificates() {
+        return userCertificateService.findAll();
     }
 
     public List<UserCertificate> getUserCertificates(final String username) {
@@ -172,6 +178,9 @@ public class CertificateService {
     public User getUser(final String username) {
         User user = userRepository.findOne(username);
         if (user == null) {
+            if (username.equals("admin")) {
+                return new User("admin", "");
+            }
             throw new AuthenticationServiceException("User not found: " + username);
         }
         return user;

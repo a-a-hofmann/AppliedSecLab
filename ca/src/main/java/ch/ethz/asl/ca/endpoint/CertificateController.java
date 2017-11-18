@@ -36,8 +36,17 @@ public class CertificateController {
     }
 
     @GetMapping("cert")
-    public List<UserCertificate> getUserCertificates(Principal principal) {
+    public List<UserCertificate> getUserCertificates(Principal principal, HttpServletRequest request) {
+        if (isAdmin(request)) {
+            return certificateService.getAllCertificates();
+        }
         return certificateService.getUserCertificates(principal.getName());
+    }
+
+    private boolean isAdmin(HttpServletRequest request) {
+        boolean role_admin = request.isUserInRole("ROLE_ADMIN");
+        boolean admin = request.isUserInRole("ADMIN");
+        return role_admin || admin;
     }
 
     @GetMapping("cert/{serialNr}")

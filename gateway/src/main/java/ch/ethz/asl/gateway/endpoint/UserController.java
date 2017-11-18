@@ -85,15 +85,16 @@ public class UserController {
                 .body(resource);
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
     @PostMapping("cert/revoke")
     public String revokeCertificate(CertificateRevocationCommand revoke, Principal principal) {
-        // TODO send hashed pwd to ca for revocation check.. or not and remove it from UI.
         logger.info(String.format("Revoking certificate [%s] for user [%s]", revoke.getSerialNr(), principal.getName()));
         ResponseEntity<Void> responseEntity = certificateClient.revokeCertificate(revoke.getSerialNr());
         logger.info(responseEntity.getStatusCode());
         return "redirect:/user";
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
     @PostMapping("crl")
     public ResponseEntity<Resource> downloadCrl() {
         ResponseEntity<ByteArrayResource> response = certificateClient.downloadCrl();
