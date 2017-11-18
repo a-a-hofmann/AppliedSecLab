@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
 
 @Controller
-public class TemplateController {
+public class IndexController {
 
     @GetMapping("/")
     public String index(HttpServletRequest request) {
