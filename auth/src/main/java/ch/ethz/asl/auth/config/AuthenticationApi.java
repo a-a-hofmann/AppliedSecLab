@@ -1,10 +1,12 @@
 package ch.ethz.asl.auth.config;
 
+import org.apache.log4j.Logger;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.nio.charset.Charset;
@@ -14,8 +16,11 @@ import java.util.List;
 @Component
 public class AuthenticationApi {
 
+    private static final Logger logger = Logger.getLogger(AuthenticationApi.class);
+
     private final RestTemplate restTemplate;
 
+    private static final String URI = "http://localhost:8081/authenticate";
     private static final String AUTHENTICATION_URL = "https://localhost:8445/authenticate";
 
     private static final String EMAIL_QUERY_URL = "https://localhost:8445/authenticate/email";
@@ -35,7 +40,12 @@ public class AuthenticationApi {
 
     public ResponseEntity<?> authenticate(String username, String password) {
         HttpEntity<?> entity = usernamePasswordToken(username, password);
-        return restTemplate.exchange(AUTHENTICATION_URL, HttpMethod.POST, entity, Object.class);
+        try {
+            return restTemplate.exchange(URI, HttpMethod.POST, entity, Object.class);
+        } catch (HttpClientErrorException e) {
+            logger.error("Bad credentials", e);
+        }
+        return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
     }
 
     private HttpHeaders createHeaders(final String email) {

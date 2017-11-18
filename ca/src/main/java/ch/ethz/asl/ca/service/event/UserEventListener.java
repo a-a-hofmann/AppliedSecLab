@@ -1,7 +1,6 @@
 package ch.ethz.asl.ca.service.event;
 
 import ch.ethz.asl.ca.service.CertificateService;
-import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 /**
@@ -9,8 +8,6 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class UserEventListener {
-
-    private static final Logger logger = Logger.getLogger(UserEventListener.class);
 
     private final EventRepository eventRepository;
 

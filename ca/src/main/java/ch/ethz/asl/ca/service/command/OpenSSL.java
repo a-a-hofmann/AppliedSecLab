@@ -36,22 +36,23 @@ public class OpenSSL implements CertificateManager {
     private static final String UNABLE_TO_REVOKE_CERTIFICATE = "Unable to revoke the given certificate by using openssl. Error: ";
     private static final String UNABLE_TO_CREATE_CRL = "Unable to create the revokation list. Error: ";
     private static final String UNABLE_TO_FIND_CERTIFICATE = "The certificate with the given serial number does not exist. Error: ";
-    private static final String UNABLE_TO_READ_LAST_ISSUED_CERTIFICATE = "Unable to read the last issued certificate from the filesstem. Error: ";
+    private static final String UNABLE_TO_READ_LAST_ISSUED_CERTIFICATE = "Unable to read the last issued certificate from the filesystem. Error: ";
     private static final String UNABLE_TO_GET_NR_OF_ISSUED_CERTIFICATES = "Unable to get the number of issued certificates from the filesystem. Error: ";
     private static final String UNABLE_TO_GET_NR_OF_REVOKED_CERTIFICATES = "Unable to get the number of revoked certificates from the filesystem. Error: ";
     private static final String UNABLE_TO_GET_CURRENT_SERIAL_NUMBER = "Unable to get the current serial number from the filesystem. Error: ";
-
+    private static final String UNABLE_TO_DELETE_FILE = "Unable to delete the file from the filesystem. Error: ";
 
     //TODO: %s mitigate injection for all
     private final String GENERATE_KEY = "openssl genrsa -out %s.key 1024";
     //Example:openssl req -new -key etc/ssl/CA/newkeys/db/test.key -out etc/ssl/CA/newkeys/db/test.csr -config etc/ssl/openssl.cnf -subj "/C=CH/ST=Zurich/L=Zurich/O=ETH/OU=AppliedSecLab/CN=Test test/emailAddress=test@imovie.ch"
     private final String GENERATE_SIGNING_REQUEST = "openssl req -new -key %s.key -out %s.csr -config " + ABSOLUTE_DIR + "openssl.cnf " + SUBJ;
 
+
     //Example: openssl ca -name CA_db -batch -in etc/ssl/CA/newkeys/test.csr -config etc/ssl/openssl.cnf
     private final String SIGN_CERTIFICATE = "openssl ca -name CA_%s -batch -in %s.csr -config " + ABSOLUTE_DIR + "openssl.cnf -passin pass:admin";
     private final String REVOKE_CERTIFICATE = "openssl ca -revoke %s -config " + ABSOLUTE_DIR + "openssl.cnf -passin pass:admin";
     private final String CREATE_CRL = "openssl ca -gencrl -out " + ABSOLUTE_DIR + "CA/crl/crl.pem  -config " + ABSOLUTE_DIR + "openssl.cnf -passin pass:admin";
-    private final String CREATE_P12 = "openssl pkcs12 -export -out %s -inkey %s -in %s -passout pass:";
+    private final String CREATE_P12 = "openssl pkcs12 -export -out %s -inkey %s -in %s -passout pass:test";
 
     //private final UserCertificateService userCertificateService;
 
@@ -71,6 +72,16 @@ public class OpenSSL implements CertificateManager {
         }
         p.waitFor();
         return toReturn.toString();
+    }
+
+    private void deleteFile(String absolutePath) throws CertificateManagerException{
+
+        File file = new File(absolutePath);
+        try {
+            file.delete();
+        } catch(SecurityException e) {
+            throw new CertificateManagerException(UNABLE_TO_DELETE_FILE + e.getMessage());
+        }
     }
 
 
@@ -119,13 +130,15 @@ public class OpenSSL implements CertificateManager {
                     BufferedReader br = new BufferedReader(new FileReader(SERIALNR_OLD_PATH));
                     serialNr = br.readLine();
                     br.close();
-                    // TODO: after signing we should remove the csr file.
                 } catch (IOException e) {
                     throw new CertificateManagerException(UNABLE_TO_READ_LAST_ISSUED_CERTIFICATE + e.getMessage());
                 }
-
-                createPKCS12File(serialNr, currentPath, user);
             }
+            createPKCS12File(serialNr, currentPath, user);
+            final String absolutePath = Paths.get(currentPath).toAbsolutePath().toString();
+            deleteFile(absolutePath + ".key");
+            deleteFile(absolutePath + ".csr");
+            //deleteFile(String.format(CERTIFICATE_PATH, user.getUsername(), serialNr));
 
         } catch (IOException | InterruptedException e) {
             throw new CertificateManagerException(UNABLE_TO_SIGN_CERTIFICATE_EXCEPTION + e.getMessage());

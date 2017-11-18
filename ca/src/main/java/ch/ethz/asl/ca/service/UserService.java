@@ -7,6 +7,7 @@ import ch.ethz.asl.ca.model.UserSafeProjection;
 import ch.ethz.asl.ca.service.event.UserDetailsUpdateEvent;
 import ch.ethz.asl.ca.service.event.UserEventListener;
 import ch.ethz.asl.ca.service.event.UserInfoRequestEvent;
+import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -21,6 +22,14 @@ public class UserService {
         this.eventListener = eventListener;
     }
 
+    public User getUser(final String username) {
+        User user = userRepository.findOne(username);
+        if (user == null) {
+            throw new AuthenticationServiceException("User not found: " + username);
+        }
+        return user;
+    }
+
     public UserSafeProjection getUserDetails(final String username) {
         UserSafeProjection userInfo = userRepository.findByUsername(username);
         eventListener.onUserInfoRequest(new UserInfoRequestEvent(username, userInfo));
@@ -28,15 +37,16 @@ public class UserService {
     }
 
     public void updateUser(User updatedInfo, final String username) {
-        User userRequestingUpdate = userRepository.findOne(username);
+        User userRequestingUpdate = getUser(username);
 
         boolean requiresCertRevocation = userRequestingUpdate.updateRequiresCertRevocation(updatedInfo);
         UserDetailsUpdateEvent updateEvent =
                 new UserDetailsUpdateEvent(username, userRequestingUpdate, updatedInfo, requiresCertRevocation);
-        eventListener.onUserInfoUpdate(updateEvent);
 
         userRequestingUpdate.update(updatedInfo);
         userRepository.save(userRequestingUpdate);
+
+        eventListener.onUserInfoUpdate(updateEvent);
     }
 
     public boolean checkUserCredentials(CredentialsParser.Credentials credentials) {

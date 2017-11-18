@@ -10,6 +10,7 @@ import ch.ethz.asl.ca.service.event.CertificateIssuedEvent;
 import ch.ethz.asl.ca.service.event.CertificateRequestedEvent;
 import ch.ethz.asl.ca.service.event.CertificateRevokedEvent;
 import org.apache.log4j.Logger;
+import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,7 +18,6 @@ import java.util.Optional;
 
 @Service
 public class CertificateService {
-    //TODO:Logging
     private static final Logger logger = Logger.getLogger(CertificateService.class);
 
     /**
@@ -31,9 +31,7 @@ public class CertificateService {
 
     private final UserCertificateService userCertificateService;
 
-    //TODO: Here UserCertificateService
     public CertificateService(UserRepository userRepository, CertificateManager certificateManager, CertificateEventListener eventListener, UserCertificateService userCertificateService) {
-
         this.userRepository = userRepository;
         this.certificateManager = certificateManager;
         this.eventListener = eventListener;
@@ -41,7 +39,7 @@ public class CertificateService {
     }
 
     public List<UserCertificate> getUserCertificates(final String username) {
-        User user = userRepository.findOne(username);
+        User user = getUser(username);
         return getUserCertificates(user);
     }
 
@@ -54,13 +52,7 @@ public class CertificateService {
     }
 
     public byte[] getCertificate(final String serialNr, final String username) {
-
-        User user = userRepository.findOne(username);
-        if (user == null) {
-            throw new IllegalArgumentException(String.format("No user found in security context. Searched for username [%s]", username));
-        }
-
-        eventListener.onCertificateRequested(new CertificateRequestedEvent(user.getUsername(), serialNr));
+        User user = getUser(username);
 
         UserCertificate userCertificate;
 
@@ -79,7 +71,7 @@ public class CertificateService {
         byte[] success;
         try {
             success = certificateManager.getCertificate(userCertificate.getSerialNr(), user);
-            //successfully got the certificate -> log it.
+            eventListener.onCertificateRequested(new CertificateRequestedEvent(user.getUsername(), serialNr));
         } catch (CertificateManagerException e) {
             throw new IllegalArgumentException("Something went wrong while fetching your cert.", e);
         }
@@ -89,20 +81,12 @@ public class CertificateService {
 
 
     public boolean issueNewCertificate(final String username) {
+        User user = getUser(username);
 
-        User user = userRepository.findOne(username);
-        if (user == null) {
-            //log user doesn't exist -> should not happen normally
-            return false;
-        }
-
-        eventListener.onCertificateIssued(new CertificateIssuedEvent(username));
-
-        String serialNr = null;
         try {
-            serialNr = certificateManager.issueNewCertificate(user);
+            String serialNr = certificateManager.issueNewCertificate(user);
             UserCertificate userCertificate = userCertificateService.issueCertificateForUser(user, serialNr, certificateManager.getPath(serialNr, user));
-            //successfully issued the certificate -> Log it
+            eventListener.onCertificateIssued(new CertificateIssuedEvent(username, userCertificate.getSerialNr()));
         } catch (CertificateManagerException e) {
             logger.error(String.format("Failed to issue certificate to user [%s]", user.getUsername()), e);
             return false;
@@ -112,11 +96,7 @@ public class CertificateService {
 
 
     public boolean revokeAllCertsForUser(final String username) {
-        User user = userRepository.findOne(username);
-        if (user == null) {
-            //log user doesn't exist -> should not happen normally
-            return false;
-        }
+        User user = getUser(username);
 
         List<UserCertificate> certificateList = userCertificateService.findAllByUserNotRevoked(user);
         boolean success = true;
@@ -127,15 +107,11 @@ public class CertificateService {
     }
 
     public boolean revokeCertificate(final String serialNr, final String username) {
-        User user = userRepository.findOne(username);
-        if (user == null) {
-            //log this -> should not happen normally
-            return false;
-        }
+        User user = getUser(username);
 
         eventListener.onCertificateRevoked(new CertificateRevokedEvent(user.getUsername(), serialNr));
 
-        boolean success = false;
+        boolean success;
         try {
             success = certificateManager.revokeCertificate(serialNr, user);
 
@@ -187,5 +163,13 @@ public class CertificateService {
             logger.error("Failed to fetch CRL file.", e);
         }
         return null;
+    }
+
+    public User getUser(final String username) {
+        User user = userRepository.findOne(username);
+        if (user == null) {
+            throw new AuthenticationServiceException("User not found: " + username);
+        }
+        return user;
     }
 }
