@@ -1,24 +1,4 @@
-R	181115202127Z	171115202443Z	01	unknown	/C=CH/ST=Zurich/O=ETH/OU=AppliedSecLab/CN=David_Basin/emailAddress=db@imovies.ch
-V	181115202722Z		02	unknown	/C=CH/ST=Zurich/O=ETH/OU=AppliedSecLab/CN=David_Basin/emailAddress=db@imovies.ch
-R	181115204915Z	171115205224Z	03	unknown	/C=CH/ST=Zurich/O=ETH/OU=AppliedSecLab/CN=David_Basin/emailAddress=db@imovies.ch
-V	181115205235Z		04	unknown	/C=CH/ST=Zurich/O=ETH/OU=AppliedSecLab/CN=David_Basin2/emailAddress=db@imovies.ch
-V	181117075208Z		05	unknown	/C=CH/ST=Zurich/O=ETH/OU=AppliedSecLab/CN=David_Basin/emailAddress=db@imovies.ch
-V	181117075359Z		06	unknown	/C=CH/ST=Zurich/O=ETH/OU=AppliedSecLab/CN=David_Basin/emailAddress=db@imovies.ch
-V	181117075552Z		07	unknown	/C=CH/ST=Zurich/O=ETH/OU=AppliedSecLab/CN=David_Basin/emailAddress=db@imovies.ch
-V	181117075752Z		08	unknown	/C=CH/ST=Zurich/O=ETH/OU=AppliedSecLab/CN=David_Basin/emailAddress=db@imovies.ch
-V	181117075852Z		09	unknown	/C=CH/ST=Zurich/O=ETH/OU=AppliedSecLab/CN=David_Basin/emailAddress=db@imovies.ch
-V	181117080249Z		0A	unknown	/C=CH/ST=Zurich/O=ETH/OU=AppliedSecLab/CN=David_Basin/emailAddress=db@imovies.ch
-V	181117081356Z		0B	unknown	/C=CH/ST=Zurich/O=ETH/OU=AppliedSecLab/CN=David_Basin/emailAddress=db@imovies.ch
-R	181117082445Z	171117082524Z	0C	unknown	/C=CH/ST=Zurich/O=ETH/OU=AppliedSecLab/CN=David_Basin/emailAddress=db@imovies.ch
-V	181117082447Z		0D	unknown	/C=CH/ST=Zurich/O=ETH/OU=AppliedSecLab/CN=David_Basin/emailAddress=db@imovies.ch
-V	181117082449Z		0E	unknown	/C=CH/ST=Zurich/O=ETH/OU=AppliedSecLab/CN=David_Basin/emailAddress=db@imovies.ch
-V	181118134919Z		0F	unknown	/C=CH/ST=Zurich/O=ETH/OU=AppliedSecLab/CN=Andres_Alan_Anderson/emailAddress=and@imovies.ch
-V	181118143443Z		10	unknown	/C=CH/ST=Zurich/O=ETH/OU=AppliedSecLab/CN=David_Basin/emailAddress=db@imovies.ch
-V	181118143445Z		11	unknown	/C=CH/ST=Zurich/O=ETH/OU=AppliedSecLab/CN=David_Basin/emailAddress=db@imovies.ch
-V	181118143446Z		12	unknown	/C=CH/ST=Zurich/O=ETH/OU=AppliedSecLab/CN=David_Basin/emailAddress=db@imovies.ch
-V	181118143448Z		13	unknown	/C=CH/ST=Zurich/O=ETH/OU=AppliedSecLab/CN=David_Basin/emailAddress=db@imovies.ch
-V	181118143541Z		14	unknown	/C=CH/ST=Zurich/O=ETH/OU=AppliedSecLab/CN=Andres_Alan_Anderson/emailAddress=and@imovies.ch
-V	181118144018Z		15	unknown	/C=CH/ST=Zurich/O=ETH/OU=AppliedSecLab/CN=Andres_Alan_Anderson/emailAddress=and@imovies.ch
-R	181118144614Z	171118144644Z	16	unknown	/C=CH/ST=Zurich/O=ETH/OU=AppliedSecLab/CN=Andres_Alan_Anderson/emailAddress=and@imovies.ch
-V	181118152145Z		17	unknown	/C=CH/ST=Zurich/O=ETH/OU=AppliedSecLab/CN=admin/emailAddress=admin@asl.ethz.ch
-V	181118152435Z		18	unknown	/C=CH/ST=Zurich/O=ETH/OU=AppliedSecLab/CN=admin/emailAddress=admin@asl.ethz.ch
+V	181118161534Z		01	unknown	/C=CH/ST=Zurich/O=ETH/OU=AppliedSecLab/CN=Andres_Alan_Anderson/emailAddress=and@imovies.ch
+R	181118161538Z	171118161544Z	02	unknown	/C=CH/ST=Zurich/O=ETH/OU=AppliedSecLab/CN=Andres_Alan_Anderson/emailAddress=and@imovies.ch
+V	181118161740Z		03	unknown	/C=CH/ST=Zurich/O=ETH/OU=AppliedSecLab/CN=David_Basin/emailAddress=db@imovies.ch
+R	181118161813Z	171118161815Z	04	unknown	/C=CH/ST=Zurich/O=ETH/OU=AppliedSecLab/CN=David_Basin/emailAddress=db@imovies.ch

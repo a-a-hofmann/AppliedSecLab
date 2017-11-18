@@ -1,14 +1,19 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8" />
+    <meta charset="UTF-8"/>
     <title>Secure</title>
 </head>
 <body>
 <h1>It works - Admin</h1>
 
 <p th:text="${user}"></p>
-<a href="/resource/test">Test</a>
+
+<p>Number of issued certificates: <strong th:text="${adminReport.numberOfIssuedCertificates}"></strong></p>
+<p>Number of revoked certificates: <strong th:text="${adminReport.numberOfRevokedCertificates}"></strong></p>
+<p>Current serial Nr: <strong th:text="${adminReport.currentSerialNumber}"></strong></p>
+
+
 <form th:action="@{/logout}" method="post">
     <input type="submit" value="Sign Out"/>
 </form>
