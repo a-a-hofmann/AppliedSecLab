@@ -96,4 +96,8 @@ public class UserCertificateService {
         certificate.revoke();
         return repository.save(certificate);
     }
+
+    public long countNumberOfCertificates() {
+        return repository.count();
+    }
 }

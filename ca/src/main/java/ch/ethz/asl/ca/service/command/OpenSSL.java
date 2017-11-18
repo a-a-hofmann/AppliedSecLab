@@ -74,12 +74,11 @@ public class OpenSSL implements CertificateManager {
         return toReturn.toString();
     }
 
-    private void deleteFile(String absolutePath) throws CertificateManagerException{
-
+    private void deleteFile(String absolutePath) throws CertificateManagerException {
         File file = new File(absolutePath);
         try {
             file.delete();
-        } catch(SecurityException e) {
+        } catch (SecurityException e) {
             throw new CertificateManagerException(UNABLE_TO_DELETE_FILE + e.getMessage());
         }
     }
@@ -187,7 +186,6 @@ public class OpenSSL implements CertificateManager {
 
     @Override
     public Long getNumberOfIssuedCertificates() throws CertificateManagerException {
-
         String serialNr;
         try {
             synchronized (CertificateManager.class) {

@@ -1,5 +1,6 @@
 package ch.ethz.asl.ca.endpoint;
 
+import ch.ethz.asl.ca.model.AdminReport;
 import ch.ethz.asl.ca.model.UserCertificate;
 import ch.ethz.asl.ca.model.UserSafeProjection;
 import ch.ethz.asl.ca.service.CertificateService;
@@ -8,6 +9,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -101,7 +103,11 @@ public class CertificateController {
     }
 
     @GetMapping("admin")
-    public void getAdminReport() {
-        // how do you implement this as endpoint?
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public AdminReport getAdminReport() {
+        Long numberOfIssuedCertificates = certificateService.getNumberOfIssuedCertificates();
+        Long numberOfRevokedCertificates = certificateService.getNumberOfRevokedCertificates();
+        String currentSerialNumber = certificateService.getCurrentSerialNumber();
+        return new AdminReport(numberOfIssuedCertificates, numberOfRevokedCertificates, currentSerialNumber);
     }
 }

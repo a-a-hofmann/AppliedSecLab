@@ -129,8 +129,13 @@ public class CertificateService {
         Long numberOfIssuedCertificates = null;
         try {
             numberOfIssuedCertificates = certificateManager.getNumberOfIssuedCertificates();
+            long numberOfCertificatesInDb = userCertificateService.countNumberOfCertificates();
+
+            if (numberOfCertificatesInDb != numberOfIssuedCertificates) {
+                logger.warn(String.format("Certificates in DB and in serial number do not match... DB=[%d], serialNr=[%s]", numberOfCertificatesInDb, numberOfIssuedCertificates));
+            }
         } catch (CertificateManagerException e) {
-            //log this, should not happen normally.
+            logger.error("Failed to get number of certificates.", e);
         }
         return numberOfIssuedCertificates;
     }
