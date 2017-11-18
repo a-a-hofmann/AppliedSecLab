@@ -7,6 +7,7 @@ import ch.ethz.asl.ca.model.UserSafeProjection;
 import ch.ethz.asl.ca.service.event.UserDetailsUpdateEvent;
 import ch.ethz.asl.ca.service.event.UserEventListener;
 import ch.ethz.asl.ca.service.event.UserInfoRequestEvent;
+import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -19,6 +20,14 @@ public class UserService {
     public UserService(UserRepository userRepository, UserEventListener eventListener) {
         this.userRepository = userRepository;
         this.eventListener = eventListener;
+    }
+
+    public User getUser(final String username) {
+        User user = userRepository.findOne(username);
+        if (user == null) {
+            throw new AuthenticationServiceException("User not found: " + username);
+        }
+        return user;
     }
 
     public UserSafeProjection getUserDetails(final String username) {

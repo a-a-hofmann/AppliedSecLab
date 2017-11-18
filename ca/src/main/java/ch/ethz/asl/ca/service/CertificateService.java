@@ -2,7 +2,6 @@ package ch.ethz.asl.ca.service;
 
 import ch.ethz.asl.ca.model.User;
 import ch.ethz.asl.ca.model.UserCertificate;
-import ch.ethz.asl.ca.model.UserRepository;
 import ch.ethz.asl.ca.service.command.CertificateManager;
 import ch.ethz.asl.ca.service.command.CertificateManagerException;
 import ch.ethz.asl.ca.service.event.CertificateEventListener;
@@ -20,28 +19,23 @@ public class CertificateService {
     //TODO:Logging
     private static final Logger logger = Logger.getLogger(CertificateService.class);
 
-    /**
-     * To be used to fetch user info for new certs.
-     */
-    private final UserRepository userRepository;
+    private final UserService userService;
 
     private final CertificateManager certificateManager;
 
     private final CertificateEventListener eventListener;
 
     private final UserCertificateService userCertificateService;
-
-    //TODO: Here UserCertificateService
-    public CertificateService(UserRepository userRepository, CertificateManager certificateManager, CertificateEventListener eventListener, UserCertificateService userCertificateService) {
-
-        this.userRepository = userRepository;
+    
+    public CertificateService(UserService userService, CertificateManager certificateManager, CertificateEventListener eventListener, UserCertificateService userCertificateService) {
+        this.userService = userService;
         this.certificateManager = certificateManager;
         this.eventListener = eventListener;
         this.userCertificateService = userCertificateService;
     }
 
     public List<UserCertificate> getUserCertificates(final String username) {
-        User user = userRepository.findOne(username);
+        User user = userService.getUser(username);
         return getUserCertificates(user);
     }
 
@@ -55,10 +49,7 @@ public class CertificateService {
 
     public byte[] getCertificate(final String serialNr, final String username) {
 
-        User user = userRepository.findOne(username);
-        if (user == null) {
-            throw new IllegalArgumentException(String.format("No user found in security context. Searched for username [%s]", username));
-        }
+        User user = userService.getUser(username);
 
         eventListener.onCertificateRequested(new CertificateRequestedEvent(user.getUsername(), serialNr));
 
@@ -90,11 +81,7 @@ public class CertificateService {
 
     public boolean issueNewCertificate(final String username) {
 
-        User user = userRepository.findOne(username);
-        if (user == null) {
-            //log user doesn't exist -> should not happen normally
-            return false;
-        }
+        User user = userService.getUser(username);
 
         eventListener.onCertificateIssued(new CertificateIssuedEvent(username));
 
@@ -112,11 +99,7 @@ public class CertificateService {
 
 
     public boolean revokeAllCertsForUser(final String username) {
-        User user = userRepository.findOne(username);
-        if (user == null) {
-            //log user doesn't exist -> should not happen normally
-            return false;
-        }
+        User user = userService.getUser(username);
 
         List<UserCertificate> certificateList = userCertificateService.findAllByUserNotRevoked(user);
         boolean success = true;
@@ -127,11 +110,7 @@ public class CertificateService {
     }
 
     public boolean revokeCertificate(final String serialNr, final String username) {
-        User user = userRepository.findOne(username);
-        if (user == null) {
-            //log this -> should not happen normally
-            return false;
-        }
+        User user = userService.getUser(username);
 
         eventListener.onCertificateRevoked(new CertificateRevokedEvent(user.getUsername(), serialNr));
 

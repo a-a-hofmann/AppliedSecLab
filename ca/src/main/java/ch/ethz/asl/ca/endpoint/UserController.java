@@ -5,7 +5,6 @@ import ch.ethz.asl.ca.model.UserSafeProjection;
 import ch.ethz.asl.ca.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -33,7 +32,6 @@ public class UserController {
 
     @GetMapping("user")
     public UserSafeProjection getUserDetails(Principal principal) {
-        Assert.isTrue(!StringUtils.isEmpty(principal), "No principal found in SecurityContext.");
         return userService.getUserDetails(principal.getName());
     }
 
