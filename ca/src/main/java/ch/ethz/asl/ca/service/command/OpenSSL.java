@@ -2,13 +2,17 @@ package ch.ethz.asl.ca.service.command;
 
 import ch.ethz.asl.ca.model.User;
 import org.apache.commons.io.FileUtils;
-import org.bouncycastle.util.io.pem.PemReader;
 import org.springframework.stereotype.Component;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 @Component
@@ -42,7 +46,6 @@ public class OpenSSL implements CertificateManager {
     private static final String UNABLE_TO_GET_CURRENT_SERIAL_NUMBER = "Unable to get the current serial number from the filesystem. Error: ";
     private static final String UNABLE_TO_DELETE_FILE = "Unable to delete the file from the filesystem. Error: ";
 
-    //TODO: %s mitigate injection for all
     private final String GENERATE_KEY = "openssl genrsa -out %s.key 1024";
     //Example:openssl req -new -key etc/ssl/CA/newkeys/db/test.key -out etc/ssl/CA/newkeys/db/test.csr -config etc/ssl/openssl.cnf -subj "/C=CH/ST=Zurich/L=Zurich/O=ETH/OU=AppliedSecLab/CN=Test test/emailAddress=test@imovie.ch"
     private final String GENERATE_SIGNING_REQUEST = "openssl req -new -key %s.key -out %s.csr -config " + ABSOLUTE_DIR + "openssl.cnf " + SUBJ;
@@ -53,26 +56,6 @@ public class OpenSSL implements CertificateManager {
     private final String REVOKE_CERTIFICATE = "openssl ca -revoke %s -config " + ABSOLUTE_DIR + "openssl.cnf -passin pass:admin";
     private final String CREATE_CRL = "openssl ca -gencrl -out " + ABSOLUTE_DIR + "CA/crl/crl.pem  -config " + ABSOLUTE_DIR + "openssl.cnf -passin pass:admin";
     private final String CREATE_P12 = "openssl pkcs12 -export -out %s -inkey %s -in %s -passout pass:test";
-
-    //private final UserCertificateService userCertificateService;
-
-
-    //TODO: probably the best way to mitigate command injection
-    private String execute(String command) throws IOException, InterruptedException {
-        Process p = Runtime.getRuntime().exec(command);
-
-        OutputStream stdOut = p.getOutputStream();
-        BufferedReader commandOutput = new BufferedReader(new InputStreamReader(p.getErrorStream()));
-        PemReader reader = new PemReader(commandOutput);
-
-        StringBuilder toReturn = new StringBuilder();
-        String s;
-        while ((s = commandOutput.readLine()) != null) {
-            toReturn.append(s);
-        }
-        p.waitFor();
-        return toReturn.toString();
-    }
 
     private void deleteFile(String absolutePath) throws CertificateManagerException {
         File file = new File(absolutePath);
@@ -100,9 +83,9 @@ public class OpenSSL implements CertificateManager {
         try {
             final String absoluteKeyPath = Paths.get(keyPath).toAbsolutePath().toString();
             final String signingRequestCommand = String.format(GENERATE_SIGNING_REQUEST, absoluteKeyPath, absoluteKeyPath,
-                    user.getFirstname(),
-                    user.getLastname(),
-                    user.getEmail());
+                    clean(user.getFirstname()),
+                    clean(user.getLastname()),
+                    clean(user.getEmail()));
 
             new ProcessUtils().runBlockingProcess(signingRequestCommand);
         } catch (IOException | InterruptedException e) {
@@ -110,6 +93,14 @@ public class OpenSSL implements CertificateManager {
         }
     }
 
+    private String clean(String subj) {
+        Pattern pt = Pattern.compile("[^a-zA-Z0-9 ]");
+        Matcher match = pt.matcher(subj);
+        while (match.find()) {
+            subj = subj.replace(match.group(), "");
+        }
+        return subj;
+    }
 
     @Override
     public String issueNewCertificate(User user) throws CertificateManagerException {
@@ -137,8 +128,6 @@ public class OpenSSL implements CertificateManager {
             final String absolutePath = Paths.get(currentPath).toAbsolutePath().toString();
             deleteFile(absolutePath + ".key");
             deleteFile(absolutePath + ".csr");
-            //deleteFile(String.format(CERTIFICATE_PATH, user.getUsername(), serialNr));
-
         } catch (IOException | InterruptedException e) {
             throw new CertificateManagerException(UNABLE_TO_SIGN_CERTIFICATE_EXCEPTION + e.getMessage());
         }
