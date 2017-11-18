@@ -91,7 +91,7 @@ public class UserController {
         logger.info(String.format("Revoking certificate [%s] for user [%s]", revoke.getSerialNr(), principal.getName()));
         ResponseEntity<Void> responseEntity = certificateClient.revokeCertificate(revoke.getSerialNr());
         logger.info(responseEntity.getStatusCode());
-        return "redirect:/user";
+        return "redirect:/";
     }
 
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")

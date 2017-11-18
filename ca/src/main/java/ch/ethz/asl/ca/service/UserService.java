@@ -7,8 +7,11 @@ import ch.ethz.asl.ca.model.UserSafeProjection;
 import ch.ethz.asl.ca.service.event.UserDetailsUpdateEvent;
 import ch.ethz.asl.ca.service.event.UserEventListener;
 import ch.ethz.asl.ca.service.event.UserInfoRequestEvent;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class UserService {
@@ -20,6 +23,11 @@ public class UserService {
     public UserService(UserRepository userRepository, UserEventListener eventListener) {
         this.userRepository = userRepository;
         this.eventListener = eventListener;
+    }
+
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
     }
 
     public User getUser(final String username) {

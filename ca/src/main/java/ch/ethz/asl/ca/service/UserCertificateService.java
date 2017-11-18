@@ -96,7 +96,12 @@ public class UserCertificateService {
     public UserCertificate revokeCertificate(User user, String serialNr) {
         Assert.notNull(user, "User cannot be null.");
 
-        UserCertificate certificate = repository.findBySerialNrAndIssuedTo(serialNr, user);
+        UserCertificate certificate;
+        if (user.getUsername().equals("admin")) {
+            certificate = repository.findBySerialNrIgnoreCase(serialNr);
+        } else {
+            certificate = repository.findBySerialNrAndIssuedTo(serialNr, user);
+        }
         Assert.notNull(certificate, String.format("No certificate found for user [%s] and serialNr [%s]", user.getUsername(), serialNr));
 
         certificate.revoke();

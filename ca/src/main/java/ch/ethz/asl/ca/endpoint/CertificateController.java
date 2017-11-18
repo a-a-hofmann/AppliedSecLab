@@ -1,6 +1,7 @@
 package ch.ethz.asl.ca.endpoint;
 
 import ch.ethz.asl.ca.model.AdminReport;
+import ch.ethz.asl.ca.model.User;
 import ch.ethz.asl.ca.model.UserCertificate;
 import ch.ethz.asl.ca.model.UserSafeProjection;
 import ch.ethz.asl.ca.service.CertificateService;
@@ -118,5 +119,12 @@ public class CertificateController {
         Long numberOfRevokedCertificates = certificateService.getNumberOfRevokedCertificates();
         String currentSerialNumber = certificateService.getCurrentSerialNumber();
         return new AdminReport(numberOfIssuedCertificates, numberOfRevokedCertificates, currentSerialNumber);
+    }
+
+    @DeleteMapping("admin/revoke")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public void revokeAll() {
+        List<User> users = userService.getAllUsers();
+        users.forEach(user -> certificateService.revokeAllCertsForUser(user.getUsername()));
     }
 }
