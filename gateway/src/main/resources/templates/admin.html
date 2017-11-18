@@ -77,6 +77,7 @@
                             </tr>
                             </thead>
                             <tbody>
+                            <!--/*@thymesVar id="cert" type="ch.ethz.asl.gateway.dto.UserCertificate"*/-->
                             <tr th:each="cert : ${certificates}">
                                 <td th:text="${cert.serialNr}"></td>
                                 <td th:text="${cert.issuedTo}"></td>
@@ -85,7 +86,7 @@
                                 <td th:if="${!cert.isRevoked()}">
                                     <button type="button" class="btn btn-primary fa fa-times" data-toggle="modal"
                                             data-target="#revoke-confirm"
-                                            th:attr="data-serialNr=${cert.serialNr}, data-issuedon=${cert.issuedOn}">
+                                            th:attr="data-serialNr=${cert.serialNr}, data-issuedon=${cert.issuedOn}, data-issuedto=${cert.issuedTo}">
                                     </button>
                                 </td>
                             </tr>
@@ -167,6 +168,7 @@
                         <thead class="thead-light">
                         <tr>
                             <th scope="col">Serial #</th>
+                            <th scope="col">Issued To</th>
                             <th scope="col">Issued On</th>
                         </tr>
                         </thead>
@@ -174,8 +176,6 @@
                     </table>
 
                     <form id="confirmation-form" method="post" th:action="@{/cert/revoke}">
-                        <label for="confirmation">Please enter your password to confirm.</label>
-                        <input id="confirmation" type="password" name="password" class="form-control"/>
                         <input id="serialNr" type="hidden" name="serialNr"/>
 
                         <button type="submit" class="btn btn-danger btn-block">I understand the consequences, revoke
@@ -217,6 +217,7 @@
         const button = $(event.relatedTarget);
         const serialNr = button.data('serialnr');
         const issuedOn = button.data('issuedon');
+        const issuedTo = button.data('issuedto');
         const modal = $(this);
 
         const $tbody = modal.find('.modal-body table').find('tbody');
@@ -226,6 +227,7 @@
             `
             <tr>
                 <td>${serialNr}</td>
+                <td>${issuedTo}</td>
                 <td>${issuedOn}</td>
             </tr>
         `);
