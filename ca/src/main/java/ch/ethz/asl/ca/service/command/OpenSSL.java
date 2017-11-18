@@ -28,7 +28,7 @@ public class OpenSSL implements CertificateManager {
     //TODO: Only for developing
     private static final String GENERATE_KEY_PATH = ABSOLUTE_DIR + "CA/newkeys/%s/";
     //TODO:NAME??
-    private static final String SUBJ = "-subj /C=CH/ST=Zurich/L=Zurich/O=ETH/OU=AppliedSecLab/CN=%s_%s/emailAddress=%s";
+    private static final String SUBJ = "-subj \"/C=CH/ST=Zurich/L=Zurich/O=ETH/OU=AppliedSecLab/CN=%s %s/emailAddress=%s\"";
 
     private static final String UNABLE_TO_SIGN_CERTIFICATE_EXCEPTION = "Unable to sign the certificate by using openssl. Error: ";
     private static final String UNABLE_TO_GENERATE_RSA_KEY = "Unable to generate a RSA key by using openssl. Error: ";
@@ -100,8 +100,8 @@ public class OpenSSL implements CertificateManager {
         try {
             final String absoluteKeyPath = Paths.get(keyPath).toAbsolutePath().toString();
             final String signingRequestCommand = String.format(GENERATE_SIGNING_REQUEST, absoluteKeyPath, absoluteKeyPath,
-                    user.getFirstname().replace(" ", "_"),
-                    user.getLastname().replace(" ", "_"),
+                    user.getFirstname(),
+                    user.getLastname(),
                     user.getEmail());
 
             new ProcessUtils().runBlockingProcess(signingRequestCommand);
