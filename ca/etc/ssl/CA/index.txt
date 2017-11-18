@@ -12,3 +12,5 @@ V	181117081356Z		0B	unknown	/C=CH/ST=Zurich/O=ETH/OU=AppliedSecLab/CN=David_Basi
 R	181117082445Z	171117082524Z	0C	unknown	/C=CH/ST=Zurich/O=ETH/OU=AppliedSecLab/CN=David_Basin/emailAddress=db@imovies.ch
 V	181117082447Z		0D	unknown	/C=CH/ST=Zurich/O=ETH/OU=AppliedSecLab/CN=David_Basin/emailAddress=db@imovies.ch
 V	181117082449Z		0E	unknown	/C=CH/ST=Zurich/O=ETH/OU=AppliedSecLab/CN=David_Basin/emailAddress=db@imovies.ch
+R	181117182622Z	171117182918Z	0F	unknown	/C=CH/ST=Zurich/O=ETH/OU=AppliedSecLab/CN=David_Basin/emailAddress=db@imovies.ch
+R	181117182946Z	171117182951Z	10	unknown	/C=CH/ST=Zurich/O=ETH/OU=AppliedSecLab/CN=David_Basin/emailAddress=db@imovies.ch
