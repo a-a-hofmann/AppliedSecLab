@@ -1,5 +1,6 @@
-package ch.ethz.asl.gateway;
+package ch.ethz.asl.gateway.endpoint;
 
+import ch.ethz.asl.gateway.dto.UserCertificate;
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.ResponseEntity;

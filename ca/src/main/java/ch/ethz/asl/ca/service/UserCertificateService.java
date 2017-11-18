@@ -24,7 +24,7 @@ public class UserCertificateService {
     }
 
     public boolean isCertificateRevoked(final String serialNr) {
-        UserCertificate certificate = repository.findBySerialNr(serialNr);
+        UserCertificate certificate = repository.findBySerialNrIgnoreCase(serialNr);
         return certificate == null || certificate.isRevoked();
     }
 

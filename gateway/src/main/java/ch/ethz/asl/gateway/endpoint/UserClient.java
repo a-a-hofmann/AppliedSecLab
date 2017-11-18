@@ -1,5 +1,6 @@
-package ch.ethz.asl.gateway;
+package ch.ethz.asl.gateway.endpoint;
 
+import ch.ethz.asl.gateway.dto.User;
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;

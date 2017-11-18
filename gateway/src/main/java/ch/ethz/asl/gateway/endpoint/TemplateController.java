@@ -1,4 +1,4 @@
-package ch.ethz.asl.gateway;
+package ch.ethz.asl.gateway.endpoint;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;

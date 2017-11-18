@@ -7,7 +7,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.authentication.preauth.x509.SubjectDnX509PrincipalExtractor;
 import org.springframework.security.web.authentication.preauth.x509.X509AuthenticationFilter;
 import org.springframework.security.web.authentication.preauth.x509.X509PrincipalExtractor;
-import sun.security.util.Debug;
 
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigInteger;
@@ -40,7 +39,7 @@ public class CustomX509AuthFilter extends X509AuthenticationFilter {
 
         String emailAddress = (String) principalExtractor.extractPrincipal(cert);
         BigInteger serialNumber = cert.getSerialNumber();
-        String serialNrString = Debug.toHexString(serialNumber);
+        String serialNrString = Long.toHexString(serialNumber.longValue());
 
         // Admin override.
         if (adminEmail.equals(emailAddress)) {

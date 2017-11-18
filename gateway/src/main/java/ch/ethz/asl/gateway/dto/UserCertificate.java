@@ -1,4 +1,4 @@
-package ch.ethz.asl.gateway;
+package ch.ethz.asl.gateway.dto;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;

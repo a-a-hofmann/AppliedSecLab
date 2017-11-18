@@ -1,4 +1,4 @@
-package ch.ethz.asl.gateway;
+package ch.ethz.asl.gateway.dto;
 
 
 import org.springframework.security.authentication.encoding.PasswordEncoder;

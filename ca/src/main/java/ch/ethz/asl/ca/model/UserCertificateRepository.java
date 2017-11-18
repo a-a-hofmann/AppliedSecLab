@@ -8,7 +8,7 @@ import java.util.List;
 @Repository
 public interface UserCertificateRepository extends JpaRepository<UserCertificate, String> {
 
-    UserCertificate findBySerialNr(String serialNr);
+    UserCertificate findBySerialNrIgnoreCase(String serialNr);
     
     UserCertificate findBySerialNrAndIssuedTo(String serialNr, User user);
 

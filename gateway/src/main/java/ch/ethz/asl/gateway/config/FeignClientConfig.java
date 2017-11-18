@@ -1,4 +1,4 @@
-package ch.ethz.asl.gateway;
+package ch.ethz.asl.gateway.config;
 
 import feign.RequestInterceptor;
 import org.springframework.cloud.security.oauth2.client.feign.OAuth2FeignRequestInterceptor;

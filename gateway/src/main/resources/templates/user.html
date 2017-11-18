@@ -58,7 +58,7 @@
                             <strong>Password</strong>.
                         </div>
 
-                        <!--/*@thymesVar id="user" type="ch.ethz.asl.gateway.User"*/-->
+                        <!--/*@thymesVar id="user" type="ch.ethz.asl.gateway.dto.User"*/-->
                         <form th:action="@{/user}" th:object="${user}" method="post">
 
                             <div class="form-group">
@@ -176,7 +176,7 @@
                             </tr>
                             </thead>
                             <tbody>
-                            <!--/*@thymesVar id="cert" type="ch.ethz.asl.gateway.UserCertificate"*/-->
+                            <!--/*@thymesVar id="cert" type="ch.ethz.asl.gateway.dto.UserCertificate"*/-->
                             <tr th:each="cert : ${allRevokedCerts}">
                                 <td th:text="${cert.serialNr}"></td>
                                 <td th:text="${cert.issuedTo}"></td>

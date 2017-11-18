@@ -1,4 +1,4 @@
-package ch.ethz.asl.gateway;
+package ch.ethz.asl.gateway.filter;
 
 import org.apache.log4j.Logger;
 import org.springframework.core.Ordered;

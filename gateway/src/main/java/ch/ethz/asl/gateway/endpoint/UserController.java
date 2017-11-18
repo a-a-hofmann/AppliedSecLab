@@ -1,5 +1,8 @@
-package ch.ethz.asl.gateway;
+package ch.ethz.asl.gateway.endpoint;
 
+import ch.ethz.asl.gateway.dto.CertificateRevocationCommand;
+import ch.ethz.asl.gateway.dto.User;
+import ch.ethz.asl.gateway.dto.UserCertificate;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
