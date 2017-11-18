@@ -39,13 +39,13 @@ public class UserService {
     public void updateUser(User updatedInfo, final String username) {
         User userRequestingUpdate = getUser(username);
 
+        boolean requiresCertRevocation = userRequestingUpdate.updateRequiresCertRevocation(updatedInfo);
+        UserDetailsUpdateEvent updateEvent =
+                new UserDetailsUpdateEvent(username, userRequestingUpdate, updatedInfo, requiresCertRevocation);
 
         userRequestingUpdate.update(updatedInfo);
         userRepository.save(userRequestingUpdate);
 
-        boolean requiresCertRevocation = userRequestingUpdate.updateRequiresCertRevocation(updatedInfo);
-        UserDetailsUpdateEvent updateEvent =
-                new UserDetailsUpdateEvent(username, userRequestingUpdate, updatedInfo, requiresCertRevocation);
         eventListener.onUserInfoUpdate(updateEvent);
     }
 

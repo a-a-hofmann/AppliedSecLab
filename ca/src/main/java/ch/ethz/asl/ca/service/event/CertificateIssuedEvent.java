@@ -5,8 +5,14 @@ package ch.ethz.asl.ca.service.event;
  */
 public class CertificateIssuedEvent extends Event {
 
-    public CertificateIssuedEvent(String user) {
+    private final String serialNr;
+
+    public CertificateIssuedEvent(String user, final String serialNr) {
         super(user);
+        this.serialNr = serialNr;
     }
 
+    public String getSerialNr() {
+        return serialNr;
+    }
 }
