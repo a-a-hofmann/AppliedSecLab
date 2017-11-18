@@ -7,8 +7,10 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.authentication.preauth.x509.SubjectDnX509PrincipalExtractor;
 import org.springframework.security.web.authentication.preauth.x509.X509AuthenticationFilter;
 import org.springframework.security.web.authentication.preauth.x509.X509PrincipalExtractor;
+import sun.security.util.Debug;
 
 import javax.servlet.http.HttpServletRequest;
+import java.math.BigInteger;
 import java.security.cert.X509Certificate;
 
 public class CustomX509AuthFilter extends X509AuthenticationFilter {
@@ -34,7 +36,9 @@ public class CustomX509AuthFilter extends X509AuthenticationFilter {
         }
 
         Object o = principalExtractor.extractPrincipal(cert);
-        ResponseEntity<String> response = authenticationApi.verifySerialNrAndEmail(cert.getSerialNumber().toString(16), (String) o);
+        BigInteger serialNumber = cert.getSerialNumber();
+        String serialNrString = Debug.toHexString(serialNumber);
+        ResponseEntity<String> response = authenticationApi.verifySerialNrAndEmail(serialNrString, (String) o);
 
         if (!response.getStatusCode().is2xxSuccessful()) {
             return null;
