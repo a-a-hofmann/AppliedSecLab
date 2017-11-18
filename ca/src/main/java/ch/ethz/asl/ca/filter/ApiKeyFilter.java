@@ -33,7 +33,7 @@ public class ApiKeyFilter extends AbstractAuthenticationProcessingFilter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         String pathInfo = ((HttpServletRequest) request).getServletPath();
-        if (pathInfo.equals("/authenticate")) { // Otherwise just delegate to OAuth2
+        if (pathInfo.contains("/authenticate")) { // Otherwise just delegate to OAuth2
             attemptAuthentication(httpRequest, (HttpServletResponse) response);
         }
         chain.doFilter(request, response);

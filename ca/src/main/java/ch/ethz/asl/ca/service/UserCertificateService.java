@@ -23,6 +23,11 @@ public class UserCertificateService {
         this.userRepository = userRepository;
     }
 
+    public boolean isCertificateRevoked(final String serialNr) {
+        UserCertificate certificate = repository.findBySerialNr(serialNr);
+        return certificate == null || certificate.isRevoked();
+    }
+
     public Optional<UserCertificate> findBySerialNrAndUser(String serialNr, User user) {
         Assert.notNull(user, "User cannot be null.");
 

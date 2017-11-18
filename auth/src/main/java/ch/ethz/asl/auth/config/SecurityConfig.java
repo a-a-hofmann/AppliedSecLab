@@ -1,6 +1,5 @@
 package ch.ethz.asl.auth.config;
 
-import ch.ethz.asl.auth.filter.CRLValidityService;
 import ch.ethz.asl.auth.filter.CustomX509AuthFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -19,18 +18,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final AuthenticationApi authenticationApi;
 
-    private final CRLValidityService crlValidityService;
-
     @Autowired
-    public SecurityConfig(AuthenticationApi authenticationApi, CRLValidityService crlValidityService) {
+    public SecurityConfig(AuthenticationApi authenticationApi) {
         this.authenticationApi = authenticationApi;
-        this.crlValidityService = crlValidityService;
     }
-
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        CustomX509AuthFilter x509AuthFilter = new CustomX509AuthFilter(http, crlValidityService, authenticationApi);
+        CustomX509AuthFilter x509AuthFilter = new CustomX509AuthFilter(http, authenticationApi);
         SubjectDnX509PrincipalExtractor principalExtractor = new SubjectDnX509PrincipalExtractor();
         principalExtractor.setSubjectDnRegex("EMAILADDRESS=(.*?)(?:,|$)");
         x509AuthFilter.setPrincipalExtractor(principalExtractor);

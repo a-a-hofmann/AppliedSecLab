@@ -20,10 +20,9 @@ public class AuthenticationApi {
 
     private final RestTemplate restTemplate;
 
-    private static final String URI = "http://localhost:8081/authenticate";
-    private static final String AUTHENTICATION_URL = "https://localhost:8445/authenticate";
+    private static final String URI = "https://localhost:8445/authenticate";
 
-    private static final String EMAIL_QUERY_URL = "https://localhost:8445/authenticate/email";
+    private static final String EMAIL_CERT_QUERY_URL = "https://localhost:8445/authenticate/cert";
 
     @Value("${client-secret}")
     private String apiKey;
@@ -33,9 +32,9 @@ public class AuthenticationApi {
         this.restTemplate = new RestTemplate();
     }
 
-    public ResponseEntity<String> queryByEmail(String email) {
-        HttpEntity<String> entity = new HttpEntity<>(createHeaders(email));
-        return restTemplate.exchange(EMAIL_QUERY_URL, HttpMethod.POST, entity, String.class);
+    public ResponseEntity<String> verifySerialNrAndEmail(final String serialNr, final String email) {
+        HttpEntity<String> entity = new HttpEntity<>(createHeaders(email, serialNr));
+        return restTemplate.exchange(EMAIL_CERT_QUERY_URL, HttpMethod.POST, entity, String.class);
     }
 
     public ResponseEntity<?> authenticate(String username, String password) {
@@ -46,17 +45,6 @@ public class AuthenticationApi {
             logger.error("Bad credentials", e);
         }
         return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-    }
-
-    private HttpHeaders createHeaders(final String email) {
-        HttpHeaders headers = new HttpHeaders();
-        List<MediaType> accept = new ArrayList<>();
-        accept.add(MediaType.APPLICATION_JSON);
-        headers.setAccept(accept);
-
-        headers.set("Authorization", email);
-        headers.set("X-Authorization", apiKey);
-        return headers;
     }
 
     private HttpEntity<?> usernamePasswordToken(String username, String password) {

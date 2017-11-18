@@ -1,13 +1,17 @@
 package ch.ethz.asl.ca.endpoint;
 
 import ch.ethz.asl.ca.model.UserCertificate;
+import ch.ethz.asl.ca.model.UserSafeProjection;
 import ch.ethz.asl.ca.service.CertificateService;
+import ch.ethz.asl.ca.service.UserService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
 import java.util.List;
 
@@ -21,9 +25,12 @@ public class CertificateController {
 
     private final CertificateService certificateService;
 
+    private final UserService userService;
+
     @Autowired
-    public CertificateController(CertificateService certificateService) {
+    public CertificateController(CertificateService certificateService, UserService userService) {
         this.certificateService = certificateService;
+        this.userService = userService;
     }
 
     @GetMapping("cert")
@@ -40,9 +47,28 @@ public class CertificateController {
         return ResponseEntity.ok(certificate);
     }
 
+    @PostMapping("authenticate/cert")
+    public ResponseEntity<String> verifyCertificate(HttpServletRequest request) {
+        String authorization = request.getHeader("Authorization");
+        if (StringUtils.isEmpty(authorization)) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        CredentialsParser.BasicAuthComponents userCredentials = new CredentialsParser.BasicAuthParser().parse(authorization);
+        final String email = userCredentials.getUsername();
+        final String serialNr = userCredentials.getPassword();
+
+        UserSafeProjection user = userService.findUsernameByEmail(email);
+        boolean certificateRevoked = certificateService.isCertificateRevoked(serialNr);
+
+        if (user != null && !certificateRevoked) {
+            return ResponseEntity.ok(user.getUsername());
+        }
+        return ResponseEntity.ok().build();
+    }
+
     @PostMapping("cert")
     public ResponseEntity<Void> issueNewCertificate(Principal principal) {
-
         boolean success = certificateService.issueNewCertificate(principal.getName());
         if (success) {
             return ResponseEntity.ok().build();

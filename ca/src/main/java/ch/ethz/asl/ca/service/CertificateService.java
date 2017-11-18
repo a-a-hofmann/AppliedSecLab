@@ -94,7 +94,6 @@ public class CertificateService {
         return true;
     }
 
-
     public boolean revokeAllCertsForUser(final String username) {
         User user = getUser(username);
 
@@ -171,5 +170,9 @@ public class CertificateService {
             throw new AuthenticationServiceException("User not found: " + username);
         }
         return user;
+    }
+
+    public boolean isCertificateRevoked(final String serialNr) {
+        return userCertificateService.isCertificateRevoked(serialNr);
     }
 }

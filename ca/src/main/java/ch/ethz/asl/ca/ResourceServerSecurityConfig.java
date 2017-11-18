@@ -11,7 +11,7 @@ public class ResourceServerSecurityConfig extends ResourceServerConfigurerAdapte
     @Override
     public void configure(HttpSecurity http) throws Exception {
         http
-                .authorizeRequests().antMatchers(HttpMethod.POST, "/authenticate", "/authenticate/email").permitAll()
+                .authorizeRequests().antMatchers(HttpMethod.POST, "/authenticate", "/authenticate/cert").permitAll()
                 .and()
                 .authorizeRequests().anyRequest().authenticated();
     }

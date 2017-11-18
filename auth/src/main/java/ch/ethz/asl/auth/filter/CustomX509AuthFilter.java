@@ -19,13 +19,10 @@ public class CustomX509AuthFilter extends X509AuthenticationFilter {
 
     private HttpSecurity httpSecurity;
 
-    private final CRLValidityService crlValidityService;
-
     private final AuthenticationApi authenticationApi;
 
-    public CustomX509AuthFilter(HttpSecurity http, CRLValidityService crlValidityService, AuthenticationApi authenticationApi) throws Exception {
+    public CustomX509AuthFilter(HttpSecurity http, AuthenticationApi authenticationApi) throws Exception {
         this.httpSecurity = http;
-        this.crlValidityService = crlValidityService;
         this.authenticationApi = authenticationApi;
     }
 
@@ -36,16 +33,9 @@ public class CustomX509AuthFilter extends X509AuthenticationFilter {
             return null;
         }
 
-        boolean certRevoked = crlValidityService.isCertRevoked(cert);
-
-        if (certRevoked) {
-            logger.info(String.format("Certificate %s was revoked!", cert.getSerialNumber()));
-            return null;
-        }
-
         Object o = principalExtractor.extractPrincipal(cert);
+        ResponseEntity<String> response = authenticationApi.verifySerialNrAndEmail(cert.getSerialNumber().toString(16), (String) o);
 
-        ResponseEntity<String> response = authenticationApi.queryByEmail((String) o);
         if (!response.getStatusCode().is2xxSuccessful()) {
             return null;
         }
