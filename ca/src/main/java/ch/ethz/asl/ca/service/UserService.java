@@ -37,15 +37,16 @@ public class UserService {
     }
 
     public void updateUser(User updatedInfo, final String username) {
-        User userRequestingUpdate = userRepository.findOne(username);
+        User userRequestingUpdate = getUser(username);
+
+
+        userRequestingUpdate.update(updatedInfo);
+        userRepository.save(userRequestingUpdate);
 
         boolean requiresCertRevocation = userRequestingUpdate.updateRequiresCertRevocation(updatedInfo);
         UserDetailsUpdateEvent updateEvent =
                 new UserDetailsUpdateEvent(username, userRequestingUpdate, updatedInfo, requiresCertRevocation);
         eventListener.onUserInfoUpdate(updateEvent);
-
-        userRequestingUpdate.update(updatedInfo);
-        userRepository.save(userRequestingUpdate);
     }
 
     public boolean checkUserCredentials(CredentialsParser.Credentials credentials) {

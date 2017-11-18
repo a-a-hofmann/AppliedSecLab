@@ -26,7 +26,7 @@ public class CertificateService {
     private final CertificateEventListener eventListener;
 
     private final UserCertificateService userCertificateService;
-    
+
     public CertificateService(UserService userService, CertificateManager certificateManager, CertificateEventListener eventListener, UserCertificateService userCertificateService) {
         this.userService = userService;
         this.certificateManager = certificateManager;
@@ -98,15 +98,13 @@ public class CertificateService {
     }
 
 
-    public boolean revokeAllCertsForUser(final String username) {
+    public void revokeAllCertsForUser(final String username) {
         User user = userService.getUser(username);
 
         List<UserCertificate> certificateList = userCertificateService.findAllByUserNotRevoked(user);
-        boolean success = true;
         for (UserCertificate certificate : certificateList) {
-            success &= revokeCertificate(certificate.getSerialNr(), username);
+            revokeCertificate(certificate.getSerialNr(), username);
         }
-        return success;
     }
 
     public boolean revokeCertificate(final String serialNr, final String username) {
