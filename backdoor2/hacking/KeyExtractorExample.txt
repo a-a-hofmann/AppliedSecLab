@@ -1,0 +1,134 @@
+Ards-MacBook-Pro:hacking ardkastrati$ java -jar backdoor.jar 1D.pem 1E.pem
+SIGNATURE OF THE FIRST FILE IS: 304502210083DC87561489A0C34C9C14BE087F291F87177D9A8921514046C770BED9E4084B022065D449B767FB0FECE7A34C7AF8B692CF5678C39B0E27D538FE42EDD26FCBF3E4
+The first digest is: EDBCFBB626E2AE97880DF2137FBD215639ABFCA3
+S is 65D449B767FB0FECE7A34C7AF8B692CF5678C39B0E27D538FE42EDD26FCBF3E4
+R is 0083DC87561489A0C34C9C14BE087F291F87177D9A8921514046C770BED9E4084B
+SIGNATURE OF THE FIRST FILE IS: 304502210083DC87561489A0C34C9C14BE087F291F87177D9A8921514046C770BED9E4084B0220227225DAB9B9D5CF40EFED305AA5D5CE65B5C1C7326DDC187DBC86234AE71E86
+The second digest is: 9817C3A52D49A2C88E805DB2EC603EC021EF2E35
+S is 227225DAB9B9D5CF40EFED305AA5D5CE65B5C1C7326DDC187DBC86234AE71E86
+R is 0083DC87561489A0C34C9C14BE087F291F87177D9A8921514046C770BED9E4084B
+Random number: 31415
+Random number in Hex: 7ab7
+Private key: 54317676492792694499412438591389818782039949433215976369255119905282116278913
+Private key in hex: 7816b7256193d97e21319cc613a0564aa12bfbf6c10b66f09a3375368c77da81
+Ards-MacBook-Pro:hacking ardkastrati$ openssl dsa -in cakey.pem -text
+read DSA key
+Private-Key: (3072 bit)
+priv:
+    78:16:b7:25:61:93:d9:7e:21:31:9c:c6:13:a0:56:
+    4a:a1:2b:fb:f6:c1:0b:66:f0:9a:33:75:36:8c:77:
+    da:81
+pub: 
+    1a:98:d0:66:92:5b:bf:e7:56:6a:47:b2:1d:d3:9c:
+    bc:44:e2:21:32:ca:ce:dd:37:1b:76:b1:59:ad:88:
+    0b:2b:2d:0a:fd:7f:c6:a8:1a:29:8f:29:86:f6:c9:
+    52:f0:53:b9:ea:24:d5:5e:ce:15:c2:d2:e2:d1:7c:
+    cd:00:b5:fc:4a:96:55:f8:31:71:d5:61:d9:a6:df:
+    cb:d8:f3:76:43:c8:7d:bd:cb:f1:fa:46:88:22:8d:
+    cb:c5:3d:4b:8c:91:38:2c:48:27:32:52:4f:f0:61:
+    f8:c0:46:87:07:65:6b:d5:8e:9d:52:2d:d8:fa:54:
+    00:4c:13:97:02:02:d0:1d:17:7b:2c:4e:57:a3:8e:
+    76:e4:97:93:19:8b:70:69:1d:a9:11:62:4c:20:7c:
+    82:26:f7:e5:e5:23:59:53:87:02:a9:8f:5b:68:a3:
+    ab:cc:75:75:b1:78:f5:5d:2b:75:dd:89:96:89:d5:
+    1c:d8:f6:97:c7:7e:ef:81:f9:75:ac:be:41:15:2d:
+    66:39:b2:80:8b:3a:ec:ec:f5:1e:2d:e6:f0:cc:d0:
+    fc:ea:c3:b6:9e:53:ba:fe:20:76:a5:a0:d0:b5:20:
+    cd:e0:01:20:90:14:45:c0:11:62:32:f8:b1:0a:16:
+    51:05:cd:fe:bb:bf:55:4a:a6:80:ef:6d:26:48:7c:
+    9e:60:99:12:32:e1:a5:96:da:6b:57:b3:f8:7e:a8:
+    0b:90:e4:88:ae:5b:d8:f0:84:87:59:f0:9d:b7:18:
+    b9:f7:e7:6c:49:5a:f3:c9:0f:ed:bb:d1:3b:b4:ba:
+    ba:66:8f:52:f2:f4:36:a5:ff:43:e1:dd:da:4a:f9:
+    e3:42:21:44:73:d1:f8:fb:00:5f:24:f1:04:b3:16:
+    6b:f7:f0:81:84:44:cb:29:28:51:d5:d6:4e:c0:ac:
+    a6:58:bf:2e:2f:b5:43:96:d4:ab:8c:30:ae:b5:63:
+    ea:c0:af:06:cd:31:2a:f3:03:07:4d:c1:1b:ec:bd:
+    9e:91:56:56:48:d3:26:74:5e
+P:   
+    00:bc:fa:4a:cd:49:79:56:e9:c7:06:48:7b:bf:28:
+    30:f0:8b:8d:31:0e:5c:ce:44:c1:68:ec:e7:73:4b:
+    85:67:36:ce:b2:b5:e5:45:c6:1f:25:25:18:6f:e5:
+    f9:01:6d:d0:6a:19:f1:7d:5e:bd:09:c0:ae:0f:83:
+    6c:39:b1:4e:ac:ab:65:a4:97:4b:10:d3:ab:e5:db:
+    9d:f1:f4:c2:4e:75:39:73:57:e0:79:f6:b7:0d:3b:
+    89:54:e4:0f:bd:79:50:54:6d:04:12:cb:39:e1:e7:
+    91:5a:58:76:48:7e:78:42:72:8b:1f:1e:98:97:82:
+    51:5e:39:a3:d2:3f:4d:40:1a:35:31:81:ff:e8:81:
+    48:db:06:22:0d:3d:4e:95:c7:4c:d1:95:2c:bf:eb:
+    f3:03:ba:26:90:c5:61:97:f5:0e:89:ce:0e:57:3a:
+    84:4d:4b:8a:54:34:f4:92:65:f4:05:7c:5a:75:21:
+    cf:a2:a1:70:4a:a5:23:61:4e:09:f7:5b:2e:2a:e4:
+    a5:66:b3:53:81:11:38:fb:b8:2a:30:17:9e:c3:43:
+    95:0f:2d:4e:b9:1b:5d:99:09:7b:11:4c:12:02:53:
+    11:22:6d:86:1d:89:2d:3f:88:36:43:84:ad:93:05:
+    db:f9:ce:9d:fb:08:30:07:b7:e2:ce:dc:89:48:2d:
+    d9:57:c8:78:aa:b3:3a:3e:fe:e9:bd:d1:fd:bd:0f:
+    77:84:66:4a:84:aa:27:92:b5:09:ef:d5:a3:8d:8c:
+    01:71:9a:ae:db:ad:d0:58:79:ba:53:ab:f2:cf:eb:
+    8c:0f:ca:ec:cc:9a:45:5f:9e:62:38:5f:34:db:8f:
+    fb:cd:1f:c2:94:fd:09:18:36:58:bd:a5:8f:a9:94:
+    be:03:26:58:71:de:5f:47:de:48:17:6c:26:3f:df:
+    e2:3f:46:77:90:9a:16:15:6c:0a:6c:f9:6d:f4:40:
+    25:3f:ef:44:3a:8d:68:2e:51:87:e4:b5:c3:3c:5d:
+    3d:c8:da:84:2c:d8:35:f4:ed:0b
+Q:   
+    00:86:c3:2e:97:55:a7:50:8d:89:8b:66:fa:6b:bc:
+    80:9f:f2:d5:2e:6b:31:a3:30:20:51:cd:72:8c:bb:
+    43:4c:f7
+G:   
+    65:b9:69:e9:85:22:a9:fe:d9:7d:fe:8f:80:20:6b:
+    d8:39:3a:0d:f7:f3:23:42:dc:62:23:72:fe:27:76:
+    57:23:cc:58:e2:f9:0f:92:09:db:7d:4a:b3:4d:7a:
+    6e:75:c3:51:5d:e0:bf:68:ec:6b:d5:70:f8:ae:36:
+    d1:73:b9:7a:45:93:e2:63:3b:d8:1a:47:9e:0b:a6:
+    63:68:7c:b3:19:04:62:95:ed:d2:82:b5:04:00:6c:
+    5b:33:9f:3e:ef:58:bd:87:0e:01:c1:fc:be:70:f1:
+    72:bf:a9:d0:6d:1f:b4:79:98:c5:a7:58:78:35:9d:
+    70:2c:a5:7f:99:f9:c8:cd:69:2d:a4:d5:ab:f7:ff:
+    dc:af:56:16:24:75:bf:dd:c5:da:3e:49:bc:77:de:
+    20:a4:61:18:d9:54:39:cd:ca:7e:60:20:17:f6:31:
+    cf:1d:71:31:0f:27:8e:e3:22:93:7f:03:d6:62:80:
+    c0:3b:45:a7:8c:1b:a3:9a:f4:01:f8:d1:48:d0:99:
+    9d:a3:04:84:10:9a:0c:36:f2:a7:06:24:7d:d0:b1:
+    04:fd:87:8b:20:b1:3f:e6:39:ca:48:c4:4d:c2:03:
+    8f:d4:9e:69:8d:6b:c1:70:5e:c5:b0:41:75:fc:2f:
+    9e:99:c1:1b:03:ab:b9:07:b4:0e:ff:35:af:e9:3f:
+    eb:07:05:b8:a2:ee:8d:64:35:95:56:c1:08:0b:88:
+    9a:3c:3c:29:67:79:e9:72:05:30:fe:b7:ed:78:ad:
+    8e:dd:70:9e:c9:49:3b:45:73:37:45:f2:94:10:16:
+    24:4e:0e:27:3d:f4:27:57:6f:94:97:65:5f:ce:73:
+    82:c5:93:1a:4b:88:bb:66:5e:aa:11:24:69:dc:13:
+    b4:54:60:f7:39:ea:7c:97:42:45:3c:8a:a9:d3:fc:
+    10:1e:dc:17:ca:de:93:5b:a8:7f:3e:18:b7:53:23:
+    ef:5e:d9:d4:ad:e1:32:d9:26:d8:77:e5:de:61:89:
+    f1:33:22:9c:9b:9b:bf:ee:d3
+writing DSA key
+-----BEGIN DSA PRIVATE KEY-----
+MIIE1QIBAAKCAYEAvPpKzUl5VunHBkh7vygw8IuNMQ5czkTBaOznc0uFZzbOsrXl
+RcYfJSUYb+X5AW3QahnxfV69CcCuD4NsObFOrKtlpJdLENOr5dud8fTCTnU5c1fg
+efa3DTuJVOQPvXlQVG0EEss54eeRWlh2SH54QnKLHx6Yl4JRXjmj0j9NQBo1MYH/
+6IFI2wYiDT1OlcdM0ZUsv+vzA7omkMVhl/UOic4OVzqETUuKVDT0kmX0BXxadSHP
+oqFwSqUjYU4J91suKuSlZrNTgRE4+7gqMBeew0OVDy1OuRtdmQl7EUwSAlMRIm2G
+HYktP4g2Q4StkwXb+c6d+wgwB7fiztyJSC3ZV8h4qrM6Pv7pvdH9vQ93hGZKhKon
+krUJ79WjjYwBcZqu263QWHm6U6vyz+uMD8rszJpFX55iOF8024/7zR/ClP0JGDZY
+vaWPqZS+AyZYcd5fR95IF2wmP9/iP0Z3kJoWFWwKbPlt9EAlP+9EOo1oLlGH5LXD
+PF09yNqELNg19O0LAiEAhsMul1WnUI2Ji2b6a7yAn/LVLmsxozAgUc1yjLtDTPcC
+ggGAZblp6YUiqf7Zff6PgCBr2Dk6DffzI0LcYiNy/id2VyPMWOL5D5IJ231Ks016
+bnXDUV3gv2jsa9Vw+K420XO5ekWT4mM72BpHngumY2h8sxkEYpXt0oK1BABsWzOf
+Pu9YvYcOAcH8vnDxcr+p0G0ftHmYxadYeDWdcCylf5n5yM1pLaTVq/f/3K9WFiR1
+v93F2j5JvHfeIKRhGNlUOc3KfmAgF/Yxzx1xMQ8njuMik38D1mKAwDtFp4wbo5r0
+AfjRSNCZnaMEhBCaDDbypwYkfdCxBP2HiyCxP+Y5ykjETcIDj9SeaY1rwXBexbBB
+dfwvnpnBGwOruQe0Dv81r+k/6wcFuKLujWQ1lVbBCAuImjw8KWd56XIFMP637Xit
+jt1wnslJO0VzN0XylBAWJE4OJz30J1dvlJdlX85zgsWTGkuIu2ZeqhEkadwTtFRg
+9znqfJdCRTyKqdP8EB7cF8rek1uofz4Yt1Mj717Z1K3hMtkm2Hfl3mGJ8TMinJub
+v+7TAoIBgBqY0GaSW7/nVmpHsh3TnLxE4iEyys7dNxt2sVmtiAsrLQr9f8aoGimP
+KYb2yVLwU7nqJNVezhXC0uLRfM0AtfxKllX4MXHVYdmm38vY83ZDyH29y/H6Rogi
+jcvFPUuMkTgsSCcyUk/wYfjARocHZWvVjp1SLdj6VABME5cCAtAdF3ssTlejjnbk
+l5MZi3BpHakRYkwgfIIm9+XlI1lThwKpj1too6vMdXWxePVdK3XdiZaJ1RzY9pfH
+fu+B+XWsvkEVLWY5soCLOuzs9R4t5vDM0Pzqw7aeU7r+IHaloNC1IM3gASCQFEXA
+EWIy+LEKFlEFzf67v1VKpoDvbSZIfJ5gmRIy4aWW2mtXs/h+qAuQ5IiuW9jwhIdZ
+8J23GLn352xJWvPJD+270Tu0urpmj1Ly9Dal/0Ph3dpK+eNCIURz0fj7AF8k8QSz
+Fmv38IGERMspKFHV1k7ArKZYvy4vtUOW1KuMMK61Y+rArwbNMSrzAwdNwRvsvZ6R
+VlZI0yZ0XgIgeBa3JWGT2X4hMZzGE6BWSqEr+/bBC2bwmjN1Nox32oE=
+-----END DSA PRIVATE KEY-----
