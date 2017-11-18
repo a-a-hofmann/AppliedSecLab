@@ -20,3 +20,5 @@ V	181118143448Z		13	unknown	/C=CH/ST=Zurich/O=ETH/OU=AppliedSecLab/CN=David_Basi
 V	181118143541Z		14	unknown	/C=CH/ST=Zurich/O=ETH/OU=AppliedSecLab/CN=Andres_Alan_Anderson/emailAddress=and@imovies.ch
 V	181118144018Z		15	unknown	/C=CH/ST=Zurich/O=ETH/OU=AppliedSecLab/CN=Andres_Alan_Anderson/emailAddress=and@imovies.ch
 R	181118144614Z	171118144644Z	16	unknown	/C=CH/ST=Zurich/O=ETH/OU=AppliedSecLab/CN=Andres_Alan_Anderson/emailAddress=and@imovies.ch
+V	181118152145Z		17	unknown	/C=CH/ST=Zurich/O=ETH/OU=AppliedSecLab/CN=admin/emailAddress=admin@asl.ethz.ch
+V	181118152435Z		18	unknown	/C=CH/ST=Zurich/O=ETH/OU=AppliedSecLab/CN=admin/emailAddress=admin@asl.ethz.ch

@@ -1,7 +1,10 @@
 # Applied Security Lab 
 
 ## General info
-Basic auth: `user:password`
+### Admin .p12 certificate
+`ca/etc/ssl/CA/admin/admin.p12`
+
+pwd: `admin`
 
 ### Useful links
 #### Tools

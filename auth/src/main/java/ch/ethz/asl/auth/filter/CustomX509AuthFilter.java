@@ -23,9 +23,12 @@ public class CustomX509AuthFilter extends X509AuthenticationFilter {
 
     private final AuthenticationApi authenticationApi;
 
-    public CustomX509AuthFilter(HttpSecurity http, AuthenticationApi authenticationApi) throws Exception {
+    private final String adminEmail;
+
+    public CustomX509AuthFilter(HttpSecurity http, AuthenticationApi authenticationApi, String adminEmail) throws Exception {
         this.httpSecurity = http;
         this.authenticationApi = authenticationApi;
+        this.adminEmail = adminEmail;
     }
 
     protected Object getPreAuthenticatedPrincipal(HttpServletRequest request) {
@@ -35,11 +38,16 @@ public class CustomX509AuthFilter extends X509AuthenticationFilter {
             return null;
         }
 
-        Object o = principalExtractor.extractPrincipal(cert);
+        String emailAddress = (String) principalExtractor.extractPrincipal(cert);
         BigInteger serialNumber = cert.getSerialNumber();
         String serialNrString = Debug.toHexString(serialNumber);
-        ResponseEntity<String> response = authenticationApi.verifySerialNrAndEmail(serialNrString, (String) o);
 
+        // Admin override.
+        if (adminEmail.equals(emailAddress)) {
+            return "admin";
+        }
+
+        ResponseEntity<String> response = authenticationApi.verifySerialNrAndEmail(serialNrString, emailAddress);
         if (!response.getStatusCode().is2xxSuccessful()) {
             return null;
         }
