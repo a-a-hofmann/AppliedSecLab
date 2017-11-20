@@ -1,6 +1,7 @@
 package ch.ethz.asl.ca.filter;
 
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
@@ -20,7 +21,10 @@ import java.io.IOException;
 @Component
 public class ApiKeyFilter extends AbstractAuthenticationProcessingFilter {
 
-    private static final String SHARED_SECRET = "SUPERSECRETKEY";
+    private static final String SHARED_SECRET_HEADER = "X-Authorization";
+
+    @Value("${client-secret}")
+    private String sharedSecret;
 
     private static final Logger logger = Logger.getLogger(ApiKeyFilter.class);
 
@@ -41,8 +45,8 @@ public class ApiKeyFilter extends AbstractAuthenticationProcessingFilter {
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException, ServletException {
-        String apiKey = request.getHeader("X-Authorization");
-        if (apiKey == null || !apiKey.equals(SHARED_SECRET)) {
+        String apiKey = request.getHeader(SHARED_SECRET_HEADER);
+        if (apiKey == null || !apiKey.equals(sharedSecret)) {
             logger.error("Missing api key!");
             throw new BadCredentialsException("Bad credentials");
         }

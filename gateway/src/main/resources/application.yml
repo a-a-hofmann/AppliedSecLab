@@ -23,8 +23,8 @@ security:
     client:
       accessTokenUri: https://localhost:8444/uaa/oauth/token
       userAuthorizationUri: https://localhost:8444/uaa/oauth/authorize
-      clientId: acme
-      clientSecret: acmesecret
+      clientId: gateway
+      clientSecret: Hqta28Ns4SOTnbg2Iqmh7RQSYYYfV60X6adkGoq1
     resource:
       jwt:
         keyValue: |

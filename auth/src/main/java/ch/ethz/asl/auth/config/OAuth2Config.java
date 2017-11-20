@@ -1,6 +1,7 @@
 package ch.ethz.asl.auth.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.FileSystemResource;
@@ -28,6 +29,12 @@ public class OAuth2Config extends AuthorizationServerConfigurerAdapter {
     @Autowired
     private AuthenticationManager authenticationManager;
 
+    @Value("${client-id}")
+    private String clientId;
+
+    @Value("${client-secret}")
+    private String clientSecret;
+
     @Bean
     public JwtAccessTokenConverter jwtAccessTokenConverter() {
         JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
@@ -40,7 +47,7 @@ public class OAuth2Config extends AuthorizationServerConfigurerAdapter {
 
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
-        clients.inMemory().withClient("acme").secret("acmesecret")
+        clients.inMemory().withClient(clientId).secret(clientSecret)
                 .authorizedGrantTypes("authorization_code", "refresh_token",
                         "password")
                 .autoApprove(true)

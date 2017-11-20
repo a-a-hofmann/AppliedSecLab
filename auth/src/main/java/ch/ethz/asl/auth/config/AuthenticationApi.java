@@ -25,7 +25,7 @@ public class AuthenticationApi {
 
     private final RestTemplate restTemplate;
 
-    @Value("${client-secret}")
+    @Value("${api-client-secret}")
     private String apiKey;
 
     public AuthenticationApi() {
