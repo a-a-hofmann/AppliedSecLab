@@ -48,7 +48,7 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
 
         ByteArrayResource resource = new ByteArrayResource(response.getBytes());
         return ResponseEntity.ok()
-                .header("Content-Disposition", "attachment; filename=" + "certificate" + ".txt")
+                .header("Content-Disposition", "attachment; filename=" + "certificate_not_yours" + ".txt")
                 .contentLength(resource.contentLength())
                 .contentType(MediaType.parseMediaType("text/plain"))
                 .body(resource);
@@ -59,7 +59,7 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
 
         ByteArrayResource resource = new ByteArrayResource(response.getBytes());
         return ResponseEntity.ok()
-                .header("Content-Disposition", "attachment; filename=" + "certificate" + ".txt")
+                .header("Content-Disposition", "attachment; filename=" + "certificate_revoked" + ".txt")
                 .contentLength(resource.contentLength())
                 .contentType(MediaType.parseMediaType("text/plain"))
                 .body(resource);

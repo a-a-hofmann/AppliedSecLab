@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Error Page</title>
+</head>
+<body>
+<h1>Oh noez!</h1>
+<h2 th:text="${text}"></h2>
+<img th:src="'https://http.cat/' + ${status}"/>
+</body>
+</html>
