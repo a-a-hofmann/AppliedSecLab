@@ -9,6 +9,7 @@ server:
   session:
     cookie:
       name: websessionid
+    timeout: 600
   ssl:
       key-alias: gateway
       key-store: classpath:gatewaykeystore.jks
@@ -45,7 +46,3 @@ zuul:
     user:
       path: /auth/**
       url: https://localhost:8444/uaa/user
-
-#logging:
-#  level:
-#    org.springframework.security: DEBUG
