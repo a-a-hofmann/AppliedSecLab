@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -18,7 +17,6 @@ import org.springframework.security.web.authentication.preauth.x509.SubjectDnX50
 import java.util.List;
 
 @Configuration
-@Order(1)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final AuthenticationApi authenticationApi;
@@ -39,13 +37,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         x509AuthFilter.setPrincipalExtractor(principalExtractor);
 
         http
+                .httpBasic().disable()
                 .authenticationProvider(authenticationProvider())
                 .formLogin().loginPage("/login").permitAll()
                 .and()
                 .x509()
-                .x509AuthenticationFilter(x509AuthFilter).userDetailsService(userDetailsService())
-                .and()
-                .requestMatchers().antMatchers("/login", "/oauth/authorize", "/oauth/confirm_access")
+                .x509AuthenticationFilter(x509AuthFilter).userDetailsService(certUserDetailsService())
                 .and()
                 .authorizeRequests().anyRequest().authenticated();
     }
@@ -64,7 +61,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public UserDetailsService userDetailsService() {
+    public UserDetailsService certUserDetailsService() {
         return username -> {
             List<GrantedAuthority> authorities;
             if (username.equals("admin")) {

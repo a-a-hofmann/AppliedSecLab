@@ -2,7 +2,6 @@ package ch.ethz.asl.auth.config;
 
 import org.apache.log4j.Logger;
 import org.apache.tomcat.util.codec.binary.Base64;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
@@ -18,16 +17,17 @@ public class AuthenticationApi {
 
     private static final Logger logger = Logger.getLogger(AuthenticationApi.class);
 
+    private static final String CA_URI = "https://localhost:8445";
+
+    private static final String URI = CA_URI + "/authenticate";
+
+    private static final String EMAIL_CERT_QUERY_URL = CA_URI + "/authenticate/cert";
+
     private final RestTemplate restTemplate;
-
-    private static final String URI = "https://localhost:8445/authenticate";
-
-    private static final String EMAIL_CERT_QUERY_URL = "https://localhost:8445/authenticate/cert";
 
     @Value("${client-secret}")
     private String apiKey;
 
-    @Autowired
     public AuthenticationApi() {
         this.restTemplate = new RestTemplate();
     }
