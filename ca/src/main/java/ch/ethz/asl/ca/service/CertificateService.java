@@ -57,7 +57,7 @@ public class CertificateService {
         return userCertificateService.findAllRevoked();
     }
 
-    public byte[] getCertificate(final String serialNr, final String username) {
+    public byte[] getCertificate(final String serialNr, final String username) throws CertificateUserMismatchException, CertificateIsRevokedException {
         User user = getUser(username);
 
         UserCertificate userCertificate;
@@ -66,12 +66,15 @@ public class CertificateService {
         if (certificateOptional.isPresent()) {
             userCertificate = certificateOptional.get();
         } else {
+            UserCertificate certificate = userCertificateService.findCertfificateBySerialNr(serialNr);
+            if (!certificate.getUsername().equals(username)) {
+                throw new CertificateUserMismatchException(String.format("User [%s] tried accessing certificate [%s] belonging to [%s]", username, certificate.getSerialNr(), certificate.getUsername()));
+            }
             throw new IllegalArgumentException(String.format("Failed to get certificate [%s] for user [%s]", serialNr, user.getUsername()));
         }
 
         if (userCertificate.isRevoked()) {
-            logger.info(String.format("User [%s] requested certificate [%s] that was revoked.", user.getUsername(), serialNr));
-            return new byte[0];
+            throw new CertificateIsRevokedException(String.format("User [%s] requested certificate [%s] that was revoked.", username, serialNr));
         }
 
         byte[] success;

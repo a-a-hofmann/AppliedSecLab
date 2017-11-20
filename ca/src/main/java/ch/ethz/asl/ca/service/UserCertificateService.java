@@ -24,6 +24,10 @@ public class UserCertificateService {
         this.userRepository = userRepository;
     }
 
+    public UserCertificate findCertfificateBySerialNr(final String serialNr) {
+        return repository.findBySerialNrIgnoreCase(serialNr);
+    }
+
     public boolean isCertificateRevoked(final String serialNr) {
         UserCertificate certificate = repository.findBySerialNrIgnoreCase(serialNr);
         return certificate == null || certificate.isRevoked();

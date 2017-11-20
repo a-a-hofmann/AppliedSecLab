@@ -1,8 +1,10 @@
 package ch.ethz.asl.gateway;
 
 import feign.FeignException;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -20,6 +22,13 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
 
     @ExceptionHandler(value = FeignException.class)
     protected ResponseEntity<Object> handleConflict(RuntimeException ex, WebRequest request) {
+        FeignException actualException = (FeignException) ex;
+        if (actualException.status() == 418) {
+            return userAttemptedToGetCertificateThatIsNotHis();
+        } else if (actualException.status() == 410) {
+            return userAttemptedToGetCertificateThatWasRevoked();
+        }
+
         String bodyOfResponse = "Getting warmer..";
 
         RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
@@ -32,5 +41,27 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
         }
         return handleExceptionInternal(ex, bodyOfResponse,
                 new HttpHeaders(), HttpStatus.UNAUTHORIZED, request);
+    }
+
+    private ResponseEntity<Object> userAttemptedToGetCertificateThatIsNotHis() {
+        String response = "Nice try...";
+
+        ByteArrayResource resource = new ByteArrayResource(response.getBytes());
+        return ResponseEntity.ok()
+                .header("Content-Disposition", "attachment; filename=" + "certificate" + ".txt")
+                .contentLength(resource.contentLength())
+                .contentType(MediaType.parseMediaType("text/plain"))
+                .body(resource);
+    }
+
+    private ResponseEntity<Object> userAttemptedToGetCertificateThatWasRevoked() {
+        String response = "Certificate was revoked!!!";
+
+        ByteArrayResource resource = new ByteArrayResource(response.getBytes());
+        return ResponseEntity.ok()
+                .header("Content-Disposition", "attachment; filename=" + "certificate" + ".txt")
+                .contentLength(resource.contentLength())
+                .contentType(MediaType.parseMediaType("text/plain"))
+                .body(resource);
     }
 }

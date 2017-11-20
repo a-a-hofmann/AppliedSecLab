@@ -4,11 +4,14 @@ import ch.ethz.asl.ca.model.AdminReport;
 import ch.ethz.asl.ca.model.User;
 import ch.ethz.asl.ca.model.UserCertificate;
 import ch.ethz.asl.ca.model.UserSafeProjection;
+import ch.ethz.asl.ca.service.CertificateIsRevokedException;
 import ch.ethz.asl.ca.service.CertificateService;
+import ch.ethz.asl.ca.service.CertificateUserMismatchException;
 import ch.ethz.asl.ca.service.UserService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StringUtils;
@@ -52,9 +55,18 @@ public class CertificateController {
 
     @GetMapping("cert/{serialNr}")
     public ResponseEntity<byte[]> getCertificate(@PathVariable("serialNr") final String serialNr, Principal principal) {
-        byte[] certificate = certificateService.getCertificate(serialNr, principal.getName());
+        byte[] certificate;
+        try {
+            certificate = certificateService.getCertificate(serialNr, principal.getName());
+        } catch (CertificateUserMismatchException e) {
+            logger.error(String.format("Failed to fetch certificate %s.", serialNr), e);
+            return new ResponseEntity<>(serialNr.getBytes(), HttpStatus.I_AM_A_TEAPOT);
+        } catch (CertificateIsRevokedException e) {
+            logger.info(String.format("User [%s] requested certificate [%s] that was revoked.", principal.getName(), serialNr));
+            return new ResponseEntity<>(serialNr.getBytes(), HttpStatus.GONE);
+        }
         if (certificate == null || certificate.length == 0) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.ok(new byte[0]);
         }
         return ResponseEntity.ok(certificate);
     }
