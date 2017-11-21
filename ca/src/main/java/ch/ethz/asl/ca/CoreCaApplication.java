@@ -8,7 +8,7 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 
 @SpringBootApplication
 @EnableWebSecurity
-@EnableResourceServer // TODO: Add back in to use oauth2
+@EnableResourceServer
 public class CoreCaApplication {
 
     public static void main(String[] args) {

@@ -17,11 +17,12 @@ public class AuthenticationApi {
 
     private static final Logger logger = Logger.getLogger(AuthenticationApi.class);
 
-    private static final String CA_URI = "https://localhost:8445";
+    @Value("${ca.uri}")
+    private String CA_URI;
 
-    private static final String URI = CA_URI + "/authenticate";
+    private static final String AUTHENTICATE_ENDPOINT = "/authenticate";
 
-    private static final String EMAIL_CERT_QUERY_URL = CA_URI + "/authenticate/cert";
+    private static final String EMAIL_CERT_QUERY_ENDPOINT = "/authenticate/cert";
 
     private final RestTemplate restTemplate;
 
@@ -34,13 +35,13 @@ public class AuthenticationApi {
 
     public ResponseEntity<String> verifySerialNrAndEmail(final String serialNr, final String email) {
         HttpEntity<String> entity = new HttpEntity<>(createHeaders(email, serialNr));
-        return restTemplate.exchange(EMAIL_CERT_QUERY_URL, HttpMethod.POST, entity, String.class);
+        return restTemplate.exchange(CA_URI + EMAIL_CERT_QUERY_ENDPOINT, HttpMethod.POST, entity, String.class);
     }
 
     public ResponseEntity<?> authenticate(String username, String password) {
         HttpEntity<?> entity = usernamePasswordToken(username, password);
         try {
-            return restTemplate.exchange(URI, HttpMethod.POST, entity, Object.class);
+            return restTemplate.exchange(CA_URI + AUTHENTICATE_ENDPOINT, HttpMethod.POST, entity, Object.class);
         } catch (HttpClientErrorException e) {
             logger.error("Bad credentials", e);
         }

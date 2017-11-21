@@ -1,5 +1,3 @@
-debug: true
-
 spring:
   aop:
     proxy-target-class: true
@@ -11,10 +9,10 @@ server:
       name: websessionid
     timeout: 600
   ssl:
-      key-alias: gateway
-      key-store: classpath:gatewaykeystore.jks
-      key-store-password: r1lI0vFPeprf2MCYyErDOAq1KrZmoQMTwFGHII6Z
-      key-password: r1lI0vFPeprf2MCYyErDOAq1KrZmoQMTwFGHII6Z
+      key-alias: webserver
+      key-store: webserverkeystore.jks
+      key-store-password: bhAEyEdlssVWxemQ4VzMkgOEPvCdApUTzrkTHKpH
+      key-password: bhAEyEdlssVWxemQ4VzMkgOEPvCdApUTzrkTHKpH
 
 security:
   user:

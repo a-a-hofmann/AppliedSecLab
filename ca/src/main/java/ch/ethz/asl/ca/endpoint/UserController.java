@@ -3,6 +3,7 @@ package ch.ethz.asl.ca.endpoint;
 import ch.ethz.asl.ca.model.User;
 import ch.ethz.asl.ca.model.UserSafeProjection;
 import ch.ethz.asl.ca.service.UserService;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
@@ -19,6 +20,8 @@ import java.security.Principal;
  */
 @RestController
 public class UserController {
+
+    private static final Logger logger = Logger.getLogger(UserController.class);
 
     private final UserService userService;
 
@@ -46,6 +49,7 @@ public class UserController {
 
         String authorization = request.getHeader("Authorization");
         if (StringUtils.isEmpty(authorization)) {
+            logger.error("Received no credentials!");
             return badRequest;
         }
 
@@ -55,6 +59,8 @@ public class UserController {
         if (valid) {
             return ResponseEntity.ok().build();
         }
+
+        logger.error("Received bad credentials!");
         return badRequest;
     }
 

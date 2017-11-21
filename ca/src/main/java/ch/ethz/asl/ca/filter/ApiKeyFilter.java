@@ -18,12 +18,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+//@PropertySource(value={"classpath:application.properties"})
 @Component
 public class ApiKeyFilter extends AbstractAuthenticationProcessingFilter {
 
     private static final String SHARED_SECRET_HEADER = "X-Authorization";
 
-    @Value("${client-secret}")
+    @Value("${api.client-secret}")
     private String sharedSecret;
 
     private static final Logger logger = Logger.getLogger(ApiKeyFilter.class);

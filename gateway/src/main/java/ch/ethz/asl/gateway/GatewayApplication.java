@@ -8,7 +8,7 @@ import org.springframework.cloud.netflix.zuul.EnableZuulProxy;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
 @SpringBootApplication
@@ -17,7 +17,7 @@ import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 @EnableFeignClients
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 @EnableOAuth2Sso
-public class GatewayApplication extends WebSecurityConfigurerAdapter {
+public class GatewayApplication extends ResourceServerConfigurerAdapter {
 
     public static void main(String[] args) {
         SpringApplication.run(GatewayApplication.class, args);

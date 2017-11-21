@@ -44,6 +44,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .x509()
                 .x509AuthenticationFilter(x509AuthFilter).userDetailsService(certUserDetailsService())
                 .and()
+                .requestMatchers().antMatchers("/login", "/oauth/authorize", "/oauth/confirm_access")
+                .and()
                 .authorizeRequests().anyRequest().authenticated();
     }
 
