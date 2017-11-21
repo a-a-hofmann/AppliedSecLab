@@ -177,8 +177,7 @@ static int dsa_sign_setup(DSA *dsa, BN_CTX *ctx_in,
         goto err;
 
     /* Get random k */
-    //BIGNUM* k_ard = k;
-    BN_dec2bn(&k, "31415");
+	BN_dec2bn(&k, "31415");
     //do {
     //    if (dgst != NULL) {
             /*
