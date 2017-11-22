@@ -12,6 +12,8 @@
     <title>CA</title>
 
     <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css"/>
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"
+          integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous"/>
     <link rel="stylesheet" type="text/css" href="css/font-awesome.min.css"/>
     <link href="css/gateway.css" rel="stylesheet"/>
 </head>
@@ -130,12 +132,14 @@
                                 <td th:text="${#dates.format(cert.issuedOn, 'HH:mm, dd-MMM-yyyy')}"></td>
                                 <td>
                                     <a class="btn btn-primary download-cert fa fa-download"
+                                       th:title="'Export ' + ${cert.serialNr} + ' as p12'"
                                        th:href="@{'/cert/' + ${cert.serialNr}}"
                                        target="_self">
                                     </a>
 
                                     <button type="button" class="btn btn-primary fa fa-times" data-toggle="modal"
                                             data-target="#revoke-confirm"
+                                            th:title="'Revoke certificate' + ${cert.serialNr}"
                                             th:attr="data-serialNr=${cert.serialNr}, data-issuedon=${cert.issuedOn}">
                                     </button>
                                 </td>
