@@ -39,18 +39,26 @@ public class CustomX509AuthFilter extends X509AuthenticationFilter {
 
         String emailAddress = (String) principalExtractor.extractPrincipal(cert);
         BigInteger serialNumber = cert.getSerialNumber();
-        String serialNrString = Long.toHexString(serialNumber.longValue());
+        String serialNrString = padLeft(serialNumber.longValue());
 
         // Admin override.
         if (adminEmail.equals(emailAddress)) {
             return "admin";
         }
 
+        logger.info(String.format("Sending serialNr [%s] to ca for verification. Hex String [%s]", serialNumber.toString(), serialNrString));
+
         ResponseEntity<String> response = authenticationApi.verifySerialNrAndEmail(serialNrString, emailAddress);
         if (!response.getStatusCode().is2xxSuccessful()) {
+            logger.info("Certificate not valid.");
             return null;
         }
+        logger.info("Certificate valid.");
         return response.getBody();
+    }
+
+    public static String padLeft(long s) {
+        return String.format("%02x", s);
     }
 
     protected Object getPreAuthenticatedCredentials(HttpServletRequest request) {
